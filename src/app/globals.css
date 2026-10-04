@@ -1,0 +1,100 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --surface-primary: #fbfbf9;
+  --surface-secondary: #f3f3ee;
+  --surface-tertiary: #e8e8e1;
+  --border-subtle: #dcdcd3;
+  --border-strong: #9e9e94;
+  --text-primary: #1c1f1e;
+  --text-secondary: #4a524e;
+  --text-muted: #6f7874;
+
+  --teal-accent: #0d5f57;
+  --teal-hover: #08433d;
+  --teal-subtle: #e6f2f0;
+  --teal-contrast: #ffffff;
+
+  --evidence-strong: #0d5f57;
+  --evidence-moderate: #2b556b;
+  --evidence-mixed: #704b12;
+  --evidence-emerging: #5c3b70;
+  --evidence-unsupported: #6e2a2a;
+}
+
+.dark,
+[data-theme='dark'] {
+  --surface-primary: #141716;
+  --surface-secondary: #1d2220;
+  --surface-tertiary: #272d2b;
+  --border-subtle: #363d3a;
+  --border-strong: #5a6661;
+  --text-primary: #edf2f0;
+  --text-secondary: #b5c2bd;
+  --text-muted: #85948e;
+
+  --teal-accent: #2dd4bf;
+  --teal-hover: #5eead4;
+  --teal-subtle: #12332e;
+  --teal-contrast: #0f1d1b;
+
+  --evidence-strong: #2dd4bf;
+  --evidence-moderate: #7dd3fc;
+  --evidence-mixed: #fcd34d;
+  --evidence-emerging: #e879f9;
+  --evidence-unsupported: #fca5a5;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --surface-primary: #141716;
+    --surface-secondary: #1d2220;
+    --surface-tertiary: #272d2b;
+    --border-subtle: #363d3a;
+    --border-strong: #5a6661;
+    --text-primary: #edf2f0;
+    --text-secondary: #b5c2bd;
+    --text-muted: #85948e;
+
+    --teal-accent: #2dd4bf;
+    --teal-hover: #5eead4;
+    --teal-subtle: #12332e;
+    --teal-contrast: #0f1d1b;
+
+    --evidence-strong: #2dd4bf;
+    --evidence-moderate: #7dd3fc;
+    --evidence-mixed: #fcd34d;
+    --evidence-emerging: #e879f9;
+    --evidence-unsupported: #fca5a5;
+  }
+}
+
+body {
+  background-color: var(--surface-primary);
+  color: var(--text-primary);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Accessible focus outline */
+:focus-visible {
+  outline: 2px solid var(--teal-accent);
+  outline-offset: 3px;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

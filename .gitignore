@@ -10,8 +10,12 @@ Desktop.ini
 
 # Node / JS
 node_modules/
+.next/
+out/
+coverage/
 dist/
 build/
+*.tsbuildinfo
 .env
 .env.local
 .env.*.local
