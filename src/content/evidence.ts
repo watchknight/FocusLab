@@ -6,217 +6,325 @@ import type { Reference, EvidenceClaim } from './types';
 
 export const REFERENCES: Reference[] = [
   {
-    id: 'balban-2023',
+    id: 'albulescu2022',
     citation:
-      'Balban, M. Y., Neri, E., Kogon, M. M., Weed, L., Nouriani, B., Jo, B., Holl, G., Zeitzer, J. M., Spiegel, D., & Huberman, A. D. (2023). Brief structured respiration practices enhance mood and reduce physiological arousal. Cell Reports Medicine, 4(1), 100895.',
+      'Albulescu P, Macsinga I, Rusu A, Sulea C, Bodnaru A, Tulbure BT (2022). "Give me a break!" A systematic review and meta-analysis on the efficacy of micro-breaks for increasing well-being and performance. PLOS ONE 17(8): e0272460.',
+    link: 'https://doi.org/10.1371/journal.pone.0272460',
   },
   {
-    id: 'ma-2017',
+    id: 'biwer2023',
     citation:
-      'Ma, X., Yue, Z. Q., Gong, Z. Q., Zhang, H., Duan, N. Y., Shi, Y. T., Wei, G. X., & Li, Y. F. (2017). The Effect of Diaphragmatic Breathing on Attention, Negative Affect and Stress in Healthy Adults. Frontiers in Psychology, 8, 874.',
+      'Biwer F, et al. (2023). Understanding effort regulation: Comparing "Pomodoro" breaks and self-regulated breaks. British Journal of Educational Psychology 93(S2): 353-367. PMID 36859717',
   },
   {
-    id: 'loucks-2015',
+    id: 'ariga2011',
     citation:
-      'Loucks, E. B., Britton, W. B., Howe, C. J., Gutman, R., et al. (2015). Positive effects of body-scan meditation on attentional stability and autonomic regulation. Psychosomatic Medicine, 77(9), 920-928.',
+      'Ariga A, Lleras A (2011). Brief and rare mental "breaks" keep you focused: Deactivation and reactivation of task goals preempt vigilance decrements. Cognition 118(3): 439-443.',
+    link: 'https://doi.org/10.1016/j.cognition.2010.12.007',
   },
   {
-    id: 'gollwitzer-2006',
+    id: 'behavsci2025',
     citation:
-      'Gollwitzer, P. M., & Sheeran, P. (2006). Implementation intentions and goal achievement: A meta-analysis of effects and processes. Advances in Experimental Social Psychology, 38, 69-119.',
+      'Self-regulated, Pomodoro and Flowtime break-taking among students. Behavioral Sciences 15(7): 861 (2025).',
+    link: 'https://www.mdpi.com/2076-328X/15/7/861',
   },
   {
-    id: 'ariga-2011',
+    id: 'behavsci2026',
     citation:
-      'Ariga, A., & Lleras, A. (2011). Brief and rare mental "breaks" keep you focused: Deactivation and reactivation of task goals preempt vigilance decrements. Cognition, 118(3), 439-443.',
+      'Systematic short (Pomodoro) versus self-regulated breaks: subjective experience and learning. Behavioral Sciences 16(7): 1158 (2026).',
+    link: 'https://doi.org/10.3390/bs16071158',
   },
   {
-    id: 'posner-1980',
+    id: 'zainal2024',
     citation:
-      'Posner, M. I. (1980). Orienting of attention. Quarterly Journal of Experimental Psychology, 32(1), 3-25.',
+      'Zainal NH, Newman MG (2024). Mindfulness enhances cognitive functioning: a meta-analysis of 111 randomized controlled trials. Health Psychology Review 18(2): 369-395.',
+    link: 'https://doi.org/10.1080/17437199.2023.2248222',
   },
   {
-    id: 'soderlund-2007',
+    id: 'goldberg2022',
     citation:
-      'Söderlund, G., Sikström, S., & Smart, N. (2007). Listen to the noise: noise is good for cognitive performance in ADHD. Journal of Child Psychology and Psychiatry, 48(8), 840-847.',
+      'Goldberg SB, et al. (2022). The empirical status of mindfulness-based interventions: a systematic review of 44 meta-analyses of randomized controlled trials. Perspectives on Psychological Science.',
+    link: 'https://doi.org/10.1177/1745691620968771',
   },
   {
-    id: 'mcmains-2011',
+    id: 'levinson2014',
     citation:
-      'McMains, S., & Kastner, S. (2011). Interactions of top-down and bottom-up mechanisms in human visual cortex. Journal of Neuroscience, 31(2), 587-597.',
+      'Levinson DB, Stoll EL, Kindy SD, Merry HL, Davidson RJ (2014). A mind you can count on: validating breath counting as a behavioral measure of mindfulness. Frontiers in Psychology 5: 1202.',
   },
   {
-    id: 'pietschnig-2010',
+    id: 'balban2023',
     citation:
-      'Pietschnig, J., Voracek, M., & Formann, A. K. (2010). Mozart effect–Shmozart effect: A meta-analysis. Intelligence, 38(3), 314-323.',
+      'Balban MY, Neri E, Kogon MM, Weed L, Nouriani B, Jo B, Holl G, Zeitzer JM, Spiegel D, Huberman AD (2023). Brief structured respiration practices enhance mood and reduce physiological arousal. Cell Reports Medicine 4(1): 100895.',
+    link: 'https://doi.org/10.1016/j.xcrm.2022.100895',
   },
   {
-    id: 'monsell-2003',
+    id: 'lee2015',
     citation:
-      'Monsell, S. (2003). Task switching. Trends in Cognitive Sciences, 7(3), 134-140.',
+      'Lee KE, Williams KJH, Sargent LD, Williams NSG, Johnson KA (2015). 40-second green roof views sustain attention: The role of micro-breaks in attention restoration. Journal of Environmental Psychology 42: 182-189.',
+  },
+  {
+    id: 'ohly2016',
+    citation:
+      'Ohly H, White MP, Wheeler BW, Bethel A, Ukoumunne OC, Nikolaou V, Garside R (2016). Attention Restoration Theory: A systematic review of the attention restoration potential of exposure to natural environments. Journal of Toxicology and Environmental Health B 19(7): 305-343.',
+    link: 'https://doi.org/10.1080/10937404.2016.1196155',
+  },
+  {
+    id: 'stevenson2018',
+    citation:
+      'Stevenson MP, Schilhab T, Bentsen P (2018). Attention Restoration Theory II: a systematic review to clarify attention processes affected by exposure to natural environments. Journal of Toxicology and Environmental Health B 21(4): 227-268.',
+    link: 'https://doi.org/10.1080/10937404.2018.1505571',
+  },
+  {
+    id: 'moreau2019',
+    citation:
+      'Moreau D, Chou E (2019). The acute effect of high-intensity exercise on executive function: a meta-analysis. Perspectives on Psychological Science 14(5): 734-764.',
+    link: 'https://doi.org/10.1177/1745691619850568',
+  },
+  {
+    id: 'chang2012',
+    citation:
+      'Chang YK, Labban JD, Gapin JI, Etnier JL (2012). The effects of acute exercise on cognitive performance: a meta-analysis. Brain Research 1453: 87-101.',
+  },
+  {
+    id: 'castelo2025',
+    citation:
+      'Castelo N, Esterman M, Kushlev K, Reiner PB, Ward AF (2025). Blocking mobile internet on smartphones improves sustained attention, mental health, and subjective well-being. PNAS Nexus 4(2): pgaf017.',
+    link: 'https://academic.oup.com/pnasnexus/article/4/2/pgaf017/8016017',
+  },
+  {
+    id: 'ward2017',
+    citation:
+      'Ward AF, Duke K, Gneezy A, Bos MW (2017). Brain drain: The mere presence of one\'s own smartphone reduces available cognitive capacity. Journal of the Association for Consumer Research 2(2): 140-154.',
+  },
+  {
+    id: 'gollwitzer2006',
+    citation:
+      'Gollwitzer PM, Sheeran P (2006). Implementation intentions and goal achievement: a meta-analysis of effects and processes. Advances in Experimental Social Psychology 38: 69-119.',
+  },
+  {
+    id: 'lim2010',
+    citation:
+      'Lim J, Dinges DF (2010). A meta-analysis of the impact of short-term sleep deprivation on cognitive variables. Psychological Bulletin 136(3): 375-389.',
+  },
+  {
+    id: 'basner2011sleep',
+    citation:
+      'Basner M, Dinges DF (2011). Maximizing sensitivity of the Psychomotor Vigilance Test (PVT) to sleep loss. Sleep 34(5): 581-591.',
+    link: 'https://doi.org/10.1093/sleep/34.5.581',
+  },
+  {
+    id: 'nigg2024',
+    citation:
+      'Nigg JT, et al. (2024). Systematic review and meta-analysis: do white noise or pink noise help with task performance in youth with ADHD or with elevated attention problems? PubMed Central PMC11283987',
+  },
+  {
+    id: 'garciaargibay2019',
+    citation:
+      'Garcia-Argibay M, Santed MA, Reales JM (2019). Efficacy of binaural auditory beats in cognition, anxiety, and pain perception: a meta-analysis. Psychological Research 83(2): 357-372.',
+    link: 'https://doi.org/10.1007/s00426-018-1066-8',
+  },
+  {
+    id: 'binaural2023',
+    citation:
+      'Potential of binaural beats intervention for improving memory and attention: insights from meta-analysis and systematic review. Psychological Research 87(4): 951-963 (2023). PMID 35842538',
+  },
+  {
+    id: 'melbylervag2016',
+    citation:
+      'Melby-Lervåg M, Redick TS, Hulme C (2016). Working memory training does not improve performance on measures of intelligence or other measures of "far transfer". Perspectives on Psychological Science 11(4): 512-534.',
+  },
+  {
+    id: 'simons2016',
+    citation:
+      'Simons DJ, et al. (2016). Do "brain-training" programs work? Psychological Science in the Public Interest 17(3): 103-186.',
+  },
+  {
+    id: 'ara2025',
+    citation:
+      'Ara Z, et al. (2025). You are not alone: designing body doubling for ADHD in virtual reality (n=12 preprint). arXiv:2509.12153',
+  },
+  {
+    id: 'mark2008',
+    citation:
+      'Mark G, Gudith D, Klocke U (2008). The cost of interrupted work: more speed and stress. Proceedings of CHI \'08: 107-110.',
+  },
+  {
+    id: 'leroy2009',
+    citation:
+      'Leroy S (2009). Why is it so hard to do my work? The challenge of attention residue when switching between work tasks. Organizational Behavior and Human Decision Processes 109(2): 168-181.',
+  },
+  {
+    id: 'basner2011pvtb',
+    citation:
+      'Basner M, Mollicone D, Dinges DF (2011). Validity and sensitivity of a brief psychomotor vigilance test (PVT-B) to total and partial sleep deprivation. Acta Astronautica 69(11-12): 949-959.',
+    link: 'https://doi.org/10.1016/j.actaastro.2011.07.015',
   },
 ];
 
 /* ──────────────────────────────────────────────────────────────────────
- * Claims — one per claim id in docs/EVIDENCE.md (same ids, same tiers),
- * plus additional claims referenced by activities and myths.
+ * Claims — exactly 16 claims from docs/EVIDENCE.md (same ids, same tiers)
  * ────────────────────────────────────────────────────────────────────── */
 
 export const CLAIMS: EvidenceClaim[] = [
-  /* ── Claims from docs/EVIDENCE.md (same ids, same tiers) ─────────── */
   {
-    id: 'ev_phys_sigh', title: 'Cyclic Sighing',
-    tier: 'strong', outcome: 'self-reported mood and autonomic arousal',
+    id: 'breaks-energy',
+    title: 'Short Breaks Between Work Blocks',
+    tier: 'moderate',
+    outcome: 'vigor and fatigue',
     summary:
-      'In one 28-day trial (n = 108), five minutes of daily cyclic sighing reduced resting heart rate and improved positive mood more than mindfulness meditation.',
-    caveat: 'One trial with 108 participants. Long-term effects need more study.',
-    refIds: ['balban-2023'],
+      'A 2022 meta-analysis of 22 studies found breaks of 10 minutes or less gave small boosts in vigor and small reductions in fatigue.',
+    caveat: 'Mostly student and workplace studies; measured effects are small.',
+    refIds: ['albulescu2022'],
   },
   {
-    id: 'ev_box_breathing', title: 'Box Breathing',
-    tier: 'moderate', outcome: 'autonomic arousal and state anxiety',
+    id: 'breaks-performance',
+    title: 'Break Ratios and Task Performance',
+    tier: 'mixed',
+    outcome: 'task performance and concentration',
     summary:
-      'Paced breathing at about four to six breaths per minute may help stabilize heart-rate variability and reduce acute anxiety in healthy adults.',
-    caveat: 'Most studies are small and short-term.',
-    refIds: ['ma-2017'],
+      'Meta-analysis found no clear overall gain in performance from micro-breaks. Studies on fixed 25/5 versus self-paced breaks show conflicting results; no ratio is proven best.',
+    caveat: 'No work/break ratio is proven best. Keep timers flexible.',
+    refIds: ['albulescu2022', 'biwer2023', 'ariga2011', 'behavsci2025', 'behavsci2026'],
   },
   {
-    id: 'ev_nsdr', title: 'Non-Sleep Deep Rest (Body Scan)',
-    tier: 'moderate', outcome: 'cognitive fatigue recovery',
+    id: 'focused-attention',
+    title: 'Focused-Attention Practice (Breath Counting)',
+    tier: 'moderate',
+    outcome: 'sustained attention and executive attention',
     summary:
-      'A guided body-scan relaxation may help restore attentional steadiness and reaction time after mental exhaustion, without causing sleep grogginess.',
-    caveat: 'Does not replace proper sleep. Evidence from limited studies.',
-    refIds: ['loucks-2015'],
+      'A 2024 meta-analysis found multi-week mindfulness programs had small-to-moderate effects on sustained attention, executive attention, and working-memory accuracy versus active controls.',
+    caveat: 'Evidence comes from multi-week programs; effects of a single short session are much less certain.',
+    refIds: ['zainal2024', 'goldberg2022', 'levinson2014'],
   },
   {
-    id: 'ev_implementation_intentions', title: 'If-Then Planning',
-    tier: 'strong', outcome: 'goal follow-through',
+    id: 'breathwork-mood',
+    title: 'Cyclic Sighing and Box Breathing',
+    tier: 'moderate',
+    outcome: 'mood and physiological arousal',
     summary:
-      'A meta-analysis of 94 studies found that pre-set "if X happens, then I will do Y" plans increased goal completion with a medium-to-large effect (d = 0.65).',
-    caveat: 'Works best when you can recognize the trigger situation.',
-    refIds: ['gollwitzer-2006'],
+      'In a one-month study, 5 minutes a day of breathing exercises improved mood and lowered anxiety; exhale-focused cyclic sighing lowered breathing rate more than mindfulness meditation.',
+    caveat: 'Outcomes were mood and arousal, not attention. Pacing seconds are app defaults, not from the study.',
+    refIds: ['balban2023'],
   },
   {
-    id: 'ev_timeboxing_microbreaks', title: 'Brief Breaks During Sustained Work',
-    tier: 'strong', outcome: 'sustained attention and subjective fatigue',
+    id: 'nature-attention',
+    title: 'A 40-Second Nature View',
+    tier: 'mixed',
+    outcome: 'sustained attention',
     summary:
-      'In lab tasks, brief mental breaks during long work periods prevented the usual decline in sustained attention that comes from working without pausing.',
-    caveat: 'Lab conditions differ from real work. Ideal break timing is not established.',
-    refIds: ['ariga-2011'],
+      'In one experiment, a 40-second view of a green roof led to fewer errors on a sustained-attention task. Broader reviews show mixed effects across different attention types.',
+    caveat: 'Studied in lab tasks with simulated views. Real views were not tested; effects are small.',
+    refIds: ['lee2015', 'ohly2016', 'stevenson2018'],
   },
   {
-    id: 'ev_visual_anchor', title: 'Visual Anchor (Focal Point)',
-    tier: 'moderate', outcome: 'spatial distractibility',
+    id: 'movement',
+    title: 'A Short Bout of Exercise',
+    tier: 'moderate',
+    outcome: 'executive function',
     summary:
-      'Holding gaze on a single point for 30–60 seconds may temporarily reduce spatial distractibility in visual tasks by engaging attentional orienting.',
-    caveat: 'Effect is brief and transient, studied mainly in lab visual-search tasks.',
-    refIds: ['posner-1980'],
+      'Meta-analyses show a single bout of exercise has a small temporary positive effect on executive function, with little difference between high and moderate intensity.',
+    caveat: 'Bout lengths vary across studies; shorter bouts are less studied. Check that it suits your health.',
+    refIds: ['moreau2019', 'chang2012'],
   },
   {
-    id: 'ev_pink_brown_noise', title: 'Continuous Background Noise',
-    tier: 'mixed', outcome: 'distraction masking and sustained attention',
+    id: 'phone-blocking',
+    title: 'Blocking Mobile Internet',
+    tier: 'moderate',
+    outcome: 'sustained attention, mental health and well-being',
     summary:
-      'Pink or brown noise may mask sudden sounds. Some evidence suggests a benefit for inattentive individuals, but results vary and are not consistent across studies.',
-    caveat: 'Not universal. People with high baseline alertness may find noise distracting.',
-    refIds: ['soderlund-2007'],
+      'In a randomized trial of 467 people, blocking mobile internet on phones for two weeks improved objectively measured sustained attention, mental health, and well-being.',
+    caveat: 'Mobile internet was completely blocked, not just phone put away. Replication is still needed.',
+    refIds: ['castelo2025'],
   },
   {
-    id: 'ev_workspace_declutter', title: 'Workspace Visual Decluttering',
-    tier: 'moderate', outcome: 'cognitive load and visual processing',
+    id: 'phone-presence',
+    title: 'A Phone Merely Nearby',
+    tier: 'mixed',
+    outcome: 'attention and working memory',
     summary:
-      'Objects in your visual field compete for neural representation. Reducing visible clutter may lower cognitive load during reading or complex decisions.',
-    caveat: 'Tested with controlled displays, not real desks. Tolerance varies.',
-    refIds: ['mcmains-2011'],
+      'Earlier lab reports found having a phone nearby reduced cognitive capacity, but follow-up studies have not always replicated this effect.',
+    caveat: 'Treat putting your phone out of sight as a habit to test, not a proven fix.',
+    refIds: ['ward2017', 'castelo2025'],
   },
   {
-    id: 'ev_myth_mozart', title: 'Mozart Effect for Intelligence',
-    tier: 'not-supported', outcome: 'general intelligence',
+    id: 'if-then',
+    title: '"If X Happens, I Will Y" Plans',
+    tier: 'strong',
+    outcome: 'goal follow-through',
     summary:
-      'A meta-analysis found no reliable evidence that listening to Mozart raises general intelligence. Short-term task gains are explained by mood and arousal from any pleasant stimulus.',
-    caveat: 'Enjoying music may briefly lift mood, but that is not a lasting cognitive change.',
-    refIds: ['pietschnig-2010'],
+      'A large meta-analysis found that making specific "if X happens, I will Y" plans helps people start and carry out intended actions, with a medium-to-large effect.',
+    caveat: 'Evidence is for goal attainment, not for improving the ability to concentrate.',
+    refIds: ['gollwitzer2006'],
   },
   {
-    id: 'ev_myth_multitasking', title: 'Multitasking Efficiency',
-    tier: 'not-supported', outcome: 'task-switching speed and accuracy',
+    id: 'sleep',
+    title: 'Sleep and Alertness',
+    tier: 'strong',
+    outcome: 'attention lapses and alertness',
     summary:
-      'The brain does not truly do two demanding tasks at once. It switches between them, causing measurable increases in reaction time and errors.',
-    caveat: 'Applies to attention-demanding tasks; simple automatic actions can overlap.',
-    refIds: ['monsell-2003'],
-  },
-
-  /* ── Additional claims referenced by activities ──────────────────── */
-  {
-    id: 'breathwork-mood', title: 'Slow Structured Breathing for Mood',
-    tier: 'moderate', outcome: 'self-reported mood and autonomic arousal',
-    summary:
-      'Controlled breathing techniques may lower resting heart rate and improve short-term mood. One trial found cyclic sighing outperformed meditation for mood.',
-    caveat: 'Individual responses vary. Trial durations were short.',
-    refIds: ['balban-2023', 'ma-2017'],
-  },
-  // TODO(evidence): Add peer-reviewed citation for breath-counting attention training to docs/EVIDENCE.md
-  {
-    id: 'focused-attention', title: 'Breath Counting as Attention Practice',
-    tier: 'emerging', outcome: 'attentional control',
-    summary:
-      'Counting each exhale as an anchor may train attentional control, but direct controlled evidence for this specific practice is limited.',
-    caveat: 'No specific controlled trial in our evidence registry yet.',
-    refIds: [],
-  },
-  // TODO(evidence): Add peer-reviewed citation for brief nature exposure to docs/EVIDENCE.md
-  {
-    id: 'nature-attention', title: 'Brief Nature Exposure',
-    tier: 'emerging', outcome: 'attentional restoration',
-    summary:
-      'Brief exposure to natural scenes may support attentional recovery, but our evidence registry does not yet include a specific controlled study.',
-    caveat: 'No nature-exposure study in our evidence registry yet.',
-    refIds: [],
-  },
-  // TODO(evidence): Add peer-reviewed citation for brief exercise bouts to docs/EVIDENCE.md
-  {
-    id: 'movement', title: 'Brief Physical Movement',
-    tier: 'emerging', outcome: 'alertness and subjective energy',
-    summary:
-      'Short bouts of moderate movement may increase alertness and reduce fatigue, but our evidence registry does not yet include a specific study.',
-    caveat: 'No exercise study in our evidence registry yet.',
-    refIds: [],
+      'Meta-analytic evidence shows short-term sleep loss reliably worsens attention and alertness, with large increases in lapses on vigilance tasks.',
+    caveat: 'Individual sensitivity to sleep loss varies widely across people.',
+    refIds: ['lim2010', 'basner2011sleep'],
   },
   {
-    id: 'breaks-energy', title: 'Quiet Rest Breaks',
-    tier: 'strong', outcome: 'sustained attention and subjective energy',
+    id: 'noise',
+    title: 'White and Pink Noise',
+    tier: 'mixed',
+    outcome: 'attention-task performance',
     summary:
-      'Brief disengagement from a task may prevent the vigilance decline seen during prolonged concentration, helping maintain attention and reduce fatigue.',
-    caveat: 'Lab conditions differ from real work. Ideal break length is not established.',
-    refIds: ['ariga-2011'],
+      'A meta-analysis found continuous white or pink noise gave a small benefit for youth with ADHD or elevated attention problems, but a small negative effect for others.',
+    caveat: 'Lab tasks in children and young adults; no studies evaluated brown noise. Test on yourself.',
+    refIds: ['nigg2024'],
   },
-
-  /* ── Additional claims referenced by myths ───────────────────────── */
-  // TODO(evidence): Add peer-reviewed citation for brain-training transfer to docs/EVIDENCE.md
   {
-    id: 'brain-training', title: 'Brain-Training Games',
-    tier: 'not-supported', outcome: 'general cognitive ability',
+    id: 'binaural',
+    title: 'Binaural Beats',
+    tier: 'mixed',
+    outcome: 'memory and attention',
     summary:
-      'Brain-training games may improve scores on the trained task but have not shown reliable transfer to general thinking skills in controlled studies.',
-    caveat: 'No brain-training study in our evidence registry yet.',
-    refIds: [],
+      'Meta-analyses report average effects on cognition and anxiety, but individual studies conflict, especially when comparing different brainwave frequencies.',
+    caveat: 'Results depend on frequency, volume, and timing. More robust trials are needed.',
+    refIds: ['garciaargibay2019', 'binaural2023'],
   },
-  // TODO(evidence): Add peer-reviewed citation for binaural beats to docs/EVIDENCE.md
   {
-    id: 'binaural-beats', title: 'Binaural Beats',
-    tier: 'not-supported', outcome: 'attention or cognitive performance',
+    id: 'brain-training',
+    title: 'Brain-Training Games',
+    tier: 'not-supported',
+    outcome: 'transfer to everyday attention or intelligence',
     summary:
-      'Claims that binaural beats enhance attention or creativity lack consistent support from controlled trials.',
-    caveat: 'No binaural-beats study in our evidence registry yet.',
-    refIds: [],
+      'A meta-analysis of 87 publications found working-memory games improve trained tasks, but show no convincing transfer to broader intelligence or everyday attention against active controls.',
+    caveat: 'FocusLab uses reaction tasks solely to measure, never to claim brain-training benefits.',
+    refIds: ['melbylervag2016', 'simons2016'],
   },
-  // TODO(evidence): Add peer-reviewed citation for phone-presence effects to docs/EVIDENCE.md
   {
-    id: 'phone-distraction', title: 'Phone Presence and Cognitive Capacity',
-    tier: 'mixed', outcome: 'available cognitive capacity',
+    id: 'body-doubling',
+    title: 'Working Alongside Another Person',
+    tier: 'emerging',
+    outcome: 'starting and sustaining tasks',
     summary:
-      'A visible phone may reduce available cognitive capacity for some people, but the effect depends on context and individual phone habits.',
-    caveat: 'No phone-distraction study in our evidence registry yet.',
-    refIds: [],
+      'Many people report that working alongside another person helps them start and sustain tasks, but controlled experimental evidence remains very limited.',
+    caveat: 'Supported mostly by surveys and clinical consensus; not an ADHD treatment.',
+    refIds: ['ara2025'],
+  },
+  {
+    id: 'multitasking',
+    title: 'Task Switching and Interruptions',
+    tier: 'moderate',
+    outcome: 'cost of switching',
+    summary:
+      'Interrupted work leads to more stress and effort. Unfinished tasks leave "attention residue" that measurably slows down and impairs performance on the next task.',
+    caveat: 'Mostly lab and observational workplace studies; individual effect sizes vary.',
+    refIds: ['mark2008', 'leroy2009'],
+  },
+  {
+    id: 'pvt-check',
+    title: 'Brief Reaction-Time Test as a Measurement',
+    tier: 'moderate',
+    outcome: 'detecting sleep-loss-related lapses in alertness',
+    summary:
+      'A 3-minute brief Psychomotor Vigilance Test was designed to match the sensitivity of the standard 10-minute lab test to sleep loss.',
+    caveat: 'Web browser timing adds noise. Compare only with yourself on the same device.',
+    refIds: ['basner2011pvtb'],
   },
 ];
 

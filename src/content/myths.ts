@@ -6,7 +6,7 @@ export const MYTHS: Myth[] = [
     myth: 'Brain-training games improve general intelligence and cognitive ability.',
     verdict: 'Not Supported',
     explanation:
-      'These games may improve your score on the trained task, but controlled studies have not shown reliable transfer to broader thinking skills or everyday cognitive ability.',
+      'Working-memory training improves the trained tasks, but reviews find no convincing transfer to broader intelligence or everyday attention compared with active control groups.',
     claimId: 'brain-training',
   },
   {
@@ -14,39 +14,39 @@ export const MYTHS: Myth[] = [
     myth: 'You can efficiently do two demanding mental tasks at the same time.',
     verdict: 'Not Supported',
     explanation:
-      'The brain rapidly switches between tasks rather than running them in parallel, resulting in measurable increases in both reaction time and error rates.',
-    claimId: 'ev_myth_multitasking',
+      'Interrupted work increases stress and frustration. Thinking about an unfinished task leaves attention residue that slows and impairs performance on the next task.',
+    claimId: 'multitasking',
   },
   {
     id: 'myth-binaural-beats',
-    myth: 'Binaural beats can reliably enhance your focus and creativity.',
-    verdict: 'Not Supported',
+    myth: 'Binaural beats reliably enhance focus and memory for everyone.',
+    verdict: 'Mixed',
     explanation:
-      'Despite popular claims, controlled studies have not found consistent evidence that binaural beats improve attention, memory, or creativity.',
-    claimId: 'binaural-beats',
+      'Average effects across reviews are mixed, and individual studies conflict depending on frequency and timing. More robust trials are needed.',
+    claimId: 'binaural',
   },
   {
     id: 'myth-pomodoro-optimal',
     myth: 'The 25-minute work / 5-minute break Pomodoro ratio is scientifically optimal.',
     verdict: 'Not Supported',
     explanation:
-      'Research supports taking breaks during long tasks to maintain attention, but no study has validated 25/5 as the ideal ratio. The best timing likely varies by person and task.',
-    claimId: 'ev_timeboxing_microbreaks',
+      'Studies comparing fixed 25/5 breaks with self-paced breaks show conflicting results. No work-to-break ratio has been proven best; timers should remain flexible.',
+    claimId: 'breaks-performance',
   },
   {
     id: 'myth-noise-universal',
     myth: 'White or brown noise improves focus for everyone.',
     verdict: 'Mixed',
     explanation:
-      'Continuous noise can mask distracting sounds, and some evidence suggests a benefit for inattentive individuals. However, people with high baseline alertness may find it distracting. Test what works for you.',
-    claimId: 'ev_pink_brown_noise',
+      'A meta-analysis found white or pink noise gave a small benefit for people with ADHD or attention challenges, but a small negative effect for others. Brown noise has not been studied.',
+    claimId: 'noise',
   },
   {
     id: 'myth-phone-desk',
     myth: 'Having your phone visible on your desk always ruins your focus.',
     verdict: 'Mixed',
     explanation:
-      'A visible phone may reduce available cognitive capacity for some people, but the effect depends on your personal habits and how attached you are to the device. Try testing both conditions.',
-    claimId: 'phone-distraction',
+      'Earlier lab findings that merely having your own phone nearby reduces cognitive capacity have not always replicated. Treat putting it out of sight as a habit to test.',
+    claimId: 'phone-presence',
   },
 ];
