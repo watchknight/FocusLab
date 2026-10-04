@@ -1,56 +1,71 @@
 import React from 'react';
-import { EvidenceLevel } from '@/content/types';
+import clsx from 'clsx';
 
-interface EvidenceBadgeProps {
-  level: EvidenceLevel;
+export type EvidenceTier =
+  | 'strong'
+  | 'moderate'
+  | 'mixed'
+  | 'emerging'
+  | 'not-supported';
+
+export interface EvidenceBadgeProps {
+  tier: EvidenceTier;
+  level?: EvidenceTier; // Backwards-compatible alias
   className?: string;
 }
 
-const BADGE_CONFIG: Record<
-  EvidenceLevel,
+const TIER_CONFIG: Record<
+  EvidenceTier,
   { label: string; icon: string; borderClass: string; textClass: string }
 > = {
   strong: {
     label: 'Evidence: Strong',
     icon: '● [High-Replication]',
-    borderClass: 'border-teal-accent',
-    textClass: 'text-teal-accent',
+    borderClass: 'border-accent',
+    textClass: 'text-accent',
   },
   moderate: {
     label: 'Evidence: Moderate',
     icon: '◈ [Controlled-Trials]',
-    borderClass: 'border-surface-border-strong',
-    textClass: 'text-content-primary',
+    borderClass: 'border-border',
+    textClass: 'text-text',
   },
   mixed: {
     label: 'Evidence: Mixed',
     icon: '◐ [Context-Dependent]',
-    borderClass: 'border-surface-border-strong',
-    textClass: 'text-content-secondary',
+    borderClass: 'border-warn',
+    textClass: 'text-warn',
   },
   emerging: {
     label: 'Evidence: Emerging',
     icon: '◇ [Pilot/Exploratory]',
-    borderClass: 'border-surface-border',
-    textClass: 'text-content-muted',
+    borderClass: 'border-border',
+    textClass: 'text-muted',
   },
   'not-supported': {
     label: 'Evidence: Not Supported',
     icon: '✕ [Disconfirmed]',
-    borderClass: 'border-surface-border-strong',
-    textClass: 'text-content-primary',
+    borderClass: 'border-warn',
+    textClass: 'text-text',
   },
 };
 
 export const EvidenceBadge: React.FC<EvidenceBadgeProps> = ({
+  tier,
   level,
-  className = '',
+  className,
 }) => {
-  const config = BADGE_CONFIG[level] || BADGE_CONFIG['emerging'];
+  const activeTier = tier || level || 'emerging';
+  const config = TIER_CONFIG[activeTier] || TIER_CONFIG['emerging'];
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-md border bg-surface-secondary ${config.borderClass} ${config.textClass} ${className}`}
+      className={clsx(
+        'inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-md border bg-surface-2',
+        config.borderClass,
+        config.textClass,
+        className
+      )}
       role="status"
       aria-label={`Scientific evidence level: ${config.label}`}
     >

@@ -1,19 +1,23 @@
 import React from 'react';
+import clsx from 'clsx';
 
-interface CardProps {
-  children: React.ReactNode;
-  className?: string;
+export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   as?: 'div' | 'section' | 'article' | 'aside';
 }
 
 export const Card: React.FC<CardProps> = ({
   children,
-  className = '',
+  className,
   as: Component = 'div',
+  ...props
 }) => {
   return (
     <Component
-      className={`bg-surface-secondary border border-surface-border rounded-lg p-3 sm:p-4 ${className}`}
+      className={clsx(
+        'bg-surface-2 border border-border rounded-lg p-3 sm:p-4 text-text',
+        className
+      )}
+      {...props}
     >
       {children}
     </Component>

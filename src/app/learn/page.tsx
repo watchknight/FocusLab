@@ -1,6 +1,12 @@
 import React from 'react';
-import { EvidenceExplorer } from '@/features/learn/EvidenceExplorer';
 
 export default function LearnPage() {
-  return <EvidenceExplorer />;
+  return (
+    <div className="space-y-2">
+      <h1 className="text-2xl font-semibold">Learn</h1>
+      <p className="text-sm text-muted">
+        Explore registered peer-reviewed evidence and debunked cognition myths.
+      </p>
+    </div>
+  );
 }

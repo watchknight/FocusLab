@@ -1,6 +1,12 @@
 import React from 'react';
-import { SoundGenerator } from '@/features/sounds/SoundGenerator';
 
 export default function SoundsPage() {
-  return <SoundGenerator />;
+  return (
+    <div className="space-y-2">
+      <h1 className="text-2xl font-semibold">Sounds</h1>
+      <p className="text-sm text-muted">
+        Synthesize acoustic soundscapes directly in your browser using the Web Audio API.
+      </p>
+    </div>
+  );
 }
