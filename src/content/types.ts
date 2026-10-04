@@ -1,82 +1,50 @@
-export type EvidenceLevel =
+export type EvidenceTier =
   | 'strong'
   | 'moderate'
   | 'mixed'
   | 'emerging'
   | 'not-supported';
 
-export type CognitiveOutcome =
-  | 'sustained-attention'
-  | 'working-memory'
-  | 'task-persistence'
-  | 'autonomic-arousal'
-  | 'subjective-mood'
-  | 'cognitive-fatigue'
-  | 'goal-follow-through'
-  | 'task-switching-cost'
-  | 'spatial-distractibility';
-
-export interface EvidenceSource {
+export interface Reference {
   id: string;
   citation: string;
-  year: number;
-  doiOrUrl?: string;
-  notes: string;
+  link?: string;
 }
 
-export interface EvidenceRecord {
-  id: string;
-  level: EvidenceLevel;
-  primaryOutcomes: CognitiveOutcome[];
-  claimSummary: string;
-  counterClaimOrCaveat?: string;
-  sources: EvidenceSource[];
-}
-
-export interface ActivityDefinition {
+export interface EvidenceClaim {
   id: string;
   title: string;
-  shortDescription: string;
-  durationSeconds: number;
+  tier: EvidenceTier;
+  outcome: string;
+  summary: string;
+  caveat: string;
+  refIds: string[];
+}
+
+export interface BreathPhase {
+  label: string;
+  seconds: number;
+  optional?: boolean;
+}
+
+export interface Activity {
+  id: string;
+  name: string;
+  category: 'breathing' | 'attention' | 'movement' | 'nature' | 'rest';
+  durationOptionsSec: number[];
+  steps: string[];
+  whenToUse: string;
+  cautions: string[];
   evidenceId: string;
-  category: 'breathing' | 'visual' | 'planning' | 'rest' | 'environment';
-  instructions: string[];
+  testable: boolean;
+  isControl?: boolean;
+  pattern?: { phases: BreathPhase[] };
 }
 
-export interface MythDefinition {
+export interface Myth {
   id: string;
-  claim: string;
-  reality: string;
-  evidenceId: string;
-  fallacyType: string;
-}
-
-export interface SelfCheckLog {
-  id: string;
-  timestamp: number;
-  energyLevel: 1 | 2 | 3 | 4 | 5;
-  distractionLevel: 1 | 2 | 3 | 4 | 5;
-  moodLevel: 1 | 2 | 3 | 4 | 5;
-  note?: string;
-}
-
-export interface PracticeSessionLog {
-  id: string;
-  activityId: string;
-  startedAt: number;
-  completedAt: number;
-  durationMs: number;
-  preCheckId?: string;
-  postCheckId?: string;
-  completedFully: boolean;
-}
-
-export interface ExperimentComparison {
-  id: string;
-  title: string;
-  conditionA: string;
-  conditionB: string;
-  metric: CognitiveOutcome;
-  sessionIdsA: string[];
-  sessionIdsB: string[];
+  myth: string;
+  verdict: string;
+  explanation: string;
+  claimId: string;
 }

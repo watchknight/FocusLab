@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { computeActivityDeltas } from '../experiments';
-import { SelfCheckLog, PracticeSessionLog } from '../../content/types';
+import { SelfCheckLog, PracticeSessionLog } from '../legacy-types';
 
 describe('experiments calculation', () => {
   it('computes correct mean deltas for matched pre- and post-checks', () => {

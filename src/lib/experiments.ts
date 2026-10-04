@@ -1,4 +1,4 @@
-import { SelfCheckLog, PracticeSessionLog } from '../content/types';
+import { SelfCheckLog, PracticeSessionLog } from './legacy-types';
 
 export interface DeltaStats {
   count: number;
