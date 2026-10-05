@@ -42,6 +42,7 @@ export const ExperimentDotPlot: React.FC<ExperimentDotPlotProps> = ({ analysis }
   }));
 
   const hasData = scatterDataX.length > 0 || scatterDataRest.length > 0;
+  const isConcurrent = analysis.design === 'concurrent';
 
   return (
     <div className="space-y-4">
@@ -63,7 +64,7 @@ export const ExperimentDotPlot: React.FC<ExperimentDotPlotProps> = ({ analysis }
               <YAxis
                 type="number"
                 dataKey="y"
-                name="Delta RT"
+                name={isConcurrent ? 'Reaction Time' : 'Delta RT'}
                 unit=" ms"
                 stroke="var(--muted)"
                 fontSize={11}
@@ -77,10 +78,12 @@ export const ExperimentDotPlot: React.FC<ExperimentDotPlotProps> = ({ analysis }
                   fontSize: '12px',
                   color: 'var(--text)',
                 }}
-                formatter={(val: number) => [`${val > 0 ? '+' : ''}${val} ms`, 'Delta RT']}
+                formatter={(val: number) => [
+                  `${isConcurrent ? val : (val > 0 ? '+' : '') + val} ms`,
+                  isConcurrent ? 'Reaction Time' : 'Delta RT',
+                ]}
               />
-              {/* Reference line at 0 (no change) */}
-              <ReferenceLine y={0} stroke="var(--border)" strokeWidth={1.5} />
+              {!isConcurrent && <ReferenceLine y={0} stroke="var(--border)" strokeWidth={1.5} />}
               {activeStats.n > 0 && (
                 <ReferenceLine
                   y={activeStats.meanDeltaRt}
@@ -100,7 +103,7 @@ export const ExperimentDotPlot: React.FC<ExperimentDotPlotProps> = ({ analysis }
                   stroke="var(--muted)"
                   strokeDasharray="4 4"
                   label={{
-                    value: `Rest Mean ${controlStats.meanDeltaRt}ms`,
+                    value: `Control Mean ${controlStats.meanDeltaRt}ms`,
                     fill: 'var(--muted)',
                     fontSize: 10,
                     position: 'insideTopRight',
@@ -119,12 +122,12 @@ export const ExperimentDotPlot: React.FC<ExperimentDotPlotProps> = ({ analysis }
       {/* Accessible Table Fallback for Screen Readers & Clarity */}
       <div className="overflow-x-auto border border-border rounded-md bg-surface">
         <table className="w-full text-left text-xs">
-          <caption className="sr-only">Detailed run-by-run reaction time deltas</caption>
+          <caption className="sr-only">Detailed run-by-run reaction times</caption>
           <thead className="bg-surface-2 border-b border-border text-muted font-medium">
             <tr>
               <th className="p-2">Pair #</th>
-              <th className="p-2">{activeCondition.name} Δ RT</th>
-              <th className="p-2">{controlCondition.name} Δ RT</th>
+              <th className="p-2">{activeCondition.name} {isConcurrent ? 'RT' : 'Δ RT'}</th>
+              <th className="p-2">{controlCondition.name} {isConcurrent ? 'RT' : 'Δ RT'}</th>
               <th className="p-2">Pair Winner</th>
             </tr>
           </thead>
@@ -140,10 +143,14 @@ export const ExperimentDotPlot: React.FC<ExperimentDotPlotProps> = ({ analysis }
                 <tr key={p.pairIndex} className="hover:bg-surface-2/40">
                   <td className="p-2 font-mono">#{p.pairIndex}</td>
                   <td className="p-2 font-mono">
-                    {p.xDelta.deltaRt > 0 ? `+${p.xDelta.deltaRt}` : p.xDelta.deltaRt} ms
+                    {isConcurrent
+                      ? `${p.xDelta.deltaRt} ms`
+                      : `${p.xDelta.deltaRt > 0 ? '+' : ''}${p.xDelta.deltaRt} ms`}
                   </td>
                   <td className="p-2 font-mono">
-                    {p.restDelta.deltaRt > 0 ? `+${p.restDelta.deltaRt}` : p.restDelta.deltaRt} ms
+                    {isConcurrent
+                      ? `${p.restDelta.deltaRt} ms`
+                      : `${p.restDelta.deltaRt > 0 ? '+' : ''}${p.restDelta.deltaRt} ms`}
                   </td>
                   <td className="p-2 font-semibold">
                     {p.isWin ? (

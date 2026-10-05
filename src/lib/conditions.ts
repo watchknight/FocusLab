@@ -1,17 +1,15 @@
 import { ACTIVITIES, getActivityById } from '@/content/activities';
 
 export interface ExperimentCondition {
-  id: string; // e.g. 'activity:cyclic-sighing' or 'rest'
+  id: string; // e.g. 'activity:cyclic-sighing', 'sound:white', or 'rest'
   name: string;
   category: 'activity' | 'sound' | 'rest';
   activityId?: string;
+  soundType?: 'white' | 'pink' | 'brown' | 'silence';
   description: string;
   defaultDurationSec: number;
 }
 
-/**
- * Returns the condition definition for 'rest' (quiet-rest control).
- */
 export const REST_CONDITION: ExperimentCondition = {
   id: 'rest',
   name: 'Quiet Rest',
@@ -21,12 +19,50 @@ export const REST_CONDITION: ExperimentCondition = {
   defaultDurationSec: 180,
 };
 
-/**
- * Resolves an experiment condition object from its conditionId string.
- */
+export const SILENCE_CONDITION: ExperimentCondition = {
+  id: 'sound:silence',
+  name: 'Silence Control',
+  category: 'sound',
+  soundType: 'silence',
+  description: 'Quiet environment without auditory stimulation.',
+  defaultDurationSec: 180,
+};
+
+export const SOUND_CONDITIONS: Record<string, ExperimentCondition> = {
+  'sound:white': {
+    id: 'sound:white',
+    name: 'White Noise',
+    category: 'sound',
+    soundType: 'white',
+    description: 'Equal energy across all audible frequencies.',
+    defaultDurationSec: 180,
+  },
+  'sound:pink': {
+    id: 'sound:pink',
+    name: 'Pink Noise',
+    category: 'sound',
+    soundType: 'pink',
+    description: 'Deeper noise with energy decreasing by 3 dB per octave.',
+    defaultDurationSec: 180,
+  },
+  'sound:brown': {
+    id: 'sound:brown',
+    name: 'Brown Noise',
+    category: 'sound',
+    soundType: 'brown',
+    description: 'Deep, low-frequency rumble decreasing by 6 dB per octave.',
+    defaultDurationSec: 180,
+  },
+  'sound:silence': SILENCE_CONDITION,
+};
+
 export function getConditionById(conditionId: string): ExperimentCondition {
   if (conditionId === 'rest') {
     return REST_CONDITION;
+  }
+
+  if (SOUND_CONDITIONS[conditionId]) {
+    return SOUND_CONDITIONS[conditionId];
   }
 
   if (conditionId.startsWith('activity:')) {
@@ -53,9 +89,6 @@ export function getConditionById(conditionId: string): ExperimentCondition {
   };
 }
 
-/**
- * Lists all testable activity conditions registered in FocusLab.
- */
 export function getTestableActivityConditions(): ExperimentCondition[] {
   return ACTIVITIES.filter((a) => a.testable && !a.isControl).map((act) => ({
     id: `activity:${act.id}`,
@@ -65,4 +98,12 @@ export function getTestableActivityConditions(): ExperimentCondition[] {
     description: act.whenToUse,
     defaultDurationSec: act.durationOptionsSec[0] || 180,
   }));
+}
+
+export function getTestableSoundConditions(): ExperimentCondition[] {
+  return [
+    SOUND_CONDITIONS['sound:white'],
+    SOUND_CONDITIONS['sound:pink'],
+    SOUND_CONDITIONS['sound:brown'],
+  ];
 }

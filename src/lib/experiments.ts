@@ -10,10 +10,10 @@ export interface RunDelta {
   afterCheckId: string;
   beforeRt: number;
   afterRt: number;
-  deltaRt: number; // after minus before (negative = faster)
+  deltaRt: number; // For prepost: after - before. For concurrent: check's own medianRt.
   beforeLapses: number;
   afterLapses: number;
-  deltaLapses: number; // after minus before (negative = fewer lapses)
+  deltaLapses: number;
 }
 
 export interface ConditionStats {
@@ -32,12 +32,13 @@ export interface PairComparison {
   pairIndex: number;
   xDelta: RunDelta;
   restDelta: RunDelta;
-  isWin: boolean; // xDelta.deltaRt < restDelta.deltaRt
+  isWin: boolean; // xDelta.deltaRt < restDelta.deltaRt (lower is better)
   isTie: boolean;
 }
 
 export interface ExperimentAnalysis {
   experimentId: string;
+  design: 'prepost' | 'concurrent';
   activeConditionId: string;
   controlConditionId: string;
   activeStats: ConditionStats;
@@ -52,39 +53,57 @@ export interface ExperimentAnalysis {
 }
 
 /**
- * Creates a schedule of 5 pairs (10 runs) alternating between X and 'rest'.
- * Order inside each pair is randomly decided via injectable rng.
+ * Creates a schedule of 5 pairs (10 runs) alternating between active condition and control.
  */
 export function createExperimentSchedule(
   activityConditionId: string,
+  controlConditionId?: string,
   rng: () => number = Math.random
 ): Array<{ conditionId: string }> {
+  const controlId =
+    controlConditionId || (activityConditionId.startsWith('sound:') ? 'sound:silence' : 'rest');
   const schedule: Array<{ conditionId: string }> = [];
   for (let i = 0; i < 5; i++) {
     const isActivityFirst = rng() < 0.5;
     if (isActivityFirst) {
       schedule.push({ conditionId: activityConditionId });
-      schedule.push({ conditionId: 'rest' });
+      schedule.push({ conditionId: controlId });
     } else {
-      schedule.push({ conditionId: 'rest' });
+      schedule.push({ conditionId: controlId });
       schedule.push({ conditionId: activityConditionId });
     }
   }
   return schedule;
 }
 
-/**
- * Computes run delta (after minus before) for a single completed ExperimentRun.
- */
 export function computeRunDelta(
   run: ExperimentRun,
-  checksMap: Map<string, CheckResult>
+  checksMap: Map<string, CheckResult>,
+  isConcurrent: boolean = false
 ): RunDelta | null {
-  if (!run.checkIds || run.checkIds.length < 2) return null;
+  if (!run.checkIds || run.checkIds.length === 0) return null;
+
+  if (isConcurrent) {
+    const check = checksMap.get(run.checkIds[0]);
+    if (!check) return null;
+    return {
+      runId: run.id,
+      conditionId: run.conditionId,
+      beforeCheckId: check.id,
+      afterCheckId: check.id,
+      beforeRt: check.metrics.medianRt,
+      afterRt: check.metrics.medianRt,
+      deltaRt: check.metrics.medianRt, // outcome is check's own medianRt
+      beforeLapses: check.metrics.lapses,
+      afterLapses: check.metrics.lapses,
+      deltaLapses: check.metrics.lapses,
+    };
+  }
+
+  if (run.checkIds.length < 2) return null;
   const [beforeId, afterId] = run.checkIds;
   const beforeCheck = checksMap.get(beforeId);
   const afterCheck = checksMap.get(afterId);
-
   if (!beforeCheck || !afterCheck) return null;
 
   const deltaRt = afterCheck.metrics.medianRt - beforeCheck.metrics.medianRt;
@@ -121,7 +140,6 @@ function computeConditionStats(conditionId: string, deltas: RunDelta[]): Conditi
 
   const rtDeltas = deltas.map((d) => d.deltaRt);
   const lapseDeltas = deltas.map((d) => d.deltaLapses);
-
   const sumRt = rtDeltas.reduce((a, b) => a + b, 0);
   const sumLapses = lapseDeltas.reduce((a, b) => a + b, 0);
 
@@ -132,40 +150,34 @@ function computeConditionStats(conditionId: string, deltas: RunDelta[]): Conditi
     minDeltaRt: Math.min(...rtDeltas),
     maxDeltaRt: Math.max(...rtDeltas),
     meanDeltaLapses: Math.round((sumLapses / deltas.length) * 100) / 100,
-    minDeltaLapses: Math.min(...lapseDapse(lapseDeltas)),
+    minDeltaLapses: Math.min(...lapseDeltas),
     maxDeltaLapses: Math.max(...lapseDeltas),
     deltas,
   };
 }
 
-function lapseDapse(vals: number[]): number[] {
-  return vals.length === 0 ? [0] : vals;
-}
-
-/**
- * Analyzes an experiment by pairing the i-th active condition run with the i-th rest run,
- * calculating wins, summary stats, and strict conservative verdicts.
- */
 export function analyzeExperiment(
   experiment: Experiment,
   allChecks: CheckResult[]
 ): ExperimentAnalysis {
+  const isConcurrent = experiment.design === 'concurrent';
   const checksMap = new Map<string, CheckResult>();
-  for (const c of allChecks) {
-    checksMap.set(c.id, c);
-  }
+  for (const c of allChecks) checksMap.set(c.id, c);
 
+  const controlConditionId =
+    experiment.conditionIds.find((id) => id === 'rest' || id === 'sound:silence') ||
+    (isConcurrent ? 'sound:silence' : 'rest');
   const activeConditionId =
-    experiment.conditionIds.find((id) => id !== 'rest') || experiment.conditionIds[0] || '';
-  const controlConditionId = 'rest';
+    experiment.conditionIds.find((id) => id !== controlConditionId) ||
+    experiment.conditionIds[0] ||
+    '';
 
   const xDeltas: RunDelta[] = [];
   const restDeltas: RunDelta[] = [];
 
   for (const run of experiment.runs) {
-    const delta = computeRunDelta(run, checksMap);
+    const delta = computeRunDelta(run, checksMap, isConcurrent);
     if (!delta) continue;
-
     if (delta.conditionId === controlConditionId) {
       restDeltas.push(delta);
     } else {
@@ -183,17 +195,11 @@ export function analyzeExperiment(
   for (let i = 0; i < numPairs; i++) {
     const x = xDeltas[i];
     const rest = restDeltas[i];
-    const isWin = x.deltaRt < rest.deltaRt; // lower delta is better (faster)
+    const isWin = x.deltaRt < rest.deltaRt; // Lower is better in both prepost and concurrent
     const isTie = x.deltaRt === rest.deltaRt;
     if (isWin) wins += 1;
 
-    pairs.push({
-      pairIndex: i + 1,
-      xDelta: x,
-      restDelta: rest,
-      isWin,
-      isTie,
-    });
+    pairs.push({ pairIndex: i + 1, xDelta: x, restDelta: rest, isWin, isTie });
   }
 
   const winRatio = numPairs > 0 ? Math.round((wins / numPairs) * 100) / 100 : 0;
@@ -203,7 +209,7 @@ export function analyzeExperiment(
   if (numPairs < 4) {
     verdict = `Not enough data yet — ${runsNeededForVerdict} more run${runsNeededForVerdict === 1 ? '' : 's'}`;
   } else {
-    const meanDiff = activeStats.meanDeltaRt - controlStats.meanDeltaRt; // negative favours X
+    const meanDiff = activeStats.meanDeltaRt - controlStats.meanDeltaRt;
     if (winRatio >= 0.75 && meanDiff < 0) {
       verdict = 'Promising for you — keep testing.';
     } else if (winRatio <= 0.25) {
@@ -215,6 +221,7 @@ export function analyzeExperiment(
 
   return {
     experimentId: experiment.id,
+    design: experiment.design,
     activeConditionId,
     controlConditionId,
     activeStats,

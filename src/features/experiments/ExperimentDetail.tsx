@@ -41,6 +41,7 @@ export const ExperimentDetail: React.FC<ExperimentDetailProps> = ({
     return (
       <ExperimentRunner
         experimentId={experiment.id}
+        design={experiment.design}
         runIndex={completedCount}
         conditionId={nextItem.conditionId}
         onRunComplete={() => setIsRunning(false)}

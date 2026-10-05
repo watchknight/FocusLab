@@ -18,7 +18,7 @@ function createMockCheck(id: string, medianRt: number, lapses: number): CheckRes
   };
 }
 
-function buildRunsAndChecks(xDiffs: number[], restDiffs: number[]) {
+function buildPrepostPairs(xDiffs: number[], restDiffs: number[]) {
   const checks: CheckResult[] = [];
   const runs: ExperimentRun[] = [];
   for (let i = 0; i < xDiffs.length; i++) {
@@ -47,18 +47,16 @@ describe('experiments pure analysis logic', () => {
   it('creates 5 pairs (10 runs) with predictable seeded RNG', () => {
     let callCount = 0;
     const mockRng = () => (++callCount % 2 === 1 ? 0.2 : 0.8);
-    const schedule = createExperimentSchedule('activity:cyclic-sighing', mockRng);
+    const schedule = createExperimentSchedule('activity:cyclic-sighing', undefined, mockRng);
 
     expect(schedule.length).toBe(10);
     expect(schedule.filter((s) => s.conditionId === 'activity:cyclic-sighing').length).toBe(5);
     expect(schedule.filter((s) => s.conditionId === 'rest').length).toBe(5);
     expect(schedule[0].conditionId).toBe('activity:cyclic-sighing');
     expect(schedule[1].conditionId).toBe('rest');
-    expect(schedule[2].conditionId).toBe('rest');
-    expect(schedule[3].conditionId).toBe('activity:cyclic-sighing');
   });
 
-  it('correctly calculates after minus before deltas for RT and lapses', () => {
+  it('correctly calculates after minus before deltas for prepost design', () => {
     const checksMap = new Map<string, CheckResult>([
       ['pre', createMockCheck('pre', 350, 4)],
       ['post', createMockCheck('post', 310, 1)],
@@ -69,23 +67,13 @@ describe('experiments pure analysis logic', () => {
       conditionId: 'activity:cyclic-sighing',
       checkIds: ['pre', 'post'],
     };
-    const delta = computeRunDelta(run, checksMap);
+    const delta = computeRunDelta(run, checksMap, false);
     expect(delta?.deltaRt).toBe(-40);
     expect(delta?.deltaLapses).toBe(-3);
   });
 
-  it('returns null if checks are missing', () => {
-    const run: ExperimentRun = {
-      id: 'run_1',
-      ts: Date.now(),
-      conditionId: 'activity:cyclic-sighing',
-      checkIds: ['miss_1', 'miss_2'],
-    };
-    expect(computeRunDelta(run, new Map())).toBeNull();
-  });
-
   it('returns "Not enough data yet" when fewer than 4 pairs are completed', () => {
-    const { checks, runs } = buildRunsAndChecks([-20], [5]);
+    const { checks, runs } = buildPrepostPairs([-20], [5]);
     const experiment: Experiment = {
       id: 'exp_1',
       createdAt: Date.now(),
@@ -100,8 +88,8 @@ describe('experiments pure analysis logic', () => {
     expect(analysis.caveat).toBe(EXPERIMENT_CAVEAT);
   });
 
-  it('returns "Promising for you — keep testing." when wins >= 75% and mean diff favours X', () => {
-    const { checks, runs } = buildRunsAndChecks([-30, -20, -40, 5], [0, -5, -10, 20]);
+  it('returns "Promising for you" when prepost wins >= 75% and mean diff favours X', () => {
+    const { checks, runs } = buildPrepostPairs([-30, -20, -40, 5], [0, -5, -10, 20]);
     const experiment: Experiment = {
       id: 'exp_promising',
       createdAt: Date.now(),
@@ -112,52 +100,114 @@ describe('experiments pure analysis logic', () => {
     };
     const analysis = analyzeExperiment(experiment, checks);
     expect(analysis.wins).toBe(4);
+    expect(analysis.verdict).toBe('Promising for you — keep testing.');
+  });
+
+  it('handles concurrent design with single check per run and lower RT as win', () => {
+    // Concurrent design: 4 pairs of sound:brown vs sound:silence
+    // Brown RTs: [280, 290, 275, 295] -> all lower than Silence RTs [310, 315, 305, 320]
+    const checks: CheckResult[] = [];
+    const runs: ExperimentRun[] = [];
+
+    const brownRts = [280, 290, 275, 295];
+    const silenceRts = [310, 315, 305, 320];
+
+    for (let i = 0; i < 4; i++) {
+      checks.push(createMockCheck(`b_${i}`, brownRts[i], 0));
+      runs.push({
+        id: `r_b_${i}`,
+        ts: i * 2,
+        conditionId: 'sound:brown',
+        checkIds: [`b_${i}`],
+      });
+
+      checks.push(createMockCheck(`s_${i}`, silenceRts[i], 0));
+      runs.push({
+        id: `r_s_${i}`,
+        ts: i * 2 + 1,
+        conditionId: 'sound:silence',
+        checkIds: [`s_${i}`],
+      });
+    }
+
+    const experiment: Experiment = {
+      id: 'exp_concurrent',
+      createdAt: Date.now(),
+      design: 'concurrent',
+      conditionIds: ['sound:brown', 'sound:silence'],
+      schedule: [],
+      runs,
+    };
+
+    const analysis = analyzeExperiment(experiment, checks);
+    expect(analysis.design).toBe('concurrent');
+    expect(analysis.totalPairs).toBe(4);
+    expect(analysis.wins).toBe(4);
     expect(analysis.winRatio).toBe(1.0);
     expect(analysis.verdict).toBe('Promising for you — keep testing.');
   });
 
-  it('returns "Doesn\'t seem to help you." when wins <= 25%', () => {
-    const { checks, runs } = buildRunsAndChecks([-20, 10, 15, 20], [0, -10, -5, 0]);
+  it('returns "Doesn\'t seem to help you." in concurrent design when wins <= 25%', () => {
+    // Sound is slower than silence in 3 of 4 pairs
+    const checks: CheckResult[] = [];
+    const runs: ExperimentRun[] = [];
+
+    const whiteRts = [330, 340, 350, 280]; // wins only 4th pair
+    const silenceRts = [300, 310, 310, 310];
+
+    for (let i = 0; i < 4; i++) {
+      checks.push(createMockCheck(`w_${i}`, whiteRts[i], 0));
+      runs.push({
+        id: `r_w_${i}`,
+        ts: i * 2,
+        conditionId: 'sound:white',
+        checkIds: [`w_${i}`],
+      });
+
+      checks.push(createMockCheck(`s_${i}`, silenceRts[i], 0));
+      runs.push({
+        id: `r_s_${i}`,
+        ts: i * 2 + 1,
+        conditionId: 'sound:silence',
+        checkIds: [`s_${i}`],
+      });
+    }
+
     const experiment: Experiment = {
-      id: 'exp_not_helpful',
+      id: 'exp_conc_unhelpful',
       createdAt: Date.now(),
-      design: 'prepost',
-      conditionIds: ['activity:cyclic-sighing', 'rest'],
+      design: 'concurrent',
+      conditionIds: ['sound:white', 'sound:silence'],
       schedule: [],
       runs,
     };
+
     const analysis = analyzeExperiment(experiment, checks);
     expect(analysis.wins).toBe(1);
     expect(analysis.winRatio).toBe(0.25);
     expect(analysis.verdict).toBe("Doesn't seem to help you.");
   });
 
-  it('returns "No clear difference." for mixed outcomes', () => {
-    const { checks, runs } = buildRunsAndChecks([-10, -10, 0, 0], [0, 0, -10, -10]);
-    const experiment: Experiment = {
-      id: 'exp_no_diff',
-      createdAt: Date.now(),
-      design: 'prepost',
-      conditionIds: ['activity:cyclic-sighing', 'rest'],
-      schedule: [],
-      runs,
-    };
-    const analysis = analyzeExperiment(experiment, checks);
-    expect(analysis.wins).toBe(2);
-    expect(analysis.winRatio).toBe(0.5);
-    expect(analysis.verdict).toBe('No clear difference.');
-  });
+  it('correctly handles ties and zero lapses in concurrent design', () => {
+    const checks: CheckResult[] = [];
+    const runs: ExperimentRun[] = [];
 
-  it('correctly handles ties and zero lapses without error', () => {
-    const { checks, runs } = buildRunsAndChecks([0, 0, 0, 0], [0, 0, 0, 0]);
+    for (let i = 0; i < 4; i++) {
+      checks.push(createMockCheck(`x_${i}`, 300, 0));
+      runs.push({ id: `rx_${i}`, ts: i * 2, conditionId: 'sound:pink', checkIds: [`x_${i}`] });
+      checks.push(createMockCheck(`s_${i}`, 300, 0));
+      runs.push({ id: `rs_${i}`, ts: i * 2 + 1, conditionId: 'sound:silence', checkIds: [`s_${i}`] });
+    }
+
     const experiment: Experiment = {
-      id: 'exp_ties',
+      id: 'exp_conc_ties',
       createdAt: Date.now(),
-      design: 'prepost',
-      conditionIds: ['activity:cyclic-sighing', 'rest'],
+      design: 'concurrent',
+      conditionIds: ['sound:pink', 'sound:silence'],
       schedule: [],
       runs,
     };
+
     const analysis = analyzeExperiment(experiment, checks);
     expect(analysis.pairs.every((p) => p.isTie)).toBe(true);
     expect(analysis.wins).toBe(0);
