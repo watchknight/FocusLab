@@ -5,9 +5,28 @@ import { BottomNav } from '@/components/ui/BottomNav';
 import { Footer } from '@/components/ui/Footer';
 
 export const metadata: Metadata = {
-  title: 'FocusLab',
+  metadataBase: new URL('https://focuslab.app'),
+  title: {
+    default: 'FocusLab — Build focus you can measure',
+    template: '%s | FocusLab',
+  },
   description:
     'A free, local-first web app to measure attentional states and test evidence-labelled focus protocols.',
+  openGraph: {
+    title: 'FocusLab — Build focus you can measure',
+    description:
+      'A free, local-first web app to measure attentional states and test evidence-labelled focus protocols.',
+    url: 'https://focuslab.app',
+    siteName: 'FocusLab',
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'FocusLab — Build focus you can measure',
+    description:
+      'A free, local-first web app to measure attentional states and test evidence-labelled focus protocols.',
+  },
 };
 
 export const viewport: Viewport = {
