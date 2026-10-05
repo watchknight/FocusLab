@@ -1,9 +1,21 @@
 import React from 'react';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { EvidenceBadge } from '@/components/ui/EvidenceBadge';
 import { OnboardingModal } from '@/features/onboarding';
+
+export const metadata: Metadata = {
+  title: 'FocusLab — Build focus you can measure',
+  description:
+    'A calm, local-first web laboratory pairing evidence-graded attention practices with objective reaction-time testing to find what truly works for you.',
+  openGraph: {
+    title: 'FocusLab — Build focus you can measure',
+    description:
+      'A calm, local-first web laboratory pairing evidence-graded attention practices with objective reaction-time testing to find what truly works for you.',
+  },
+};
 
 const LOOP_STEPS = [
   {

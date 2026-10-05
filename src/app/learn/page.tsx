@@ -7,6 +7,11 @@ export const metadata: Metadata = {
   title: 'Learn — Evidence Bank | FocusLab',
   description:
     'Explore peer-reviewed evidence, effect sizes, and caveats behind focus practices and attention interventions.',
+  openGraph: {
+    title: 'Evidence Bank | FocusLab',
+    description:
+      'Explore peer-reviewed evidence, effect sizes, and caveats behind focus practices and attention interventions.',
+  },
 };
 
 export default function LearnPage() {

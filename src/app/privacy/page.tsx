@@ -8,6 +8,11 @@ export const metadata: Metadata = {
   title: 'Privacy Policy | FocusLab',
   description:
     'FocusLab is completely local-first: no accounts, no telemetry, no cookies. All data stays in your browser.',
+  openGraph: {
+    title: 'Privacy Policy | FocusLab',
+    description:
+      'FocusLab is completely local-first: no accounts, no telemetry, no cookies. All data stays in your browser.',
+  },
 };
 
 export default function PrivacyPage() {

@@ -7,6 +7,11 @@ export const metadata: Metadata = {
   title: 'How We Rate Evidence | FocusLab',
   description:
     'Our transparent five-tier methodology for evaluating scientific research on focus, attention, and cognitive practices.',
+  openGraph: {
+    title: 'How We Rate Evidence | FocusLab',
+    description:
+      'Our transparent five-tier methodology for evaluating scientific research on focus, attention, and cognitive practices.',
+  },
 };
 
 export default function HowWeRatePage() {

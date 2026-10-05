@@ -7,6 +7,11 @@ export const metadata: Metadata = {
   title: 'Medical Disclaimer | FocusLab',
   description:
     'FocusLab is an educational self-experimentation tool, not a medical device or ADHD screening instrument.',
+  openGraph: {
+    title: 'Medical Disclaimer | FocusLab',
+    description:
+      'FocusLab is an educational self-experimentation tool, not a medical device or ADHD screening instrument.',
+  },
 };
 
 export default function DisclaimerPage() {

@@ -8,6 +8,11 @@ export const metadata: Metadata = {
   title: 'Six Myths About Focus | FocusLab',
   description:
     'Examine six widespread productivity claims that are unsupported or strongly conflicting in cognitive science.',
+  openGraph: {
+    title: 'Six Myths About Focus | FocusLab',
+    description:
+      'Examine six widespread productivity claims that are unsupported or strongly conflicting in cognitive science.',
+  },
 };
 
 export default function MythsPage() {

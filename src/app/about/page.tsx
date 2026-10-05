@@ -1,28 +1,23 @@
-'use client';
-
-import React, { useState } from 'react';
+import React from 'react';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { OnboardingModal } from '@/features/onboarding';
+import { RestartOnboardingButton } from '@/features/onboarding';
+
+export const metadata: Metadata = {
+  title: 'About FocusLab | Philosophy & Honesty Rules',
+  description:
+    'Learn about our evidence-first philosophy, local-only data storage, and strict honesty rules.',
+  openGraph: {
+    title: 'About FocusLab',
+    description:
+      'Learn about our evidence-first philosophy, local-only data storage, and strict honesty rules.',
+  },
+};
 
 export default function AboutPage() {
-  const [resetMessage, setResetMessage] = useState(false);
-
-  const handleRestartOnboarding = () => {
-    try {
-      localStorage.removeItem('focuslab:onboarded');
-    } catch {
-      // Ignored
-    }
-    window.dispatchEvent(new CustomEvent('focuslab:open-onboarding'));
-    setResetMessage(true);
-  };
-
   return (
     <div className="space-y-6 py-2">
-      <OnboardingModal />
-
       <div className="space-y-1">
         <h1 className="text-2xl font-bold tracking-tight text-text">About FocusLab</h1>
         <p className="text-sm text-muted">
@@ -73,15 +68,8 @@ export default function AboutPage() {
         <p className="text-xs text-muted leading-relaxed">
           Want to re-run the 3-step goal and obstacle onboarding questionnaire to see tailored recommendations?
         </p>
-        <div className="pt-1 flex items-center gap-3">
-          <Button variant="secondary" onClick={handleRestartOnboarding} className="min-h-[44px]">
-            Restart Onboarding Tour
-          </Button>
-          {resetMessage && (
-            <span className="text-xs text-accent font-medium">
-              Tour restarted!
-            </span>
-          )}
+        <div className="pt-1">
+          <RestartOnboardingButton />
         </div>
       </Card>
 

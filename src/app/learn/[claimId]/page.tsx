@@ -25,6 +25,10 @@ export function generateMetadata({ params }: ClaimPageProps): Metadata {
   return {
     title: `${claim.title} | FocusLab Evidence`,
     description: claim.summary,
+    openGraph: {
+      title: `${claim.title} | FocusLab Evidence`,
+      description: claim.summary,
+    },
   };
 }
 
