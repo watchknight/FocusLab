@@ -1,5 +1,7 @@
 /* FocusLab Service Worker — Offline-First PWA */
-const CACHE_NAME = 'focuslab-cache-v1';
+// Bump APP_VERSION on release to invalidate cached static assets
+const APP_VERSION = 'v1.0.1';
+const CACHE_NAME = `focuslab-cache-${APP_VERSION}`;
 
 const PRECACHE_ASSETS = [
   '/',
@@ -52,6 +54,15 @@ self.addEventListener('fetch', (event) => {
 
   // Only handle GET requests originating from same origin
   if (request.method !== 'GET' || url.origin !== self.location.origin) {
+    return;
+  }
+
+  // Bypass service worker interception for localhost, 127.0.0.1, or webpack HMR
+  if (
+    url.hostname === 'localhost' ||
+    url.hostname === '127.0.0.1' ||
+    url.pathname.startsWith('/_next/webpack-hmr')
+  ) {
     return;
   }
 

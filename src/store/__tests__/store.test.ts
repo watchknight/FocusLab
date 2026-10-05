@@ -105,4 +105,32 @@ describe('Zustand store export/import round-trip', () => {
     expect(result).toBe(false);
     expect(store.checks.length).toBe(0);
   });
+
+  it('rejects oversized json payloads greater than 5MB', () => {
+    const store = useFocusLabStore.getState();
+    // Create a dummy oversized string > 5MB
+    const oversizedJson = ' '.repeat(5 * 1024 * 1024 + 1);
+
+    const result = store.importData(oversizedJson);
+    expect(result).toBe(false);
+  });
+
+  it('strips unexpected top-level keys upon import', () => {
+    const store = useFocusLabStore.getState();
+    const payloadWithExtra = JSON.stringify({
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      checks: [],
+      sessions: [],
+      activityLogs: [],
+      experiments: [],
+      unexpectedMaliciousBlob: 'x'.repeat(1000),
+    });
+
+    const result = store.importData(payloadWithExtra);
+    expect(result).toBe(true);
+    // Verifying state has no unexpected keys in storage
+    const state = useFocusLabStore.getState() as unknown as Record<string, unknown>;
+    expect(state.unexpectedMaliciousBlob).toBeUndefined();
+  });
 });

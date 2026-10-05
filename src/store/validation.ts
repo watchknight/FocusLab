@@ -124,5 +124,15 @@ export function validateSnapshot(raw: unknown): { valid: boolean; data?: FocusLa
   if (!Array.isArray(raw.experiments) || !raw.experiments.every(validateExperiment)) {
     return { valid: false, error: 'Invalid experiments collection' };
   }
-  return { valid: true, data: raw as unknown as FocusLabSnapshot };
+  return {
+    valid: true,
+    data: {
+      version: 1,
+      exportedAt: raw.exportedAt as string,
+      checks: raw.checks as CheckResult[],
+      sessions: raw.sessions as Session[],
+      activityLogs: raw.activityLogs as ActivityLog[],
+      experiments: raw.experiments as Experiment[],
+    },
+  };
 }

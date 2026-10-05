@@ -88,7 +88,7 @@ export const IntentionStep: React.FC<IntentionStepProps> = ({ onContinue }) => {
           <button
             type="button"
             onClick={() => setShowIfThen(!showIfThen)}
-            className="text-xs text-accent hover:underline self-start sm:self-auto min-h-[32px] inline-flex items-center"
+            className="text-xs text-accent hover:underline self-start sm:self-auto min-h-[44px] inline-flex items-center"
           >
             {showIfThen ? 'Hide if-then plan' : '+ Add an if-then plan'}
           </button>
@@ -112,7 +112,7 @@ export const IntentionStep: React.FC<IntentionStepProps> = ({ onContinue }) => {
                     type="button"
                     key={tmpl.label}
                     onClick={() => applyTemplate(tmpl)}
-                    className="min-h-[36px] px-2.5 py-1 text-xs rounded border border-border bg-surface text-text hover:bg-surface-2 transition-colors text-left"
+                    className="min-h-[44px] px-2.5 py-1 text-xs rounded border border-border bg-surface text-text hover:bg-surface-2 transition-colors text-left"
                   >
                     {tmpl.label}
                   </button>

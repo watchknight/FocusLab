@@ -80,14 +80,14 @@ export const DataManagement: React.FC = () => {
       )}
 
       <div className="flex flex-wrap items-center gap-3">
-        <Button variant="secondary" onClick={handleExport} className="text-xs min-h-[38px]">
+        <Button variant="secondary" onClick={handleExport} className="text-xs min-h-[44px]">
           Export JSON
         </Button>
 
         <Button
           variant="secondary"
           onClick={() => fileInputRef.current?.click()}
-          className="text-xs min-h-[38px]"
+          className="text-xs min-h-[44px]"
         >
           Import JSON (validated)
         </Button>
@@ -103,7 +103,7 @@ export const DataManagement: React.FC = () => {
         <Button
           variant="subtle"
           onClick={() => setShowDeleteConfirm(true)}
-          className="text-xs min-h-[38px] text-warn hover:bg-warn/10 hover:text-warn border-border"
+          className="text-xs min-h-[44px] text-warn hover:bg-warn/10 hover:text-warn border-border"
         >
           Delete all data
         </Button>
@@ -121,14 +121,14 @@ export const DataManagement: React.FC = () => {
               <Button
                 variant="subtle"
                 onClick={() => setShowDeleteConfirm(false)}
-                className="text-xs min-h-[36px]"
+                className="text-xs min-h-[44px]"
               >
                 Cancel
               </Button>
               <Button
                 variant="primary"
                 onClick={handleConfirmDelete}
-                className="text-xs min-h-[36px] bg-warn border-warn text-white hover:opacity-90"
+                className="text-xs min-h-[44px] bg-warn border-warn text-white hover:opacity-90"
               >
                 Confirm Delete
               </Button>

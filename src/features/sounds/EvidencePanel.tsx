@@ -31,7 +31,7 @@ export const EvidencePanel: React.FC = () => {
           Try it, then test it.
         </p>
         <p className="text-muted mt-0.5">
-          Noise may help some people while worsening performance for others. Run a 10-run self-experiment to see what works for your brain.
+          Noise may help some people while worsening performance for others. Run a 10-run self-experiment to see what works for your personal attention-task performance.
         </p>
       </div>
     </Card>

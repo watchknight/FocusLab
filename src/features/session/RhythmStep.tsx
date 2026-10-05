@@ -142,7 +142,7 @@ export const RhythmStep: React.FC<RhythmStepProps> = ({ onSelectRhythm, onBack }
             <EvidenceBadge tier={claim.tier} />
           </div>
           <p className="text-muted">
-            Breaks help energy and fatigue. No single ratio is proven best, so try a few.
+            Breaks support vigor and reduce fatigue, but research shows no single work/break ratio is proven best for task performance.
           </p>
           <p className="text-muted italic">{claim.summary}</p>
         </Card>

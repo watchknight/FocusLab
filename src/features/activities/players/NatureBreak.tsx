@@ -63,7 +63,7 @@ export const NatureBreak: React.FC<NatureBreakProps> = ({
               If you can, look at real plants through a window instead.
             </p>
             <p className="text-xs text-muted max-w-sm mx-auto">
-              Soft gaze on natural textures allows your executive attention network to recover without conscious effort.
+              Briefly viewing greenery has been tested for small reductions in attention errors, though broader reviews find mixed results overall.
             </p>
           </div>
         </div>

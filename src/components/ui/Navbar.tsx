@@ -33,7 +33,7 @@ export const Navbar: React.FC = () => {
       <div className="max-w-prose mx-auto px-4 py-2 flex items-center justify-between gap-2">
         <Link
           href="/"
-          className="text-base font-semibold text-text hover:text-accent flex items-center gap-1.5 focus-visible:outline-2 focus-visible:outline-accent rounded-sm py-1"
+          className="text-base font-semibold text-text hover:text-accent flex items-center gap-1.5 focus-visible:outline-2 focus-visible:outline-accent rounded-sm py-1 min-h-[44px]"
         >
           <span className="w-2.5 h-2.5 rounded-full bg-accent inline-block" aria-hidden="true" />
           FocusLab

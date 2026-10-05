@@ -67,7 +67,7 @@ export function getRecommendationsForObstacle(
         {
           id: 'breath-counting',
           title: 'Breath Counting Practice',
-          description: 'Count exhales from 1 to 9 to anchor wandering attention.',
+          description: 'Count exhales from 1 to 9 to practice sustained attention.',
           actionLabel: 'Try Breath Counting',
           actionHref: '/activities/breath-counting',
           claimId: 'focused-attention',
@@ -98,7 +98,8 @@ export function getRecommendationsForObstacle(
         {
           id: 'movement-snack',
           title: 'Movement Snack',
-          description: 'A 5 to 10 minute bout of moderate physical movement to clear mental fatigue.',
+          description:
+            'A 5 to 10 minute bout of moderate physical movement — associated with a small positive effect on executive function.',
           actionLabel: 'Start Movement Snack',
           actionHref: '/activities/movement-snack',
           claimId: 'movement',
@@ -129,7 +130,7 @@ export function getRecommendationsForObstacle(
         {
           id: 'sound-experiment',
           title: 'Ambient Noise Self-Experiment',
-          description: 'Test whether white, pink, or brown noise improves or hinders your personal RT.',
+          description: 'Test whether white or pink noise improves or hinders your personal RT.',
           actionLabel: 'Explore Soundscapes',
           actionHref: '/sounds',
           claimId: 'noise',

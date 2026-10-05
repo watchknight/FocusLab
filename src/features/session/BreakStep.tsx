@@ -69,7 +69,7 @@ export const BreakStep: React.FC<BreakStepProps> = ({
         </span>
         <h2 className="text-xl font-bold tracking-tight text-text">Rest & Restore</h2>
         <p className="text-sm text-muted">
-          Step away from screens and allow your attentional capacity to recharge.
+          Step away from screens. Breaks help with vigor and fatigue, even if brief.
         </p>
       </div>
 
@@ -101,7 +101,7 @@ export const BreakStep: React.FC<BreakStepProps> = ({
               href="/activities"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs font-semibold text-accent hover:underline inline-flex items-center min-h-[36px]"
+              className="text-xs font-semibold text-accent hover:underline inline-flex items-center min-h-[44px]"
             >
               Open guided activity ↗
             </Link>

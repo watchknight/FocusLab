@@ -98,6 +98,9 @@ export const useFocusLabStore = create<FocusLabStore>()(
       },
 
       importData: (json: string): boolean => {
+        if (!json || json.length > 5 * 1024 * 1024) {
+          return false;
+        }
         try {
           const parsed: unknown = JSON.parse(json);
           const validation = validateSnapshot(parsed);
