@@ -3,10 +3,10 @@ import type { Myth } from './types';
 export const MYTHS: Myth[] = [
   {
     id: 'myth-brain-training',
-    myth: 'Brain-training games improve general intelligence and cognitive ability.',
+    myth: 'Brain-training games improve general intelligence and everyday attention.',
     verdict: 'Not Supported',
     explanation:
-      'Working-memory training improves the trained tasks, but reviews find no convincing transfer to broader intelligence or everyday attention compared with active control groups.',
+      'A meta-analysis of 87 publications found working-memory training improves trained tasks, but there is no convincing transfer to broader abilities compared with active controls.',
     claimId: 'brain-training',
   },
   {
@@ -14,7 +14,7 @@ export const MYTHS: Myth[] = [
     myth: 'You can efficiently do two demanding mental tasks at the same time.',
     verdict: 'Not Supported',
     explanation:
-      'Interrupted work increases stress and frustration. Thinking about an unfinished task leaves attention residue that slows and impairs performance on the next task.',
+      'Interrupted people work faster to compensate but report more stress, frustration, and effort. Unfinished tasks leave "attention residue" that slows the next task.',
     claimId: 'multitasking',
   },
   {
@@ -22,7 +22,7 @@ export const MYTHS: Myth[] = [
     myth: 'Binaural beats reliably enhance focus and memory for everyone.',
     verdict: 'Mixed',
     explanation:
-      'Average effects across reviews are mixed, and individual studies conflict depending on frequency and timing. More robust trials are needed.',
+      'Meta-analyses report average effects on cognition and anxiety, but individual studies conflict, especially across different brainwave frequencies. More robust trials are needed.',
     claimId: 'binaural',
   },
   {
@@ -30,7 +30,7 @@ export const MYTHS: Myth[] = [
     myth: 'The 25-minute work / 5-minute break Pomodoro ratio is scientifically optimal.',
     verdict: 'Not Supported',
     explanation:
-      'Studies comparing fixed 25/5 breaks with self-paced breaks show conflicting results. No work-to-break ratio has been proven best; timers should remain flexible.',
+      'Studies comparing fixed 25/5 breaks with self-paced breaks show conflicting results. No specific work-to-break ratio has been proven best; keep timers flexible.',
     claimId: 'breaks-performance',
   },
   {
@@ -38,7 +38,7 @@ export const MYTHS: Myth[] = [
     myth: 'White or brown noise improves focus for everyone.',
     verdict: 'Mixed',
     explanation:
-      'A meta-analysis found white or pink noise gave a small benefit for people with ADHD or attention challenges, but a small negative effect for others. Brown noise has not been studied.',
+      'A meta-analysis found white or pink noise gave a small benefit for people with ADHD or attention problems, but a small negative effect for others. No brown noise studies were found.',
     claimId: 'noise',
   },
   {
@@ -46,7 +46,7 @@ export const MYTHS: Myth[] = [
     myth: 'Having your phone visible on your desk always ruins your focus.',
     verdict: 'Mixed',
     explanation:
-      'Earlier lab findings that merely having your own phone nearby reduces cognitive capacity have not always replicated. Treat putting it out of sight as a habit to test.',
+      'Earlier lab findings that a nearby phone reduces cognitive capacity have not always replicated. Putting your phone out of sight is a low-cost habit to test, not a proven fix.',
     claimId: 'phone-presence',
   },
 ];
