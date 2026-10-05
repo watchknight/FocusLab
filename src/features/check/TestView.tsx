@@ -64,18 +64,12 @@ export const TestView: React.FC<TestViewProps> = ({
     currentIsiRef.current = isi;
 
     isiTimerRef.current = setTimeout(() => {
-      // Paint frame timestamp onset
       requestAnimationFrame((paintTimestamp) => {
         onsetTimeRef.current = paintTimestamp;
         setPhase('stimulus');
 
-        // 10-second lapse timeout
         timeoutTimerRef.current = setTimeout(() => {
-          trialsRef.current.push({
-            isiMs: currentIsiRef.current,
-            rtMs: TIMEOUT_MS,
-            falseStart: false,
-          });
+          trialsRef.current.push({ isiMs: currentIsiRef.current, rtMs: TIMEOUT_MS, falseStart: false });
           setPhase('feedback');
           setFeedbackText('Time out (>10 s)');
           feedbackTimerRef.current = setTimeout(startNextTrial, FEEDBACK_DURATION_MS);
@@ -88,13 +82,8 @@ export const TestView: React.FC<TestViewProps> = ({
     const responseTime = performance.now();
 
     if (phase === 'waiting') {
-      // Responded before onset = false start
       if (isiTimerRef.current) clearTimeout(isiTimerRef.current);
-      trialsRef.current.push({
-        isiMs: currentIsiRef.current,
-        rtMs: null,
-        falseStart: true,
-      });
+      trialsRef.current.push({ isiMs: currentIsiRef.current, rtMs: null, falseStart: true });
       setPhase('feedback');
       setFeedbackText('Too early');
       feedbackTimerRef.current = setTimeout(startNextTrial, FEEDBACK_DURATION_MS);
@@ -106,30 +95,14 @@ export const TestView: React.FC<TestViewProps> = ({
       const rt = Math.round(responseTime - onsetTimeRef.current);
       setDisplayRt(rt);
 
-      if (rt < MIN_VALID_RT_MS) {
-        // Anticipation under 100ms = false start
-        trialsRef.current.push({
-          isiMs: currentIsiRef.current,
-          rtMs: rt,
-          falseStart: true,
-        });
-        setPhase('feedback');
-        setFeedbackText('Too early');
-      } else {
-        trialsRef.current.push({
-          isiMs: currentIsiRef.current,
-          rtMs: rt,
-          falseStart: false,
-        });
-        setPhase('feedback');
-        setFeedbackText(`${rt} ms`);
-      }
-
+      const isFalseStart = rt < MIN_VALID_RT_MS;
+      trialsRef.current.push({ isiMs: currentIsiRef.current, rtMs: rt, falseStart: isFalseStart });
+      setPhase('feedback');
+      setFeedbackText(isFalseStart ? 'Too early' : `${rt} ms`);
       feedbackTimerRef.current = setTimeout(startNextTrial, FEEDBACK_DURATION_MS);
     }
   }, [phase, startNextTrial]);
 
-  // Handle animation frame running counter
   useEffect(() => {
     if (phase !== 'stimulus' || reducedMotion) {
       if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
@@ -137,8 +110,7 @@ export const TestView: React.FC<TestViewProps> = ({
     }
 
     const updateCounter = () => {
-      const currentRt = Math.floor(performance.now() - onsetTimeRef.current);
-      setDisplayRt(currentRt);
+      setDisplayRt(Math.floor(performance.now() - onsetTimeRef.current));
       rafIdRef.current = requestAnimationFrame(updateCounter);
     };
 
@@ -148,56 +120,41 @@ export const TestView: React.FC<TestViewProps> = ({
     };
   }, [phase, reducedMotion]);
 
-  // Initialize test and setup listeners
   useEffect(() => {
     testStartTimeRef.current = performance.now();
     setReducedMotion(window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
-    // Minute timer announcements for accessibility
     const minuteInterval = setInterval(() => {
-      const elapsedSec = Math.floor((performance.now() - testStartTimeRef.current) / 1000);
-      const minutes = Math.floor(elapsedSec / 60);
-      if (minutes > 0) {
-        setMinuteNotice(`${minutes} minute${minutes > 1 ? 's' : ''} elapsed`);
-      }
+      const minutes = Math.floor((performance.now() - testStartTimeRef.current) / 60000);
+      if (minutes > 0) setMinuteNotice(`${minutes} minute${minutes > 1 ? 's' : ''} elapsed`);
     }, 60000);
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         clearAllTimers();
         onAbort();
-        return;
-      }
-      if (e.code === 'Space' || e.key === ' ') {
+      } else if (e.code === 'Space' || e.key === ' ') {
         e.preventDefault();
         handleResponse();
       }
     };
 
-    const onVisibilityChange = () => {
-      if (document.hidden) {
-        clearAllTimers();
-        onAbort();
-      }
-    };
-
-    const onBlur = () => {
+    const abortOnHidden = () => {
       clearAllTimers();
       onAbort();
     };
 
     window.addEventListener('keydown', onKeyDown);
-    document.addEventListener('visibilitychange', onVisibilityChange);
-    window.addEventListener('blur', onBlur);
-
+    document.addEventListener('visibilitychange', () => document.hidden && abortOnHidden());
+    window.addEventListener('blur', abortOnHidden);
     startNextTrial();
 
     return () => {
       clearInterval(minuteInterval);
       clearAllTimers();
       window.removeEventListener('keydown', onKeyDown);
-      document.removeEventListener('visibilitychange', onVisibilityChange);
-      window.removeEventListener('blur', onBlur);
+      document.removeEventListener('visibilitychange', abortOnHidden);
+      window.removeEventListener('blur', abortOnHidden);
     };
   }, [clearAllTimers, handleResponse, onAbort, startNextTrial]);
 

@@ -26,41 +26,28 @@ export const NoisePlayer: React.FC = () => {
     if (typeof window !== 'undefined') {
       try {
         const stored = localStorage.getItem(STORAGE_KEY);
-        if (stored) {
-          return { ...DEFAULT_NOISE_SETTINGS, ...JSON.parse(stored), color: 'off' };
-        }
-      } catch {
-        // Fallback to defaults
-      }
+        if (stored) return { ...DEFAULT_NOISE_SETTINGS, ...JSON.parse(stored), color: 'off' };
+      } catch { /* Fallback */ }
     }
     return DEFAULT_NOISE_SETTINGS;
   });
 
-  const [sleepTimerMinutes, setSleepTimerMinutes] = useState<number>(0); // 0 = off
+  const [sleepTimerMinutes, setSleepTimerMinutes] = useState<number>(0);
   const [sleepRemainingSec, setSleepRemainingSec] = useState<number>(0);
   const sleepTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Sync settings to localStorage
   useEffect(() => {
     if (typeof window !== 'undefined') {
       try {
-        localStorage.setItem(
-          STORAGE_KEY,
-          JSON.stringify({ volume: settings.volume, softness: settings.softness })
-        );
-      } catch {
-        // Ignored
-      }
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ volume: settings.volume, softness: settings.softness }));
+      } catch { /* Ignored */ }
     }
   }, [settings.volume, settings.softness]);
 
-  // Handle sleep timer countdown
   useEffect(() => {
     if (sleepTimerRef.current) clearInterval(sleepTimerRef.current);
-
     if (sleepTimerMinutes > 0 && settings.color !== 'off') {
       setSleepRemainingSec(sleepTimerMinutes * 60);
-
       sleepTimerRef.current = setInterval(() => {
         setSleepRemainingSec((prev) => {
           if (prev <= 1) {
@@ -76,27 +63,16 @@ export const NoisePlayer: React.FC = () => {
     } else {
       setSleepRemainingSec(0);
     }
-
-    return () => {
-      if (sleepTimerRef.current) clearInterval(sleepTimerRef.current);
-    };
+    return () => { if (sleepTimerRef.current) clearInterval(sleepTimerRef.current); };
   }, [sleepTimerMinutes, settings.color]);
 
-  // Clean up audio on unmount
-  useEffect(() => {
-    return () => {
-      stopNoise();
-    };
-  }, []);
+  useEffect(() => { return () => { stopNoise(); }; }, []);
 
   const handleSelectColor = (color: NoiseColor | 'off') => {
     const updated = { ...settings, color };
     setSettings(updated);
-    if (color === 'off') {
-      stopNoise();
-    } else {
-      startNoise(updated);
-    }
+    if (color === 'off') stopNoise();
+    else startNoise(updated);
   };
 
   const handleVolumeChange = (vol: number) => {
@@ -114,7 +90,6 @@ export const NoisePlayer: React.FC = () => {
   const handleTestSound = () => {
     if (settings.color === 'off') return;
     stopNoise();
-
     const activeConditionId = `sound:${settings.color}`;
     const schedule = createExperimentSchedule(activeConditionId, 'sound:silence');
     const newExperiment: Experiment = {
@@ -125,18 +100,14 @@ export const NoisePlayer: React.FC = () => {
       schedule,
       runs: [],
     };
-
     addExperiment(newExperiment);
     router.push('/experiments');
   };
 
   return (
     <Card className="p-4 sm:p-5 space-y-6 bg-surface-2 border-border">
-      {/* Sound Color Selector */}
       <div className="space-y-2">
-        <span className="text-xs font-semibold text-muted uppercase tracking-wider block">
-          Sound Selection
-        </span>
+        <span className="text-xs font-semibold text-muted uppercase tracking-wider block">Sound Selection</span>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {(['off', 'white', 'pink', 'brown'] as const).map((color) => {
             const isSelected = settings.color === color;
@@ -146,9 +117,7 @@ export const NoisePlayer: React.FC = () => {
                 key={color}
                 onClick={() => handleSelectColor(color)}
                 className={`min-h-[44px] px-3 py-2 text-sm font-semibold rounded-md border transition-colors capitalize ${
-                  isSelected
-                    ? 'bg-accent border-accent text-accent-contrast'
-                    : 'bg-surface border-border text-text hover:bg-surface-2'
+                  isSelected ? 'bg-accent border-accent text-accent-contrast' : 'bg-surface border-border text-text hover:bg-surface-2'
                 }`}
               >
                 {color === 'off' ? 'Off' : `${color} Noise`}
@@ -158,80 +127,63 @@ export const NoisePlayer: React.FC = () => {
         </div>
       </div>
 
-      {/* Sliders */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
-        {/* Volume Slider (Max 0.6) */}
         <div className="space-y-1.5">
           <div className="flex justify-between text-xs">
-            <label htmlFor="volume-slider" className="font-semibold text-text">
-              Volume (Max 60%)
-            </label>
-            <span className="font-mono text-muted">
-              {Math.round((settings.volume / 0.6) * 100)}%
-            </span>
+            <label htmlFor="volume-slider" className="font-semibold text-text">Volume (Max 60%)</label>
+            <span className="font-mono text-muted">{Math.round((settings.volume / 0.6) * 100)}%</span>
           </div>
-          <input
-            id="volume-slider"
-            type="range"
-            min={0}
-            max={0.6}
-            step={0.01}
-            value={settings.volume}
-            onChange={(e) => handleVolumeChange(Number(e.target.value))}
-            className="w-full accent-accent h-2 bg-surface rounded-lg cursor-pointer"
-          />
+          <div className="min-h-[44px] flex items-center">
+            <input
+              id="volume-slider"
+              type="range"
+              min={0}
+              max={0.6}
+              step={0.01}
+              value={settings.volume}
+              onChange={(e) => handleVolumeChange(Number(e.target.value))}
+              aria-label="Volume slider, maximum 60 percent"
+              className="w-full accent-accent h-3 bg-surface rounded-lg cursor-pointer"
+            />
+          </div>
         </div>
 
-        {/* Softness (Lowpass filter) Slider */}
         <div className="space-y-1.5">
           <div className="flex justify-between text-xs">
-            <label htmlFor="softness-slider" className="font-semibold text-text">
-              Tone Softness (Low-pass)
-            </label>
-            <span className="font-mono text-muted">
-              {Math.round((1 - settings.softness) * 100)}% soft
-            </span>
+            <label htmlFor="softness-slider" className="font-semibold text-text">Tone Softness (Low-pass)</label>
+            <span className="font-mono text-muted">{Math.round((1 - settings.softness) * 100)}% soft</span>
           </div>
-          <input
-            id="softness-slider"
-            type="range"
-            min={0}
-            max={1.0}
-            step={0.01}
-            value={settings.softness}
-            onChange={(e) => handleSoftnessChange(Number(e.target.value))}
-            className="w-full accent-accent h-2 bg-surface rounded-lg cursor-pointer"
-          />
+          <div className="min-h-[44px] flex items-center">
+            <input
+              id="softness-slider"
+              type="range"
+              min={0}
+              max={1.0}
+              step={0.01}
+              value={settings.softness}
+              onChange={(e) => handleSoftnessChange(Number(e.target.value))}
+              aria-label="Tone softness low-pass filter slider"
+              className="w-full accent-accent h-3 bg-surface rounded-lg cursor-pointer"
+            />
+          </div>
         </div>
       </div>
 
-      {/* Sleep Timer */}
       <div className="space-y-2 pt-1 border-t border-border">
         <div className="flex items-center justify-between text-xs">
-          <span className="font-semibold text-text uppercase tracking-wider">
-            Sleep Timer
-          </span>
+          <span className="font-semibold text-text uppercase tracking-wider">Sleep Timer</span>
           {sleepRemainingSec > 0 && (
-            <span className="font-mono text-accent">
-              {Math.floor(sleepRemainingSec / 60)}m {sleepRemainingSec % 60}s left
-            </span>
+            <span className="font-mono text-accent">{Math.floor(sleepRemainingSec / 60)}m {sleepRemainingSec % 60}s left</span>
           )}
         </div>
         <div className="flex flex-wrap gap-2">
-          {[
-            { label: 'Off', val: 0 },
-            { label: '15 min', val: 15 },
-            { label: '30 min', val: 30 },
-            { label: '60 min', val: 60 },
-          ].map((t) => (
+          {[{ label: 'Off', val: 0 }, { label: '15 min', val: 15 }, { label: '30 min', val: 30 }, { label: '60 min', val: 60 }].map((t) => (
             <button
               type="button"
               key={t.label}
               onClick={() => setSleepTimerMinutes(t.val)}
-              className={`min-h-[36px] px-3 py-1 text-xs rounded border transition-colors ${
-                sleepTimerMinutes === t.val
-                  ? 'bg-accent border-accent text-accent-contrast'
-                  : 'bg-surface border-border text-text hover:bg-surface-2'
+              className={`min-h-[44px] px-3 py-2 text-xs font-semibold rounded border transition-colors ${
+                sleepTimerMinutes === t.val ? 'bg-accent border-accent text-accent-contrast' : 'bg-surface border-border text-text hover:bg-surface-2'
               }`}
             >
               {t.label}
@@ -240,14 +192,8 @@ export const NoisePlayer: React.FC = () => {
         </div>
       </div>
 
-      {/* Test This Sound Button */}
       <div className="pt-2 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-3">
-        <Button
-          variant="primary"
-          disabled={settings.color === 'off'}
-          onClick={handleTestSound}
-          className="w-full sm:w-auto"
-        >
+        <Button variant="primary" disabled={settings.color === 'off'} onClick={handleTestSound} className="w-full sm:w-auto">
           Test this sound in an experiment →
         </Button>
         <span className="text-xs text-muted">

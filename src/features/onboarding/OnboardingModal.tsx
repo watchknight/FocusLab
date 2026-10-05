@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -36,73 +36,72 @@ export const OnboardingModal: React.FC = () => {
   const [selectedObstacle, setSelectedObstacle] = useState<UserObstacle>('phone');
   const [recommendations, setRecommendations] = useState<RecommendationItem[]>([]);
 
+  const modalRef = useRef<HTMLDivElement>(null);
+  const prevActiveEl = useRef<HTMLElement | null>(null);
+
   useEffect(() => {
     try {
-      const hasOnboarded = localStorage.getItem(ONBOARDED_KEY);
-      if (!hasOnboarded) {
-        setIsOpen(true);
-      }
-    } catch {
-      // Ignored
-    }
+      if (!localStorage.getItem(ONBOARDED_KEY)) setIsOpen(true);
+    } catch { /* Ignored */ }
 
-    const handleOpen = () => {
-      setStep(1);
-      setIsOpen(true);
-    };
-
+    const handleOpen = () => { setStep(1); setIsOpen(true); };
     window.addEventListener('focuslab:open-onboarding', handleOpen);
-    return () => {
-      window.removeEventListener('focuslab:open-onboarding', handleOpen);
-    };
+    return () => window.removeEventListener('focuslab:open-onboarding', handleOpen);
   }, []);
 
-  const handleDismiss = () => {
-    try {
-      localStorage.setItem(ONBOARDED_KEY, 'true');
-    } catch {
-      // Ignored
+  useEffect(() => {
+    if (isOpen) {
+      prevActiveEl.current = document.activeElement as HTMLElement;
+      modalRef.current?.focus();
+      const onKeyDown = (e: KeyboardEvent) => { if (e.key === 'Escape') handleDismiss(); };
+      window.addEventListener('keydown', onKeyDown);
+      return () => window.removeEventListener('keydown', onKeyDown);
+    } else if (prevActiveEl.current) {
+      prevActiveEl.current.focus();
     }
+  }, [isOpen]);
+
+  const handleDismiss = () => {
+    try { localStorage.setItem(ONBOARDED_KEY, 'true'); } catch { /* Ignored */ }
     setIsOpen(false);
   };
 
-  const handleNextToObstacle = () => {
-    setStep(2);
-  };
-
   const handleNextToRecommendations = () => {
-    const recs = getRecommendationsForObstacle(selectedObstacle);
-    setRecommendations(recs);
+    setRecommendations(getRecommendationsForObstacle(selectedObstacle));
     setStep(3);
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <Card className="max-w-lg w-full p-5 sm:p-6 space-y-5 bg-surface border-border shadow-2xl overflow-y-auto max-h-[90vh]">
-        {/* Step Indicator & Skip */}
+    <div
+      ref={modalRef}
+      tabIndex={-1}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="onboarding-dialog-title"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 focus:outline-none"
+    >
+      <Card
+        className="max-w-lg w-full p-5 sm:p-6 space-y-5 bg-surface border-border shadow-2xl overflow-y-auto max-h-[90vh]"
+      >
         <div className="flex items-center justify-between text-xs text-muted border-b border-border pb-3">
           <span className="font-semibold text-text">Step {step} of 3</span>
           <button
             type="button"
             onClick={handleDismiss}
-            className="hover:text-text underline min-h-[32px] px-1 inline-flex items-center"
+            className="hover:text-text underline min-h-[44px] px-2 inline-flex items-center"
           >
             Skip intro
           </button>
         </div>
 
-        {/* Step 1: Goal */}
         {step === 1 && (
           <div className="space-y-4">
             <div className="space-y-1">
-              <h2 className="text-xl font-bold tracking-tight text-text">What is your primary focus goal?</h2>
-              <p className="text-xs text-muted">
-                FocusLab adapts to your current context with zero tracking or user accounts.
-              </p>
+              <h2 id="onboarding-dialog-title" className="text-xl font-bold tracking-tight text-text">What is your primary focus goal?</h2>
+              <p className="text-xs text-muted">FocusLab adapts to your current context with zero tracking or user accounts.</p>
             </div>
-
             <div className="space-y-2">
               {GOALS.map((g) => (
                 <button
@@ -110,9 +109,7 @@ export const OnboardingModal: React.FC = () => {
                   key={g.id}
                   onClick={() => setSelectedGoal(g.id)}
                   className={`w-full p-3 rounded-lg border text-left transition-colors min-h-[44px] ${
-                    selectedGoal === g.id
-                      ? 'border-accent bg-accent/5 dark:bg-accent/10 ring-1 ring-accent'
-                      : 'border-border bg-surface-2 hover:bg-surface'
+                    selectedGoal === g.id ? 'border-accent bg-accent/5 dark:bg-accent/10 ring-1 ring-accent' : 'border-border bg-surface-2 hover:bg-surface'
                   }`}
                 >
                   <span className="text-sm font-semibold text-text block">{g.label}</span>
@@ -120,25 +117,18 @@ export const OnboardingModal: React.FC = () => {
                 </button>
               ))}
             </div>
-
             <div className="pt-2">
-              <Button variant="primary" onClick={handleNextToObstacle} className="w-full">
-                Continue to Obstacles
-              </Button>
+              <Button variant="primary" onClick={() => setStep(2)} className="w-full">Continue to Obstacles</Button>
             </div>
           </div>
         )}
 
-        {/* Step 2: Obstacle */}
         {step === 2 && (
           <div className="space-y-4">
             <div className="space-y-1">
-              <h2 className="text-xl font-bold tracking-tight text-text">What disrupts your focus most?</h2>
-              <p className="text-xs text-muted">
-                Choose the challenge you face most frequently when trying to concentrate.
-              </p>
+              <h2 id="onboarding-dialog-title" className="text-xl font-bold tracking-tight text-text">What disrupts your focus most?</h2>
+              <p className="text-xs text-muted">Choose the challenge you face most frequently when trying to concentrate.</p>
             </div>
-
             <div className="space-y-2">
               {OBSTACLES.map((o) => (
                 <button
@@ -146,9 +136,7 @@ export const OnboardingModal: React.FC = () => {
                   key={o.id}
                   onClick={() => setSelectedObstacle(o.id)}
                   className={`w-full p-3 rounded-lg border text-left transition-colors min-h-[44px] ${
-                    selectedObstacle === o.id
-                      ? 'border-accent bg-accent/5 dark:bg-accent/10 ring-1 ring-accent'
-                      : 'border-border bg-surface-2 hover:bg-surface'
+                    selectedObstacle === o.id ? 'border-accent bg-accent/5 dark:bg-accent/10 ring-1 ring-accent' : 'border-border bg-surface-2 hover:bg-surface'
                   }`}
                 >
                   <span className="text-sm font-semibold text-text block">{o.label}</span>
@@ -156,28 +144,19 @@ export const OnboardingModal: React.FC = () => {
                 </button>
               ))}
             </div>
-
             <div className="pt-2 flex gap-2">
-              <Button variant="subtle" onClick={() => setStep(1)} className="w-auto">
-                Back
-              </Button>
-              <Button variant="primary" onClick={handleNextToRecommendations} className="flex-1">
-                See Recommendations
-              </Button>
+              <Button variant="subtle" onClick={() => setStep(1)} className="w-auto">Back</Button>
+              <Button variant="primary" onClick={handleNextToRecommendations} className="flex-1">See Recommendations</Button>
             </div>
           </div>
         )}
 
-        {/* Step 3: Recommendations */}
         {step === 3 && (
           <div className="space-y-4">
             <div className="space-y-1">
-              <h2 className="text-xl font-bold tracking-tight text-text">Suggested Starting Points</h2>
-              <p className="text-xs text-muted">
-                Based on your obstacle, here are evidence-labelled tools to try first:
-              </p>
+              <h2 id="onboarding-dialog-title" className="text-xl font-bold tracking-tight text-text">Suggested Starting Points</h2>
+              <p className="text-xs text-muted">Based on your obstacle, here are evidence-labelled tools to try first:</p>
             </div>
-
             <div className="space-y-3">
               {recommendations.map((rec) => (
                 <Card key={rec.id} className="p-3.5 space-y-2 bg-surface-2 border-border">
@@ -186,21 +165,15 @@ export const OnboardingModal: React.FC = () => {
                     <EvidenceBadge tier={rec.tier} />
                   </div>
                   <p className="text-xs text-muted">{rec.description}</p>
-
                   <div className="pt-1.5 border-t border-border/60 text-[11px] text-muted space-y-1">
-                    <p>
-                      <strong className="text-text">Why this?</strong> {rec.whyThis}
-                    </p>
-                    <p className="italic">
-                      Measured outcome: <span className="text-text not-italic">{rec.outcome}</span>
-                    </p>
+                    <p><strong className="text-text">Why this?</strong> {rec.whyThis}</p>
+                    <p className="italic">Measured outcome: <span className="text-text not-italic">{rec.outcome}</span></p>
                   </div>
-
                   <div className="pt-1">
                     <Link
                       href={rec.actionHref}
                       onClick={handleDismiss}
-                      className="text-xs font-semibold text-accent hover:underline inline-flex items-center min-h-[36px]"
+                      className="text-xs font-semibold text-accent hover:underline inline-flex items-center min-h-[44px]"
                     >
                       {rec.actionLabel} →
                     </Link>
@@ -208,11 +181,8 @@ export const OnboardingModal: React.FC = () => {
                 </Card>
               ))}
             </div>
-
             <div className="pt-2">
-              <Button variant="primary" onClick={handleDismiss} className="w-full">
-                Enter FocusLab
-              </Button>
+              <Button variant="primary" onClick={handleDismiss} className="w-full">Enter FocusLab</Button>
             </div>
           </div>
         )}
