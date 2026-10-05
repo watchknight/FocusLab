@@ -5,20 +5,28 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import { ThemeToggle } from './ThemeToggle';
+import { LanguageToggle } from './LanguageToggle';
+import { useT, I18nKey } from '@/i18n';
 
-export const NAV_LINKS = [
-  { label: 'Home', href: '/' },
-  { label: 'Check', href: '/check' },
-  { label: 'Focus', href: '/focus' },
-  { label: 'Activities', href: '/activities' },
-  { label: 'Experiments', href: '/experiments' },
-  { label: 'Insights', href: '/insights' },
-  { label: 'Sounds', href: '/sounds' },
-  { label: 'Learn', href: '/learn' },
+interface NavItem {
+  key: I18nKey;
+  href: string;
+}
+
+export const NAV_ITEMS: NavItem[] = [
+  { key: 'nav.home', href: '/' },
+  { key: 'nav.check', href: '/check' },
+  { key: 'nav.focus', href: '/focus' },
+  { key: 'nav.activities', href: '/activities' },
+  { key: 'nav.experiments', href: '/experiments' },
+  { key: 'nav.insights', href: '/insights' },
+  { key: 'nav.sounds', href: '/sounds' },
+  { key: 'nav.learn', href: '/learn' },
 ];
 
 export const Navbar: React.FC = () => {
   const pathname = usePathname();
+  const { t } = useT();
 
   return (
     <header className="border-b border-border bg-surface sticky top-0 z-20">
@@ -33,7 +41,7 @@ export const Navbar: React.FC = () => {
 
         {/* Desktop / tablet navigation */}
         <nav aria-label="Main Navigation" className="hidden md:flex items-center gap-1 overflow-x-auto">
-          {NAV_LINKS.map((item) => {
+          {NAV_ITEMS.map((item) => {
             const active = pathname === item.href;
             return (
               <Link
@@ -47,13 +55,16 @@ export const Navbar: React.FC = () => {
                 )}
                 aria-current={active ? 'page' : undefined}
               >
-                {item.label}
+                {t(item.key)}
               </Link>
             );
           })}
         </nav>
 
-        <ThemeToggle />
+        <div className="flex items-center gap-1.5">
+          <LanguageToggle />
+          <ThemeToggle />
+        </div>
       </div>
     </header>
   );

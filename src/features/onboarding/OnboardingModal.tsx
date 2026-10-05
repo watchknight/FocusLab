@@ -11,25 +11,27 @@ import {
   getRecommendationsForObstacle,
   RecommendationItem,
 } from '@/lib/recommend';
+import { useT, I18nKey } from '@/i18n';
 
 const ONBOARDED_KEY = 'focuslab:onboarded';
 
-const GOALS: Array<{ id: UserGoal; label: string; desc: string }> = [
-  { id: 'work', label: 'Deep Work', desc: 'Sustained focus on professional projects' },
-  { id: 'study', label: 'Study & Learning', desc: 'Absorbing and retaining challenging material' },
-  { id: 'creative', label: 'Creative Tasks', desc: 'Writing, designing, or problem solving' },
-  { id: 'other', label: 'Everyday Tasks', desc: 'Finishing chores and personal projects' },
+const GOAL_KEYS: Array<{ id: UserGoal; labelKey: I18nKey; descKey: I18nKey }> = [
+  { id: 'work', labelKey: 'onboarding.goalWork', descKey: 'onboarding.goalWorkDesc' },
+  { id: 'study', labelKey: 'onboarding.goalStudy', descKey: 'onboarding.goalStudyDesc' },
+  { id: 'creative', labelKey: 'onboarding.goalCreative', descKey: 'onboarding.goalCreativeDesc' },
+  { id: 'other', labelKey: 'onboarding.goalOther', descKey: 'onboarding.goalOtherDesc' },
 ];
 
-const OBSTACLES: Array<{ id: UserObstacle; label: string; desc: string }> = [
-  { id: 'phone', label: 'Phone & Social Media', desc: 'Urge to check feeds and notifications' },
-  { id: 'racing_thoughts', label: 'Racing Thoughts', desc: 'Internal mental chatter and anxiety' },
-  { id: 'tiredness', label: 'Fatigue & Low Energy', desc: 'Mental exhaustion or lack of alertness' },
-  { id: 'noise', label: 'Noise & People', desc: 'Uncontrolled sensory distractions in your space' },
-  { id: 'cant_start', label: 'Getting Started', desc: 'Procrastination and friction initiating work' },
+const OBSTACLE_KEYS: Array<{ id: UserObstacle; labelKey: I18nKey; descKey: I18nKey }> = [
+  { id: 'phone', labelKey: 'onboarding.obsPhone', descKey: 'onboarding.obsPhoneDesc' },
+  { id: 'racing_thoughts', labelKey: 'onboarding.obsThoughts', descKey: 'onboarding.obsThoughtsDesc' },
+  { id: 'tiredness', labelKey: 'onboarding.obsTired', descKey: 'onboarding.obsTiredDesc' },
+  { id: 'noise', labelKey: 'onboarding.obsNoise', descKey: 'onboarding.obsNoiseDesc' },
+  { id: 'cant_start', labelKey: 'onboarding.obsStart', descKey: 'onboarding.obsStartDesc' },
 ];
 
 export const OnboardingModal: React.FC = () => {
+  const { t } = useT();
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [selectedGoal, setSelectedGoal] = useState<UserGoal>('work');
@@ -82,28 +84,28 @@ export const OnboardingModal: React.FC = () => {
       aria-labelledby="onboarding-dialog-title"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 focus:outline-none"
     >
-      <Card
-        className="max-w-lg w-full p-5 sm:p-6 space-y-5 bg-surface border-border shadow-2xl overflow-y-auto max-h-[90vh]"
-      >
+      <Card className="max-w-lg w-full p-5 sm:p-6 space-y-5 bg-surface border-border shadow-2xl overflow-y-auto max-h-[90vh]">
         <div className="flex items-center justify-between text-xs text-muted border-b border-border pb-3">
-          <span className="font-semibold text-text">Step {step} of 3</span>
+          <span className="font-semibold text-text">{t('onboarding.step', { step })}</span>
           <button
             type="button"
             onClick={handleDismiss}
             className="hover:text-text underline min-h-[44px] px-2 inline-flex items-center"
           >
-            Skip intro
+            {t('onboarding.skip')}
           </button>
         </div>
 
         {step === 1 && (
           <div className="space-y-4">
             <div className="space-y-1">
-              <h2 id="onboarding-dialog-title" className="text-xl font-bold tracking-tight text-text">What is your primary focus goal?</h2>
-              <p className="text-xs text-muted">FocusLab adapts to your current context with zero tracking or user accounts.</p>
+              <h2 id="onboarding-dialog-title" className="text-xl font-bold tracking-tight text-text">
+                {t('onboarding.goalTitle')}
+              </h2>
+              <p className="text-xs text-muted">{t('onboarding.goalSub')}</p>
             </div>
             <div className="space-y-2">
-              {GOALS.map((g) => (
+              {GOAL_KEYS.map((g) => (
                 <button
                   type="button"
                   key={g.id}
@@ -112,13 +114,15 @@ export const OnboardingModal: React.FC = () => {
                     selectedGoal === g.id ? 'border-accent bg-accent/5 dark:bg-accent/10 ring-1 ring-accent' : 'border-border bg-surface-2 hover:bg-surface'
                   }`}
                 >
-                  <span className="text-sm font-semibold text-text block">{g.label}</span>
-                  <span className="text-xs text-muted block mt-0.5">{g.desc}</span>
+                  <span className="text-sm font-semibold text-text block">{t(g.labelKey)}</span>
+                  <span className="text-xs text-muted block mt-0.5">{t(g.descKey)}</span>
                 </button>
               ))}
             </div>
             <div className="pt-2">
-              <Button variant="primary" onClick={() => setStep(2)} className="w-full">Continue to Obstacles</Button>
+              <Button variant="primary" onClick={() => setStep(2)} className="w-full">
+                {t('onboarding.btnToObstacles')}
+              </Button>
             </div>
           </div>
         )}
@@ -126,11 +130,13 @@ export const OnboardingModal: React.FC = () => {
         {step === 2 && (
           <div className="space-y-4">
             <div className="space-y-1">
-              <h2 id="onboarding-dialog-title" className="text-xl font-bold tracking-tight text-text">What disrupts your focus most?</h2>
-              <p className="text-xs text-muted">Choose the challenge you face most frequently when trying to concentrate.</p>
+              <h2 id="onboarding-dialog-title" className="text-xl font-bold tracking-tight text-text">
+                {t('onboarding.obstacleTitle')}
+              </h2>
+              <p className="text-xs text-muted">{t('onboarding.obstacleSub')}</p>
             </div>
             <div className="space-y-2">
-              {OBSTACLES.map((o) => (
+              {OBSTACLE_KEYS.map((o) => (
                 <button
                   type="button"
                   key={o.id}
@@ -139,14 +145,16 @@ export const OnboardingModal: React.FC = () => {
                     selectedObstacle === o.id ? 'border-accent bg-accent/5 dark:bg-accent/10 ring-1 ring-accent' : 'border-border bg-surface-2 hover:bg-surface'
                   }`}
                 >
-                  <span className="text-sm font-semibold text-text block">{o.label}</span>
-                  <span className="text-xs text-muted block mt-0.5">{o.desc}</span>
+                  <span className="text-sm font-semibold text-text block">{t(o.labelKey)}</span>
+                  <span className="text-xs text-muted block mt-0.5">{t(o.descKey)}</span>
                 </button>
               ))}
             </div>
             <div className="pt-2 flex gap-2">
-              <Button variant="subtle" onClick={() => setStep(1)} className="w-auto">Back</Button>
-              <Button variant="primary" onClick={handleNextToRecommendations} className="flex-1">See Recommendations</Button>
+              <Button variant="subtle" onClick={() => setStep(1)} className="w-auto">{t('common.back')}</Button>
+              <Button variant="primary" onClick={handleNextToRecommendations} className="flex-1">
+                {t('onboarding.btnToRecs')}
+              </Button>
             </div>
           </div>
         )}
@@ -154,8 +162,10 @@ export const OnboardingModal: React.FC = () => {
         {step === 3 && (
           <div className="space-y-4">
             <div className="space-y-1">
-              <h2 id="onboarding-dialog-title" className="text-xl font-bold tracking-tight text-text">Suggested Starting Points</h2>
-              <p className="text-xs text-muted">Based on your obstacle, here are evidence-labelled tools to try first:</p>
+              <h2 id="onboarding-dialog-title" className="text-xl font-bold tracking-tight text-text">
+                {t('onboarding.recsTitle')}
+              </h2>
+              <p className="text-xs text-muted">{t('onboarding.recsSub')}</p>
             </div>
             <div className="space-y-3">
               {recommendations.map((rec) => (
@@ -166,8 +176,8 @@ export const OnboardingModal: React.FC = () => {
                   </div>
                   <p className="text-xs text-muted">{rec.description}</p>
                   <div className="pt-1.5 border-t border-border/60 text-[11px] text-muted space-y-1">
-                    <p><strong className="text-text">Why this?</strong> {rec.whyThis}</p>
-                    <p className="italic">Measured outcome: <span className="text-text not-italic">{rec.outcome}</span></p>
+                    <p><strong className="text-text">{t('onboarding.whyThis')}</strong> {rec.whyThis}</p>
+                    <p className="italic">{t('onboarding.measuredOutcome')} <span className="text-text not-italic">{rec.outcome}</span></p>
                   </div>
                   <div className="pt-1">
                     <Link
@@ -182,7 +192,9 @@ export const OnboardingModal: React.FC = () => {
               ))}
             </div>
             <div className="pt-2">
-              <Button variant="primary" onClick={handleDismiss} className="w-full">Enter FocusLab</Button>
+              <Button variant="primary" onClick={handleDismiss} className="w-full">
+                {t('onboarding.enter')}
+              </Button>
             </div>
           </div>
         )}

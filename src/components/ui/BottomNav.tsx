@@ -4,17 +4,19 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
-import { NAV_LINKS } from './Navbar';
+import { NAV_ITEMS } from './Navbar';
+import { useT } from '@/i18n';
 
 export const BottomNav: React.FC = () => {
   const pathname = usePathname();
+  const { t } = useT();
 
   return (
     <nav
       aria-label="Mobile Navigation"
       className="md:hidden fixed bottom-0 left-0 right-0 z-20 border-t border-border bg-surface px-2 py-1 flex items-center justify-around overflow-x-auto gap-1"
     >
-      {NAV_LINKS.map((item) => {
+      {NAV_ITEMS.map((item) => {
         const active = pathname === item.href;
         return (
           <Link
@@ -28,7 +30,7 @@ export const BottomNav: React.FC = () => {
             )}
             aria-current={active ? 'page' : undefined}
           >
-            {item.label}
+            {t(item.key)}
           </Link>
         );
       })}

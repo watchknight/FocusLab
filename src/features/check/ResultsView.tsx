@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/Card';
 import { Stat } from '@/components/ui/Stat';
 import { CheckResult } from '@/store/types';
 import { useFocusLabStore } from '@/store';
+import { useT } from '@/i18n';
 
 const HistoryChart = dynamic(() => import('./HistoryChart'), {
   ssr: false,
@@ -23,9 +24,9 @@ interface ResultsViewProps {
 }
 
 export const ResultsView: React.FC<ResultsViewProps> = ({ result, onReset }) => {
+  const { t } = useT();
   const allChecks = useFocusLabStore((state) => state.checks);
 
-  // Filter last 10 baseline checks in chronological order
   const baselineHistory = allChecks
     .filter((c) => c.context === 'baseline')
     .sort((a, b) => a.ts - b.ts)
@@ -44,22 +45,22 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ result, onReset }) => 
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <h2 className="text-xl font-bold text-text">Check Results</h2>
+        <h2 className="text-xl font-bold text-text">{t('check.resultsTitle')}</h2>
         <p className="text-sm font-medium text-text">
-          median {medianRt} ms; {lapses} lapse{lapses !== 1 ? 's' : ''}; {falseStarts} false start{falseStarts !== 1 ? 's' : ''}
+          {t('check.medianRt')}: {medianRt} ms · {lapses} {t('check.lapses')} · {falseStarts} {t('check.falseStarts')}
         </p>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <Stat label="Median RT" value={`${medianRt} ms`} />
-        <Stat label="Lapses" value={lapses} subtext="RT ≥ 355 ms" />
-        <Stat label="False Starts" value={falseStarts} subtext="< 100 ms or early" />
-        <Stat label="Speed (1000/RT)" value={meanReciprocal} subtext="Mean reciprocal" />
+        <Stat label={t('check.medianRt')} value={`${medianRt} ms`} />
+        <Stat label={t('check.lapses')} value={lapses} subtext="RT ≥ 355 ms" />
+        <Stat label={t('check.falseStarts')} value={falseStarts} subtext="< 100 ms or early" />
+        <Stat label={t('check.speed')} value={meanReciprocal} subtext="Mean reciprocal" />
       </div>
 
       <Card className="space-y-3">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-text">Baseline History (Last 10 Checks)</h3>
+          <h3 className="text-sm font-semibold text-text">{t('check.historyTitle')}</h3>
           <span className="text-xs text-muted font-mono">{baselineHistory.length} total</span>
         </div>
         <HistoryChart data={baselineHistory} />
@@ -73,8 +74,8 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ result, onReset }) => 
       </Card>
 
       <div className="pt-2">
-        <Button variant="primary" onClick={onReset} className="w-full sm:w-auto">
-          Start Another Check
+        <Button variant="primary" onClick={onReset} className="w-full sm:w-auto min-h-[44px]">
+          {t('check.btnRetake')}
         </Button>
       </div>
     </div>

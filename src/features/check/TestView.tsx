@@ -9,6 +9,7 @@ import {
   TOTAL_TEST_DURATION_MS,
 } from '@/lib/pvt';
 import { CheckTrial } from '@/store/types';
+import { useT } from '@/i18n';
 
 interface TestViewProps {
   onFinishTest: (trials: CheckTrial[]) => void;
@@ -25,6 +26,7 @@ export const TestView: React.FC<TestViewProps> = ({
   testDurationMs = TOTAL_TEST_DURATION_MS,
   rng = Math.random,
 }) => {
+  const { t } = useT();
   const [phase, setPhase] = useState<TestPhase>('waiting');
   const [displayRt, setDisplayRt] = useState<number | null>(null);
   const [feedbackText, setFeedbackText] = useState<string>('');
@@ -71,12 +73,12 @@ export const TestView: React.FC<TestViewProps> = ({
         timeoutTimerRef.current = setTimeout(() => {
           trialsRef.current.push({ isiMs: currentIsiRef.current, rtMs: TIMEOUT_MS, falseStart: false });
           setPhase('feedback');
-          setFeedbackText('Time out (>10 s)');
+          setFeedbackText(t('check.testTimeout'));
           feedbackTimerRef.current = setTimeout(startNextTrial, FEEDBACK_DURATION_MS);
         }, TIMEOUT_MS);
       });
     }, isi);
-  }, [testDurationMs, rng, clearAllTimers, onFinishTest]);
+  }, [testDurationMs, rng, clearAllTimers, onFinishTest, t]);
 
   const handleResponse = useCallback(() => {
     const responseTime = performance.now();
@@ -85,7 +87,7 @@ export const TestView: React.FC<TestViewProps> = ({
       if (isiTimerRef.current) clearTimeout(isiTimerRef.current);
       trialsRef.current.push({ isiMs: currentIsiRef.current, rtMs: null, falseStart: true });
       setPhase('feedback');
-      setFeedbackText('Too early');
+      setFeedbackText(t('check.testTooEarly'));
       feedbackTimerRef.current = setTimeout(startNextTrial, FEEDBACK_DURATION_MS);
       return;
     }
@@ -98,10 +100,10 @@ export const TestView: React.FC<TestViewProps> = ({
       const isFalseStart = rt < MIN_VALID_RT_MS;
       trialsRef.current.push({ isiMs: currentIsiRef.current, rtMs: rt, falseStart: isFalseStart });
       setPhase('feedback');
-      setFeedbackText(isFalseStart ? 'Too early' : `${rt} ms`);
+      setFeedbackText(isFalseStart ? t('check.testTooEarly') : `${rt} ms`);
       feedbackTimerRef.current = setTimeout(startNextTrial, FEEDBACK_DURATION_MS);
     }
-  }, [phase, startNextTrial]);
+  }, [phase, startNextTrial, t]);
 
   useEffect(() => {
     if (phase !== 'stimulus' || reducedMotion) {
@@ -126,7 +128,9 @@ export const TestView: React.FC<TestViewProps> = ({
 
     const minuteInterval = setInterval(() => {
       const minutes = Math.floor((performance.now() - testStartTimeRef.current) / 60000);
-      if (minutes > 0) setMinuteNotice(`${minutes} minute${minutes > 1 ? 's' : ''} elapsed`);
+      if (minutes > 0) {
+        setMinuteNotice(t('check.minuteElapsed', { minutes, plural: minutes > 1 ? 's' : '' }));
+      }
     }, 60000);
 
     const onKeyDown = (e: KeyboardEvent) => {
@@ -156,7 +160,7 @@ export const TestView: React.FC<TestViewProps> = ({
       document.removeEventListener('visibilitychange', abortOnHidden);
       window.removeEventListener('blur', abortOnHidden);
     };
-  }, [clearAllTimers, handleResponse, onAbort, startNextTrial]);
+  }, [clearAllTimers, handleResponse, onAbort, startNextTrial, t]);
 
   return (
     <div
@@ -167,8 +171,8 @@ export const TestView: React.FC<TestViewProps> = ({
       className="fixed inset-0 z-50 flex flex-col justify-between bg-surface p-4 sm:p-6 select-none cursor-pointer focus:outline-none"
     >
       <div className="flex items-center justify-between text-xs text-muted">
-        <span>Press <kbd className="px-1.5 py-0.5 rounded bg-surface-2 border border-border">Space</kbd> or tap anywhere</span>
-        <span>Press <kbd className="px-1.5 py-0.5 rounded bg-surface-2 border border-border">Esc</kbd> to abort</span>
+        <span>{t('check.testPrompt')}</span>
+        <span>{t('check.testEsc')}</span>
       </div>
 
       <div className="flex-1 flex flex-col items-center justify-center p-4">
@@ -184,7 +188,7 @@ export const TestView: React.FC<TestViewProps> = ({
           {phase === 'stimulus' && (
             <div className="text-center">
               {reducedMotion ? (
-                <span className="text-2xl font-bold tracking-widest">[ RESPOND NOW ]</span>
+                <span className="text-2xl font-bold tracking-widest">[ {t('check.testRespond')} ]</span>
               ) : (
                 <span className="text-4xl sm:text-5xl font-mono font-bold tracking-tight">
                   {displayRt ?? 0} <span className="text-lg">ms</span>
@@ -195,14 +199,14 @@ export const TestView: React.FC<TestViewProps> = ({
 
           {phase === 'feedback' && (
             <div className="text-center font-mono">
-              <span className={`text-3xl font-bold ${feedbackText.includes('early') ? 'text-warn' : 'text-text'}`}>
+              <span className={`text-3xl font-bold ${feedbackText.includes('early') || feedbackText.includes('দ্রুত') ? 'text-warn' : 'text-text'}`}>
                 {feedbackText}
               </span>
             </div>
           )}
 
           {phase === 'waiting' && (
-            <span className="text-xs text-muted font-mono tracking-wider">Wait for stimulus...</span>
+            <span className="text-xs text-muted font-mono tracking-wider">{t('check.testWait')}</span>
           )}
         </div>
       </div>
@@ -214,7 +218,7 @@ export const TestView: React.FC<TestViewProps> = ({
       )}
 
       <div className="text-center text-xs text-muted pb-2">
-        Keep your eyes on the box. Respond as quickly as possible.
+        {t('check.testInstruction')}
       </div>
     </div>
   );

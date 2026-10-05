@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Rating1To5 } from '@/store/types';
+import { useT } from '@/i18n';
 
 interface PreRatingViewProps {
   onRatingsComplete: (ratings: { alertness: Rating1To5; mindWandering: Rating1To5 }) => void;
@@ -13,6 +14,7 @@ interface PreRatingViewProps {
 const RATING_VALUES: Rating1To5[] = [1, 2, 3, 4, 5];
 
 export const PreRatingView: React.FC<PreRatingViewProps> = ({ onRatingsComplete, onBack }) => {
+  const { t } = useT();
   const [alertness, setAlertness] = useState<Rating1To5 | null>(null);
   const [mindWandering, setMindWandering] = useState<Rating1To5 | null>(null);
 
@@ -28,15 +30,15 @@ export const PreRatingView: React.FC<PreRatingViewProps> = ({ onRatingsComplete,
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-1">
-        <h2 className="text-xl font-bold text-text">Pre-Check State</h2>
+        <h2 className="text-xl font-bold text-text">{t('check.ratingsTitle')}</h2>
         <p className="text-xs text-muted">
-          Rate your current state before starting the test.
+          {t('check.ratingsSub')}
         </p>
       </div>
 
       <Card className="space-y-3">
         <label className="block text-sm font-semibold text-text" id="alertness-label">
-          Alertness (1 = very sleepy, 5 = fully alert)
+          {t('check.alertnessLabel')}
         </label>
         <div
           role="radiogroup"
@@ -67,7 +69,7 @@ export const PreRatingView: React.FC<PreRatingViewProps> = ({ onRatingsComplete,
 
       <Card className="space-y-3">
         <label className="block text-sm font-semibold text-text" id="mind-wandering-label">
-          Mind wandering right now (1 = not at all, 5 = constantly wandering)
+          {t('check.wanderingLabel')}
         </label>
         <div
           role="radiogroup"
@@ -101,17 +103,17 @@ export const PreRatingView: React.FC<PreRatingViewProps> = ({ onRatingsComplete,
           type="submit"
           variant="primary"
           disabled={!canProceed}
-          className="w-full sm:w-auto"
+          className="w-full sm:w-auto min-h-[44px]"
         >
-          Start Test (3 Minutes)
+          {t('check.btnStartTest')}
         </Button>
         <Button
           type="button"
           variant="subtle"
           onClick={onBack}
-          className="w-full sm:w-auto"
+          className="w-full sm:w-auto min-h-[44px]"
         >
-          Back
+          {t('common.back')}
         </Button>
       </div>
     </form>
