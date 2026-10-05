@@ -1,12 +1,12 @@
+'use client';
+
 import React from 'react';
+import { InsightsOverview } from '@/features/insights';
 
 export default function InsightsPage() {
   return (
-    <div className="space-y-2">
-      <h1 className="text-2xl font-semibold">Insights</h1>
-      <p className="text-sm text-muted">
-        Review personal trends and response metrics aggregated across your local sessions.
-      </p>
+    <div className="py-2">
+      <InsightsOverview />
     </div>
   );
 }

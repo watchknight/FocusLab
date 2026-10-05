@@ -1,54 +1,166 @@
 import { describe, it, expect } from 'vitest';
-import { computeActivityDeltas } from '../experiments';
-import { SelfCheckLog, PracticeSessionLog } from '../legacy-types';
+import {
+  createExperimentSchedule,
+  analyzeExperiment,
+  computeRunDelta,
+  EXPERIMENT_CAVEAT,
+} from '../experiments';
+import { CheckResult, Experiment, ExperimentRun } from '@/store/types';
 
-describe('experiments calculation', () => {
-  it('computes correct mean deltas for matched pre- and post-checks', () => {
-    const checks: SelfCheckLog[] = [
-      { id: 'pre1', timestamp: 1000, energyLevel: 2, distractionLevel: 4, moodLevel: 2 },
-      { id: 'post1', timestamp: 2000, energyLevel: 4, distractionLevel: 2, moodLevel: 4 },
-      { id: 'pre2', timestamp: 3000, energyLevel: 3, distractionLevel: 5, moodLevel: 3 },
-      { id: 'post2', timestamp: 4000, energyLevel: 4, distractionLevel: 2, moodLevel: 4 },
-    ];
+function createMockCheck(id: string, medianRt: number, lapses: number): CheckResult {
+  return {
+    id,
+    ts: Date.now(),
+    context: 'experiment',
+    preRatings: { alertness: 3, mindWandering: 3 },
+    trials: [],
+    metrics: { medianRt, lapses, falseStarts: 0, meanReciprocal: 3.0 },
+  };
+}
 
-    const sessions: PracticeSessionLog[] = [
-      {
-        id: 's1',
-        activityId: 'act_phys_sigh',
-        startedAt: 1000,
-        completedAt: 2000,
-        durationMs: 120000,
-        preCheckId: 'pre1',
-        postCheckId: 'post1',
-        completedFully: true,
-      },
-      {
-        id: 's2',
-        activityId: 'act_phys_sigh',
-        startedAt: 3000,
-        completedAt: 4000,
-        durationMs: 120000,
-        preCheckId: 'pre2',
-        postCheckId: 'post2',
-        completedFully: true,
-      },
-    ];
+function buildRunsAndChecks(xDiffs: number[], restDiffs: number[]) {
+  const checks: CheckResult[] = [];
+  const runs: ExperimentRun[] = [];
+  for (let i = 0; i < xDiffs.length; i++) {
+    checks.push(createMockCheck(`x_${i}_pre`, 350, 1));
+    checks.push(createMockCheck(`x_${i}_post`, 350 + xDiffs[i], 1));
+    runs.push({
+      id: `x_run_${i}`,
+      ts: i * 2,
+      conditionId: 'activity:cyclic-sighing',
+      checkIds: [`x_${i}_pre`, `x_${i}_post`],
+    });
 
-    const deltas = computeActivityDeltas('act_phys_sigh', sessions, checks);
-    expect(deltas.count).toBe(2);
-    // pre1 -> post1: energy +2, distraction -2, mood +2
-    // pre2 -> post2: energy +1, distraction -3, mood +1
-    // mean energy delta: (2 + 1)/2 = 1.5
-    // mean distraction delta: (-2 + -3)/2 = -2.5
-    // mean mood delta: (2 + 1)/2 = 1.5
-    expect(deltas.meanEnergyDelta).toBe(1.5);
-    expect(deltas.meanDistractionDelta).toBe(-2.5);
-    expect(deltas.meanMoodDelta).toBe(1.5);
+    checks.push(createMockCheck(`r_${i}_pre`, 350, 1));
+    checks.push(createMockCheck(`r_${i}_post`, 350 + restDiffs[i], 1));
+    runs.push({
+      id: `r_run_${i}`,
+      ts: i * 2 + 1,
+      conditionId: 'rest',
+      checkIds: [`r_${i}_pre`, `r_${i}_post`],
+    });
+  }
+  return { checks, runs };
+}
+
+describe('experiments pure analysis logic', () => {
+  it('creates 5 pairs (10 runs) with predictable seeded RNG', () => {
+    let callCount = 0;
+    const mockRng = () => (++callCount % 2 === 1 ? 0.2 : 0.8);
+    const schedule = createExperimentSchedule('activity:cyclic-sighing', mockRng);
+
+    expect(schedule.length).toBe(10);
+    expect(schedule.filter((s) => s.conditionId === 'activity:cyclic-sighing').length).toBe(5);
+    expect(schedule.filter((s) => s.conditionId === 'rest').length).toBe(5);
+    expect(schedule[0].conditionId).toBe('activity:cyclic-sighing');
+    expect(schedule[1].conditionId).toBe('rest');
+    expect(schedule[2].conditionId).toBe('rest');
+    expect(schedule[3].conditionId).toBe('activity:cyclic-sighing');
   });
 
-  it('handles empty sessions gracefully', () => {
-    const deltas = computeActivityDeltas('act_none', [], []);
-    expect(deltas.count).toBe(0);
-    expect(deltas.meanEnergyDelta).toBe(0);
+  it('correctly calculates after minus before deltas for RT and lapses', () => {
+    const checksMap = new Map<string, CheckResult>([
+      ['pre', createMockCheck('pre', 350, 4)],
+      ['post', createMockCheck('post', 310, 1)],
+    ]);
+    const run: ExperimentRun = {
+      id: 'run_1',
+      ts: Date.now(),
+      conditionId: 'activity:cyclic-sighing',
+      checkIds: ['pre', 'post'],
+    };
+    const delta = computeRunDelta(run, checksMap);
+    expect(delta?.deltaRt).toBe(-40);
+    expect(delta?.deltaLapses).toBe(-3);
+  });
+
+  it('returns null if checks are missing', () => {
+    const run: ExperimentRun = {
+      id: 'run_1',
+      ts: Date.now(),
+      conditionId: 'activity:cyclic-sighing',
+      checkIds: ['miss_1', 'miss_2'],
+    };
+    expect(computeRunDelta(run, new Map())).toBeNull();
+  });
+
+  it('returns "Not enough data yet" when fewer than 4 pairs are completed', () => {
+    const { checks, runs } = buildRunsAndChecks([-20], [5]);
+    const experiment: Experiment = {
+      id: 'exp_1',
+      createdAt: Date.now(),
+      design: 'prepost',
+      conditionIds: ['activity:cyclic-sighing', 'rest'],
+      schedule: [],
+      runs,
+    };
+    const analysis = analyzeExperiment(experiment, checks);
+    expect(analysis.totalPairs).toBe(1);
+    expect(analysis.verdict).toBe('Not enough data yet — 6 more runs');
+    expect(analysis.caveat).toBe(EXPERIMENT_CAVEAT);
+  });
+
+  it('returns "Promising for you — keep testing." when wins >= 75% and mean diff favours X', () => {
+    const { checks, runs } = buildRunsAndChecks([-30, -20, -40, 5], [0, -5, -10, 20]);
+    const experiment: Experiment = {
+      id: 'exp_promising',
+      createdAt: Date.now(),
+      design: 'prepost',
+      conditionIds: ['activity:cyclic-sighing', 'rest'],
+      schedule: [],
+      runs,
+    };
+    const analysis = analyzeExperiment(experiment, checks);
+    expect(analysis.wins).toBe(4);
+    expect(analysis.winRatio).toBe(1.0);
+    expect(analysis.verdict).toBe('Promising for you — keep testing.');
+  });
+
+  it('returns "Doesn\'t seem to help you." when wins <= 25%', () => {
+    const { checks, runs } = buildRunsAndChecks([-20, 10, 15, 20], [0, -10, -5, 0]);
+    const experiment: Experiment = {
+      id: 'exp_not_helpful',
+      createdAt: Date.now(),
+      design: 'prepost',
+      conditionIds: ['activity:cyclic-sighing', 'rest'],
+      schedule: [],
+      runs,
+    };
+    const analysis = analyzeExperiment(experiment, checks);
+    expect(analysis.wins).toBe(1);
+    expect(analysis.winRatio).toBe(0.25);
+    expect(analysis.verdict).toBe("Doesn't seem to help you.");
+  });
+
+  it('returns "No clear difference." for mixed outcomes', () => {
+    const { checks, runs } = buildRunsAndChecks([-10, -10, 0, 0], [0, 0, -10, -10]);
+    const experiment: Experiment = {
+      id: 'exp_no_diff',
+      createdAt: Date.now(),
+      design: 'prepost',
+      conditionIds: ['activity:cyclic-sighing', 'rest'],
+      schedule: [],
+      runs,
+    };
+    const analysis = analyzeExperiment(experiment, checks);
+    expect(analysis.wins).toBe(2);
+    expect(analysis.winRatio).toBe(0.5);
+    expect(analysis.verdict).toBe('No clear difference.');
+  });
+
+  it('correctly handles ties and zero lapses without error', () => {
+    const { checks, runs } = buildRunsAndChecks([0, 0, 0, 0], [0, 0, 0, 0]);
+    const experiment: Experiment = {
+      id: 'exp_ties',
+      createdAt: Date.now(),
+      design: 'prepost',
+      conditionIds: ['activity:cyclic-sighing', 'rest'],
+      schedule: [],
+      runs,
+    };
+    const analysis = analyzeExperiment(experiment, checks);
+    expect(analysis.pairs.every((p) => p.isTie)).toBe(true);
+    expect(analysis.wins).toBe(0);
+    expect(analysis.verdict).toBe("Doesn't seem to help you.");
   });
 });

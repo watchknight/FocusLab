@@ -5,6 +5,7 @@ import {
   Session,
   ActivityLog,
   Experiment,
+  ExperimentRun,
   FocusLabSnapshot,
 } from './types';
 import { validateSnapshot } from './validation';
@@ -19,6 +20,7 @@ export interface FocusLabStore {
   addSession: (session: Session) => void;
   addActivityLog: (log: ActivityLog) => void;
   addExperiment: (experiment: Experiment) => void;
+  addExperimentRun: (experimentId: string, run: ExperimentRun) => void;
 
   exportData: () => string;
   importData: (json: string) => boolean;
@@ -72,6 +74,14 @@ export const useFocusLabStore = create<FocusLabStore>()(
 
       addExperiment: (experiment) => {
         set((state) => ({ experiments: [experiment, ...state.experiments] }));
+      },
+
+      addExperimentRun: (experimentId, run) => {
+        set((state) => ({
+          experiments: state.experiments.map((e) =>
+            e.id === experimentId ? { ...e, runs: [...e.runs, run] } : e
+          ),
+        }));
       },
 
       exportData: () => {
