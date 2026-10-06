@@ -13,7 +13,7 @@ import { useMotionAllowed } from '@/lib/motion';
 const HistoryChart = dynamic(() => import('./HistoryChart'), {
   ssr: false,
   loading: () => (
-    <div className="h-48 flex items-center justify-center text-xs text-muted">
+    <div className="h-48 sm:h-56 flex items-center justify-center text-xs text-muted" aria-hidden="true">
       Loading chart...
     </div>
   ),

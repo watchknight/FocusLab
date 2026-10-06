@@ -1,5 +1,5 @@
-@import '@fontsource-variable/atkinson-hyperlegible-next/index.css';
 @import '../styles/tokens.css';
+
 
 @tailwind base;
 @tailwind components;

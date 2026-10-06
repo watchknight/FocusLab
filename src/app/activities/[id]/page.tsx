@@ -9,11 +9,14 @@ interface ActivityPageProps {
   };
 }
 
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return ACTIVITIES.map((activity) => ({
     id: activity.id,
   }));
 }
+
 
 export default function ActivityPage({ params }: ActivityPageProps) {
   const activity = getActivityById(params.id);

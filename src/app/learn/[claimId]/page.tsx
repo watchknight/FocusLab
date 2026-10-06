@@ -13,11 +13,14 @@ interface Props {
   };
 }
 
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return CLAIMS.map((claim) => ({
     claimId: claim.id,
   }));
 }
+
 
 export function generateMetadata({ params }: Props): Metadata {
   const claim = getClaimById(params.claimId);

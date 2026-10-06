@@ -102,7 +102,7 @@ export const ReflexLamp: React.FC = () => {
       onClick={state !== 'result' ? handleAction : undefined}
       onKeyDown={handleKeyDown}
       className={clsx(
-        'hero-focus-card w-full max-w-sm mx-auto rounded-md border p-6 flex flex-col items-center justify-center text-center transition-colors duration-200 select-none cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+        'hero-focus-card w-full max-w-sm mx-auto min-h-[300px] rounded-md border p-6 flex flex-col items-center justify-center text-center transition-colors duration-200 select-none cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
         borderGlow
           ? 'border-accent bg-surface-2 ring-2 ring-accent shadow-[0_0_24px_rgba(255,194,71,0.35)]'
           : 'border-border bg-surface-2 shadow-elevation hover:border-border-strong'

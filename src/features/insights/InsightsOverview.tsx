@@ -16,12 +16,12 @@ import { TimeOfDayData } from './TimeOfDayChart';
 
 const HistoryChart = dynamic(() => import('@/features/check/HistoryChart'), {
   ssr: false,
-  loading: () => <div className="h-44 flex items-center justify-center text-xs text-muted">Loading chart...</div>,
+  loading: () => <div className="h-48 sm:h-56 flex items-center justify-center text-xs text-muted" aria-hidden="true">Loading chart...</div>,
 });
 
 const TimeOfDayChart = dynamic(() => import('./TimeOfDayChart'), {
   ssr: false,
-  loading: () => <div className="h-44 flex items-center justify-center text-xs text-muted">Loading chart...</div>,
+  loading: () => <div className="h-48 sm:h-56 flex items-center justify-center text-xs text-muted" aria-hidden="true">Loading chart...</div>,
 });
 
 export const InsightsOverview: React.FC = () => {

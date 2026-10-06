@@ -1,8 +1,14 @@
 'use client';
 
 import React, { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { Button } from '@/components/ui/Button';
-import { OnboardingModal } from './OnboardingModal';
+
+const OnboardingModal = dynamic(
+  () => import('./OnboardingModal').then((mod) => mod.OnboardingModal),
+  { ssr: false }
+);
+
 
 export const RestartOnboardingButton: React.FC = () => {
   const [resetMessage, setResetMessage] = useState(false);

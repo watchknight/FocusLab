@@ -1,6 +1,17 @@
-/* FocusLab Service Worker — Offline-First PWA */
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const rootDir = path.resolve(__dirname, '..');
+
+const commitHash = process.env.RENDER_GIT_COMMIT || Date.now().toString();
+const cacheName = `focuslab-cache-${commitHash}`;
+
+const swContent = `/* FocusLab Service Worker — Offline-First PWA */
 // Cache version: commit hash (RENDER_GIT_COMMIT) when present, else build timestamp
-const CACHE_NAME = 'focuslab-cache-1791284404461';
+const CACHE_NAME = '${cacheName}';
 
 const PRECACHE_ASSETS = [
   '/',
@@ -85,7 +96,7 @@ self.addEventListener('fetch', (event) => {
         cached = await caches.match(altUrl.toString());
       } else if (!targetUrl.pathname.endsWith('/')) {
         const altUrl = new URL(targetUrl);
-        altUrl.pathname = `${targetUrl.pathname}/`;
+        altUrl.pathname = \`\${targetUrl.pathname}/\`;
         cached = await caches.match(altUrl.toString());
       }
     } catch {}
@@ -130,3 +141,14 @@ self.addEventListener('fetch', (event) => {
     })
   );
 });
+`;
+
+fs.writeFileSync(path.join(rootDir, 'public', 'sw.js'), swContent, 'utf8');
+
+const outDir = path.join(rootDir, 'out');
+if (fs.existsSync(outDir)) {
+  fs.writeFileSync(path.join(outDir, 'sw.js'), swContent, 'utf8');
+}
+
+console.log(`[sw] Generated Service Worker with CACHE_NAME="${cacheName}"`);
+

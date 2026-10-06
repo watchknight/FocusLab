@@ -2,13 +2,19 @@
 
 import React from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { HeroLamp } from '@/components/HeroLamp';
 import { Plate } from '@/components/ui/Plate';
 import { Button } from '@/components/ui/Button';
 import { EvidenceMeter } from '@/components/ui/EvidenceMeter';
-import { OnboardingModal } from '@/features/onboarding';
 import { getClaimById } from '@/content/evidence';
 import { useT } from '@/i18n';
+
+const OnboardingModal = dynamic(
+  () => import('@/features/onboarding').then((mod) => mod.OnboardingModal),
+  { ssr: false }
+);
+
 
 const TIER_ROWS = [
   {

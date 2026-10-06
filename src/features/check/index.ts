@@ -4,4 +4,4 @@ export { IntroView } from './IntroView';
 export { PreRatingView } from './PreRatingView';
 export { TestView } from './TestView';
 export { ResultsView } from './ResultsView';
-export { HistoryChart } from './HistoryChart';
+

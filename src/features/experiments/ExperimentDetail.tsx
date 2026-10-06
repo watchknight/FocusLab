@@ -14,7 +14,7 @@ import { ExperimentRunner } from './ExperimentRunner';
 const ExperimentDotPlot = dynamic(() => import('./ExperimentDotPlot'), {
   ssr: false,
   loading: () => (
-    <div className="h-48 flex items-center justify-center text-xs text-muted">
+    <div className="min-h-[280px] sm:min-h-[320px] flex items-center justify-center text-xs text-muted" aria-hidden="true">
       Loading chart...
     </div>
   ),

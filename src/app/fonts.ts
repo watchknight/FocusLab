@@ -16,6 +16,7 @@ export const textFont = localFont({
   ],
   variable: '--font-text',
   display: 'swap',
+  preload: true,
 });
 
 export const displayFont = Archivo({
@@ -23,12 +24,14 @@ export const displayFont = Archivo({
   axes: ['wdth'],
   variable: '--font-display',
   display: 'swap',
+  preload: true,
 });
 
 export const bnFont = Hind_Siliguri({
-  weight: ['400', '500', '600', '700'],
+  weight: ['400', '600'],
   subsets: ['bengali'],
   preload: false,
   variable: '--font-bn',
   display: 'swap',
 });
+

@@ -66,7 +66,7 @@ export const HeroLamp: React.FC = () => {
         </div>
 
         {/* Right column: ReflexLamp demo card */}
-        <div className="lg:col-span-5 flex justify-center lg:justify-end w-full">
+        <div className="lg:col-span-5 flex justify-center lg:justify-end w-full min-h-[300px]">
           <ReflexLamp />
         </div>
       </div>

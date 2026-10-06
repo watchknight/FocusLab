@@ -6,7 +6,7 @@ import * as m from 'motion/react-m';
 import { AnimatePresence } from 'motion/react';
 import { handleFocusTrapKeyDown } from '@/lib/focus-trap';
 import { popVariants } from '@/lib/motion';
-import { runThemeTransition } from '@/lib/theme-transition';
+
 
 export type ThemeProfile = 'daylight' | 'night' | 'contrast' | 'system';
 
@@ -130,7 +130,9 @@ export const ThemeToggle: React.FC = () => {
     } catch {
       // Ignored
     }
-    runThemeTransition(mode, triggerRef.current);
+    import('@/lib/theme-transition').then(({ runThemeTransition }) => {
+      runThemeTransition(mode, triggerRef.current);
+    });
     setMenuOpen(false);
     triggerRef.current?.focus();
   };

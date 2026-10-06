@@ -1,5 +1,5 @@
 import { motionAllowed, isLowEndDevice, getCalmState } from './motion';
-import { applyTheme, ThemeProfile } from '@/components/ui/ThemeToggle';
+import { applyTheme, type ThemeProfile } from '@/components/ui/ThemeToggle';
 
 /**
  * Executes a theme transition. If document.startViewTransition exists and motion
