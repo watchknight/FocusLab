@@ -25,7 +25,7 @@ export const RecoveryScreen: React.FC<RecoveryScreenProps> = ({
       setCopied(true);
       setTimeout(() => setCopied(false), 3000);
     } catch {
-      // Fallback
+      // Clipboard write fallback
     }
   };
 
@@ -33,20 +33,20 @@ export const RecoveryScreen: React.FC<RecoveryScreenProps> = ({
     <div className="min-h-[80vh] flex items-center justify-center p-4">
       <Card className="max-w-lg w-full p-6 space-y-4 bg-surface border-border shadow-xl">
         <div className="space-y-1">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-md border border-warn text-warn bg-surface-2">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 text-sm font-semibold rounded-md border border-warn text-warn bg-surface-2">
             <span>⚠ Data Integrity Warning</span>
           </div>
           <h1 className="text-xl font-bold tracking-tight text-text">
             Storage Recovery Mode
           </h1>
-          <p className="text-xs text-muted leading-relaxed">
-            FocusLab detected corrupted or invalid JSON in your browser&apos;s local storage.
-            To protect your records from loss, we halted normal startup.
+          <p className="text-sm text-muted leading-relaxed">
+            FocusLab detected corrupted or unreadable data in your browser&apos;s local storage.
+            To protect your records from loss, normal startup was halted.
           </p>
         </div>
 
         <div className="space-y-1.5">
-          <label htmlFor="raw-corrupt-data" className="text-xs font-semibold text-text block">
+          <label htmlFor="raw-corrupt-data" className="text-sm font-semibold text-text block">
             Raw Stored Text:
           </label>
           <textarea
@@ -54,7 +54,7 @@ export const RecoveryScreen: React.FC<RecoveryScreenProps> = ({
             readOnly
             value={rawText}
             rows={5}
-            className="w-full p-2.5 text-xs font-mono rounded border border-border bg-surface-2 text-text select-all focus:outline-accent"
+            className="w-full p-3 text-sm font-mono rounded border border-border bg-surface-2 text-text select-all focus:outline-accent"
           />
         </div>
 
@@ -84,7 +84,7 @@ export const RecoveryScreen: React.FC<RecoveryScreenProps> = ({
           </Button>
         </div>
 
-        <p className="text-[11px] text-muted text-center pt-1">
+        <p className="text-sm text-muted text-center pt-1">
           Tip: Copy your raw data before resetting so you have a manual backup.
         </p>
       </Card>
@@ -92,42 +92,87 @@ export const RecoveryScreen: React.FC<RecoveryScreenProps> = ({
   );
 };
 
+export const UIErrorFallback: React.FC<{ onRetry: () => void }> = ({ onRetry }) => {
+  return (
+    <div className="min-h-[60vh] flex items-center justify-center p-4">
+      <Card className="max-w-md w-full p-6 space-y-4 bg-surface border-border shadow-xl">
+        <div className="space-y-1">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 text-sm font-semibold rounded-md border border-warn text-warn bg-surface-2">
+            <span>Application Notice</span>
+          </div>
+          <h1 className="text-xl font-bold tracking-tight text-text">
+            Something went wrong
+          </h1>
+          <p className="text-sm text-muted leading-relaxed">
+            A visual rendering issue occurred in this view. Your stored focus data and logs remain safe.
+          </p>
+        </div>
+
+        <Button
+          variant="primary"
+          onClick={onRetry}
+          className="w-full min-h-[44px]"
+        >
+          Reload Page
+        </Button>
+      </Card>
+    </div>
+  );
+};
+
 interface BoundaryProps {
   children: ReactNode;
-  fallback: (error: Error, rawText: string) => ReactNode;
 }
 
 interface BoundaryState {
   hasError: boolean;
   error: Error | null;
-  rawText: string;
 }
 
-class IntegrityErrorBoundary extends Component<BoundaryProps, BoundaryState> {
+class AppErrorBoundary extends Component<BoundaryProps, BoundaryState> {
   constructor(props: BoundaryProps) {
     super(props);
-    this.state = { hasError: false, error: null, rawText: '' };
+    this.state = { hasError: false, error: null };
   }
 
   static getDerivedStateFromError(error: Error): Partial<BoundaryState> {
-    let raw = '';
-    try {
-      raw = localStorage.getItem(STORAGE_KEY) || '';
-    } catch {
-      /* Ignored */
-    }
-    return { hasError: true, error, rawText: raw };
+    return { hasError: true, error };
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('FocusLab integrity boundary caught error:', error, errorInfo);
+    console.error('FocusLab UI error boundary caught error:', error, errorInfo);
   }
 
+  handleRetry = () => {
+    window.location.reload();
+  };
+
   render() {
-    if (this.state.hasError && this.state.error) {
-      return this.props.fallback(this.state.error, this.state.rawText);
+    if (this.state.hasError) {
+      return <UIErrorFallback onRetry={this.handleRetry} />;
     }
     return this.props.children;
+  }
+}
+
+function isValidStoredState(raw: string): boolean {
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    if (!parsed || typeof parsed !== 'object') return false;
+
+    // Zustand persist stores: { state: { checks, sessions, activityLogs, experiments }, version: number }
+    const state = (parsed as Record<string, unknown>).state;
+    if (!state || typeof state !== 'object') return false;
+
+    const s = state as Record<string, unknown>;
+    if (!Array.isArray(s.checks)) return false;
+    if (!Array.isArray(s.sessions)) return false;
+    if (!Array.isArray(s.activityLogs)) return false;
+    if (!Array.isArray(s.experiments)) return false;
+
+    return true;
+  } catch {
+    return false;
   }
 }
 
@@ -137,15 +182,8 @@ export const DataIntegrityGuard: React.FC<{ children: ReactNode }> = ({ children
   useEffect(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        try {
-          const parsed = JSON.parse(raw);
-          if (typeof parsed !== 'object' || parsed === null) {
-            setCorruptData(raw);
-          }
-        } catch {
-          setCorruptData(raw);
-        }
+      if (raw && !isValidStoredState(raw)) {
+        setCorruptData(raw);
       }
     } catch {
       /* Storage access blocked or restricted */
@@ -175,17 +213,5 @@ export const DataIntegrityGuard: React.FC<{ children: ReactNode }> = ({ children
     );
   }
 
-  return (
-    <IntegrityErrorBoundary
-      fallback={(_error, rawText) => (
-        <RecoveryScreen
-          rawText={rawText}
-          onReset={handleReset}
-          onRetry={handleRetry}
-        />
-      )}
-    >
-      {children}
-    </IntegrityErrorBoundary>
-  );
+  return <AppErrorBoundary>{children}</AppErrorBoundary>;
 };

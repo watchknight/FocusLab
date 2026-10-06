@@ -2,7 +2,11 @@
 
 import React, { useState, useRef } from 'react';
 import { Button } from '@/components/ui/Button';
+import { Panel } from '@/components/ui/Panel';
 import { Card } from '@/components/ui/Card';
+import * as m from 'motion/react-m';
+import { AnimatePresence } from 'motion/react';
+import { fadeVariants, popVariants } from '@/lib/motion';
 import { useFocusLabStore } from '@/store';
 
 export const DataManagement: React.FC = () => {
@@ -59,9 +63,9 @@ export const DataManagement: React.FC = () => {
   };
 
   return (
-    <Card className="p-4 sm:p-5 space-y-4 bg-surface-2 border-border">
+    <Panel variant="surface-2" className="space-y-4">
       <div className="space-y-1">
-        <h2 className="text-base font-bold text-text">Data Privacy & Local Storage</h2>
+        <h2 className="text-base font-bold text-text font-display">Your data</h2>
         <p className="text-xs text-muted">
           All data remains strictly on your device. You can export a full copy, import a previous backup, or delete everything at any time.
         </p>
@@ -69,10 +73,11 @@ export const DataManagement: React.FC = () => {
 
       {importStatus && (
         <div
-          className={`p-3 rounded text-xs border ${
+          role="status"
+          className={`p-3 rounded-xs text-xs border ${
             importStatus.success
-              ? 'bg-ok/10 border-ok text-ok'
-              : 'bg-warn/10 border-warn text-warn'
+              ? 'bg-tier-strong/10 border-tier-strong text-tier-strong font-medium'
+              : 'bg-tier-not-supported/10 border-tier-not-supported text-tier-not-supported font-medium'
           }`}
         >
           {importStatus.msg}
@@ -101,41 +106,64 @@ export const DataManagement: React.FC = () => {
         />
 
         <Button
-          variant="subtle"
+          variant="danger"
           onClick={() => setShowDeleteConfirm(true)}
-          className="text-xs min-h-[44px] text-warn hover:bg-warn/10 hover:text-warn border-border"
+          className="text-xs min-h-[44px]"
         >
           Delete all data
         </Button>
       </div>
 
       {/* Delete Confirmation Dialog */}
-      {showDeleteConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <Card className="max-w-sm w-full p-5 space-y-4 bg-surface border-border shadow-xl">
-            <h3 className="text-base font-bold text-text">Permanently delete all data?</h3>
-            <p className="text-xs text-muted">
-              This will erase all Focus Checks, sessions, activity logs, and experiments stored in this browser. This action cannot be reversed.
-            </p>
-            <div className="flex gap-2 justify-end pt-2">
-              <Button
-                variant="subtle"
-                onClick={() => setShowDeleteConfirm(false)}
-                className="text-xs min-h-[44px]"
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="primary"
-                onClick={handleConfirmDelete}
-                className="text-xs min-h-[44px] bg-warn border-warn text-white hover:opacity-90"
-              >
-                Confirm Delete
-              </Button>
-            </div>
-          </Card>
-        </div>
-      )}
-    </Card>
+      <AnimatePresence>
+        {showDeleteConfirm && (
+          <m.div
+            variants={fadeVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-bg/80 backdrop-blur-xs p-4"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="delete-dialog-title"
+          >
+            <m.div
+              variants={popVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              className="w-full max-w-sm"
+            >
+              <Card className="w-full p-5 space-y-4 bg-surface border-border shadow-elevation">
+                <h3 id="delete-dialog-title" className="text-base font-bold text-text">
+                  Permanently delete all data?
+                </h3>
+                <p className="text-xs text-muted leading-relaxed">
+                  This will erase all Focus Checks, sessions, activity logs, and experiments stored in this browser. This action cannot be undone.
+                </p>
+                <div className="flex gap-2 justify-end pt-2">
+                  <Button
+                    variant="secondary"
+                    onClick={() => setShowDeleteConfirm(false)}
+                    className="text-xs min-h-[44px]"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    variant="danger"
+                    onClick={handleConfirmDelete}
+                    className="text-xs min-h-[44px]"
+                  >
+                    Confirm Delete
+                  </Button>
+                </div>
+              </Card>
+            </m.div>
+          </m.div>
+        )}
+      </AnimatePresence>
+    </Panel>
   );
 };
+
+export default DataManagement;

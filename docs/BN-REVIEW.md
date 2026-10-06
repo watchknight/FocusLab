@@ -27,14 +27,14 @@ Please review the following strings for natural phrasing, appropriate tone (calm
 | `common.langEnglish` | English | English |
 | `common.langBengali` | বাংলা | বাংলা |
 | `home.headline` | Build focus you can measure. | মনোযোগ পরিমাপ করুন, অভ্যাস গড়ে তুলুন। |
-| `home.subhead` | A calm, local-first web laboratory pairing evidence-graded attention practices with objective reaction-time testing to find what truly works for you. | একটি শান্ত, লোকাল-ফার্স্ট ওয়েব ল্যাবরেটরি—যেখানে প্রমাণের ভিত্তিতে সাজানো মনোযোগের কৌশলগুলোকে আপনি নিজের রিঅ্যাকশন টাইমের মাধ্যমে সরাসরি পরীক্ষা করতে পারবেন। |
+| `home.subhead` | A calm, local-first web laboratory pairing evidence-graded attention practices with an informal browser reaction-time test to find what truly works for you. | একটি শান্ত, লোকাল-ফার্স্ট ওয়েব ল্যাবরেটরি—যেখানে প্রমাণের ভিত্তিতে সাজানো মনোযোগের কৌশলগুলোকে আপনি নিজের রিঅ্যাকশন টাইমের মাধ্যমে সরাসরি পরীক্ষা করতে পারবেন। |
 | `home.ctaCheck` | Start with a 3-minute Check | ৩ মিনিটের চেক শুরু করুন |
 | `home.ctaLearn` | Explore the Science | বিজ্ঞান সম্পর্কে জানুন |
 | `home.loopTitle` | The FocusLab Loop | ফোকাসল্যাব চক্র |
 | `home.loopSubtitle` | Move beyond subjective guesswork through structured self-experimentation. | শুধু অনুমানের ওপর নির্ভর না করে সুনির্দিষ্ট আত্ম-পরীক্ষার মাধ্যমে সিদ্ধান্ত নিন। |
 | `home.loop1Step` | 1. Check | ১. চেক |
 | `home.loop1Title` | Measure Your Baseline | প্রাথমিক অবস্থা মাপুন |
-| `home.loop1Desc` | Take an objective 3-minute reaction-time test (PVT-B) to measure sustained attention and alertness lapses. | ৩ মিনিটের একটি নিরপেক্ষ রিঅ্যাকশন-টাইম টেস্ট (PVT-B) দিয়ে মনোযোগের স্থায়িত্ব এবং বিচ্যুতির হার মাপুন। |
+| `home.loop1Desc` | Take a 3-minute reaction-time test (PVT-B) in your browser to measure sustained attention and alertness lapses. | ৩ মিনিটের একটি রিঅ্যাকশন-টাইম টেস্ট (PVT-B) দিয়ে মনোযোগের স্থায়িত্ব এবং বিচ্যুতির হার মাপুন। |
 | `home.loop1Cta` | Take a Check | একটি চেক নিন |
 | `home.loop2Step` | 2. Practice | ২. অনুশীলন |
 | `home.loop2Title` | Evidence-Labelled Tools | প্রমাণ-চিহ্নিত টুলস |
@@ -59,7 +59,7 @@ Please review the following strings for natural phrasing, appropriate tone (calm
 | `home.faq3Q` | Is FocusLab a medical or diagnostic tool? | ফোকাসল্যাব কি কোনো চিকিৎসা বা ডায়াগনস্টিক টুল? |
 | `home.faq3A` | No. FocusLab is an educational self-tracking project. It does not diagnose ADHD or other clinical conditions and does not offer medical advice. | না। ফোকাসল্যাব একটি শিক্ষামূলক আত্ম-পর্যবেক্ষণ প্রজেক্ট। এটি ADHD বা অন্যান্য ক্লিনিকাল অবস্থা নির্ণয় করে না এবং কোনো চিকিৎসা সংক্রান্ত পরামর্শ দেয় না। |
 | `home.faq4Q` | Why use a reaction-time test to measure focus? | মনোযোগ মাপতে রিঅ্যাকশন-টাইম টেস্ট কেন ব্যবহার করা হয়? |
-| `home.faq4A` | Subjective focus ratings are easily biased by expectations. Brief reaction-time testing (PVT-B) provides an objective, behavioral measure of attention lapses. | ব্যক্তিগত অনুভূতি প্রায়শই মানসিক প্রত্যাশা দ্বারা প্রভাবিত হয়। স্বল্পদৈর্ঘ্যের রিঅ্যাকশন-টাইম টেস্ট (PVT-B) মনোযোগ বিচ্যুতির একটি নিরপেক্ষ, আচরণগত পরিমাপ প্রদান করে। |
+| `home.faq4A` | Subjective focus ratings are easily biased by expectations. Brief reaction-time testing (PVT-B) provides a behavioral measure of attention lapses directly in your browser. | ব্যক্তিগত অনুভূতি প্রায়শই মানসিক প্রত্যাশা দ্বারা প্রভাবিত হয়। স্বল্পদৈর্ঘ্যের রিঅ্যাকশন-টাইম টেস্ট (PVT-B) মনোযোগ বিচ্যুতির একটি আচরণগত পরিমাপ প্রদান করে। |
 | `home.faq5Q` | How is scientific evidence rated? | বৈজ্ঞানিক প্রমাণ কীভাবে মূল্যায়ন করা হয়? |
 | `home.faq5A` | Claims are evaluated across 5 transparent tiers (Strong to Not Supported) derived directly from peer-reviewed meta-analyses for the specific outcome named. | দাবিগুলোকে ৫টি স্বচ্ছ স্তরে (শক্তিশালী থেকে সমর্থিত নয়) মূল্যায়ন করা হয়, যা নির্দিষ্ট ফলাফলের ওপর পিয়ার-রিভিউড মেটা-অ্যানালাইসিস থেকে নেওয়া। |
 | `onboarding.step` | Step {step} of 3 | ধাপ ৩ এর {step} |
@@ -112,7 +112,7 @@ Please review the following strings for natural phrasing, appropriate tone (calm
 | `check.testInstruction` | Keep your eyes on the box. Respond as quickly as possible. | বাক্সের দিকে চোখ রাখুন। যত দ্রুত সম্ভব প্রতিক্রিয়া জানান। |
 | `check.minuteElapsed` | {minutes} minute{plural} elapsed | {minutes} মিনিট অতিবাহিত |
 | `check.resultsTitle` | Check Complete | চেক সম্পন্ন হয়েছে |
-| `check.resultsSub` | Here is your objective attention performance summary for this session. | এই সেশনের জন্য আপনার বস্তুনিষ্ঠ মনোযোগের সংক্ষিপ্ত বিবরণ। |
+| `check.resultsSub` | Here is your attention performance summary for this session. | এই সেশনের জন্য আপনার মনোযোগের সংক্ষিপ্ত বিবরণ। |
 | `check.medianRt` | Median RT | গড় রিঅ্যাকশন টাইম |
 | `check.lapses` | Lapses (>500ms) | বিচ্যুতি (>৫০০ মিলি) |
 | `check.falseStarts` | False Starts | ভুল শুরু |

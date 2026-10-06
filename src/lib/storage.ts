@@ -6,7 +6,7 @@ export interface FocusLabDataExport {
   checkLogs: SelfCheckLog[];
   sessionLogs: PracticeSessionLog[];
   userPreferences: {
-    theme: 'system' | 'light' | 'dark';
+    theme: 'system' | 'daylight' | 'night' | 'contrast' | 'light' | 'dark';
     soundVolume: number;
   };
 }
@@ -67,9 +67,14 @@ export function validateImportData(raw: unknown): {
   }
 
   const preferences = (candidate.userPreferences || {}) as Record<string, unknown>;
+  const rawTheme = preferences.theme;
   const theme =
-    preferences.theme === 'light' || preferences.theme === 'dark'
-      ? preferences.theme
+    rawTheme === 'daylight' ||
+    rawTheme === 'night' ||
+    rawTheme === 'contrast' ||
+    rawTheme === 'light' ||
+    rawTheme === 'dark'
+      ? rawTheme
       : 'system';
   const soundVolume =
     typeof preferences.soundVolume === 'number'

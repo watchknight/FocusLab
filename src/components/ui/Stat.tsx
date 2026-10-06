@@ -22,17 +22,17 @@ export const Stat: React.FC<StatProps> = ({
 }) => {
   return (
     <Card className={clsx('space-y-1', className)} {...props}>
-      <p className="text-xs font-semibold text-muted uppercase tracking-wider">
+      <p className="text-xs font-semibold text-muted">
         {label}
       </p>
       <div className="flex items-baseline gap-2">
-        <span className="text-2xl font-mono font-semibold text-text">
+        <span className="text-2xl font-semibold text-text tabular-nums font-mono">
           {value}
         </span>
         {change && (
           <span
             className={clsx(
-              'text-xs font-semibold font-mono',
+              'text-xs font-semibold font-mono tabular-nums',
               change.trend === 'positive' && 'text-ok',
               change.trend === 'negative' && 'text-warn',
               change.trend === 'neutral' && 'text-muted'

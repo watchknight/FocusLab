@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
-import { Card } from '@/components/ui/Card';
-import { EvidenceBadge } from '@/components/ui/EvidenceBadge';
+import { Plate } from '@/components/ui/Plate';
+import { EvidenceMeter } from '@/components/ui/EvidenceMeter';
 import type { EvidenceClaim } from '@/content/types';
 
 interface ClaimCardProps {
@@ -10,33 +10,42 @@ interface ClaimCardProps {
 
 export const ClaimCard: React.FC<ClaimCardProps> = ({ claim }) => {
   return (
-    <Card className="p-4 space-y-3 bg-surface border-border flex flex-col justify-between hover:border-accent/40 transition-colors">
-      <div className="space-y-2">
+    <Plate
+      as="article"
+      tier={claim.tier}
+      meter={<EvidenceMeter tier={claim.tier} />}
+      caption={<span className="text-xs text-muted truncate">{claim.outcome}</span>}
+      className="h-full flex flex-col justify-between hover:border-accent transition-colors"
+    >
+      <div className="space-y-2.5">
         <div className="flex items-start justify-between gap-2 flex-wrap">
-          <h3 className="text-sm font-bold text-text leading-snug">
+          <h2 className="text-base font-bold text-text font-display leading-snug">
             {claim.title}
-          </h3>
-          <EvidenceBadge tier={claim.tier} />
+          </h2>
+          <EvidenceMeter tier={claim.tier} showLabel={false} />
         </div>
 
-        <div className="text-xs text-muted">
-          <span className="font-semibold text-text">Target Outcome:</span>{' '}
-          {claim.outcome}
+        {/* One-sentence outcome */}
+        <div className="text-xs text-text">
+          <span className="font-semibold text-muted">Target outcome: </span>
+          <span className="font-medium text-text">{claim.outcome}</span>
         </div>
 
-        <p className="text-xs text-muted line-clamp-3 leading-relaxed">
+        <p className="text-xs text-muted line-clamp-2 leading-relaxed">
           {claim.summary}
         </p>
       </div>
 
-      <div className="pt-2 border-t border-border/50">
+      <div className="pt-3">
         <Link
           href={`/learn/${claim.id}`}
-          className="text-xs font-semibold text-accent hover:underline inline-flex items-center min-h-[36px]"
+          className="text-xs font-semibold text-link hover:underline inline-flex items-center min-h-[44px]"
         >
-          View study details & citations ({claim.refIds.length}) →
+          View study details and citations ({claim.refIds.length}) →
         </Link>
       </div>
-    </Card>
+    </Plate>
   );
 };
+
+export default ClaimCard;

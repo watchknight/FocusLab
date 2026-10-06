@@ -18,52 +18,70 @@ export const NatureBreak: React.FC<NatureBreakProps> = ({
   return (
     <PlayerShell activity={activity} durationSec={durationSec} onClose={onClose}>
       {({ remainingSec }) => (
-        <div className="flex flex-col items-center justify-between w-full h-full max-w-lg p-2 text-center select-none">
-          {/* Subtle nature SVG artwork */}
-          <div className="w-full max-w-md aspect-[16/10] rounded-2xl overflow-hidden border border-border shadow-inner bg-gradient-to-b from-teal-900/10 via-emerald-800/15 to-emerald-950/25 flex items-center justify-center relative">
+        <div className="flex flex-col items-center justify-center w-full max-w-md p-2 text-center select-none space-y-3">
+          {/* Quiet SVG scene with no blur larger than 8px, plus countdown */}
+          <div className="w-full aspect-[16/10] max-h-[190px] sm:max-h-[240px] rounded-md overflow-hidden border border-border bg-surface-2 flex items-center justify-center relative shadow-sm">
             <svg
               viewBox="0 0 400 250"
               className="w-full h-full"
               xmlns="http://www.w3.org/2000/svg"
               aria-hidden="true"
             >
-              {/* Soft sky and subtle hill layers */}
-              <circle cx="200" cy="80" r="45" fill="var(--accent)" opacity="0.12" />
-              <path
-                d="M0 250 Q100 160 200 200 T400 210 L400 250 Z"
+              <defs>
+                <filter id="soft-glow" x="-20%" y="-20%" width="140%" height="140%">
+                  {/* stdDeviation <= 8px (rule: no blur larger than 8px) */}
+                  <feGaussianBlur stdDeviation="4" />
+                </filter>
+              </defs>
+
+              {/* Quiet sun/lamp circle */}
+              <circle
+                cx="200"
+                cy="75"
+                r="36"
                 fill="var(--accent)"
                 opacity="0.25"
+                filter="url(#soft-glow)"
               />
+
+              {/* Gentle layered contours */}
               <path
-                d="M0 250 Q150 180 280 215 T400 230 L400 250 Z"
-                fill="var(--accent)"
+                d="M0 250 Q120 165 240 195 T400 205 L400 250 Z"
+                fill="var(--border)"
                 opacity="0.35"
               />
-              {/* Gentle foliage leaves */}
-              <g stroke="var(--accent)" strokeWidth="2" fill="none" opacity="0.6">
-                <path d="M70 240 Q85 190 95 180 Q105 195 90 240" fill="var(--accent)" fillOpacity="0.2" />
-                <path d="M90 240 Q110 185 125 170 Q130 190 115 240" fill="var(--accent)" fillOpacity="0.15" />
-                <path d="M290 240 Q310 190 325 175 Q335 195 315 240" fill="var(--accent)" fillOpacity="0.2" />
-                <path d="M315 240 Q330 195 345 185 Q355 205 340 240" fill="var(--accent)" fillOpacity="0.15" />
+              <path
+                d="M0 250 Q160 185 280 210 T400 225 L400 250 Z"
+                fill="var(--border)"
+                opacity="0.55"
+              />
+
+              {/* Minimalist reeds */}
+              <g stroke="var(--muted)" strokeWidth="1.5" opacity="0.4" fill="none">
+                <path d="M60 250 Q75 200 85 190 Q95 205 80 250" />
+                <path d="M80 250 Q95 195 110 180 Q115 200 100 250" />
+                <path d="M300 250 Q315 200 325 185 Q335 205 320 250" />
+                <path d="M320 250 Q335 205 345 195 Q355 215 340 250" />
               </g>
             </svg>
 
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-surface/30 backdrop-blur-[2px]">
-              <span className="text-6xl font-mono font-bold tracking-tight text-text drop-shadow-sm">
+            {/* Countdown overlay: backdrop blur <= 4px */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-surface/40 backdrop-blur-[4px]">
+              <span className="text-4xl sm:text-5xl font-display font-bold tracking-tight text-text tabular-nums">
                 {remainingSec}s
               </span>
-              <span className="text-xs uppercase tracking-widest text-muted mt-1 font-semibold">
+              <span className="text-xs text-muted mt-0.5 font-medium">
                 Rest your eyes
               </span>
             </div>
           </div>
 
-          <div className="space-y-2 py-4">
-            <p className="text-sm font-medium text-text">
-              If you can, look at real plants through a window instead.
+          <div className="space-y-1">
+            <p className="text-xs sm:text-sm font-medium text-text">
+              If you can, look at real plants or out a window.
             </p>
-            <p className="text-xs text-muted max-w-sm mx-auto">
-              Briefly viewing greenery has been tested for small reductions in attention errors, though broader reviews find mixed results overall.
+            <p className="text-[11px] text-muted max-w-xs mx-auto line-clamp-2">
+              Viewing greenery has small reductions in attention errors across trials.
             </p>
           </div>
         </div>

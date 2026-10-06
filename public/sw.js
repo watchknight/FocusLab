@@ -71,6 +71,24 @@ self.addEventListener('fetch', (event) => {
     (request.headers.get('accept') &&
       request.headers.get('accept').includes('text/html'));
 
+async function matchWithTrailingSlash(req) {
+  let cached = await caches.match(req);
+  if (cached) return cached;
+  try {
+    const url = new URL(typeof req === 'string' ? req : req.url);
+    if (url.pathname.length > 1 && url.pathname.endsWith('/')) {
+      const altUrl = new URL(url);
+      altUrl.pathname = altUrl.pathname.slice(0, -1);
+      cached = await caches.match(altUrl.toString());
+    } else if (!url.pathname.endsWith('/')) {
+      const altUrl = new URL(url);
+      altUrl.pathname = `${altUrl.pathname}/`;
+      cached = await caches.match(altUrl.toString());
+    }
+  } catch {}
+  return cached;
+}
+
   if (isNavigation) {
     // HTML requests: Network-first with offline cache fallback
     event.respondWith(
@@ -83,7 +101,7 @@ self.addEventListener('fetch', (event) => {
           return response;
         })
         .catch(async () => {
-          const cachedResponse = await caches.match(request);
+          const cachedResponse = await matchWithTrailingSlash(request);
           if (cachedResponse) {
             return cachedResponse;
           }
@@ -96,7 +114,7 @@ self.addEventListener('fetch', (event) => {
 
   // Static assets (Next.js chunks, icons, css, fonts): Cache-first
   event.respondWith(
-    caches.match(request).then((cached) => {
+    matchWithTrailingSlash(request).then((cached) => {
       if (cached) {
         return cached;
       }

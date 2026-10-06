@@ -68,7 +68,7 @@ export const RhythmStep: React.FC<RhythmStepProps> = ({ onSelectRhythm, onBack }
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <h2 className="text-xl font-bold tracking-tight text-text">Choose Your Rhythm</h2>
+        <h2 className="text-xl font-bold tracking-tight text-text">Choose your rhythm</h2>
         <p className="text-sm text-muted">
           Select a structured work/break ratio or run an open-ended flexible interval.
         </p>
@@ -82,9 +82,9 @@ export const RhythmStep: React.FC<RhythmStepProps> = ({ onSelectRhythm, onBack }
               type="button"
               key={preset.id}
               onClick={() => setSelectedId(preset.id)}
-              className={`p-3.5 text-left rounded-lg border transition-colors min-h-[44px] flex flex-col justify-between focus-visible:outline-2 focus-visible:outline-accent ${
+              className={`p-3.5 text-left rounded-md border transition-colors min-h-[44px] flex flex-col justify-between focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${
                 isSelected
-                  ? 'border-accent bg-accent/5 dark:bg-accent/10 ring-1 ring-accent'
+                  ? 'border-accent bg-surface ring-2 ring-ring'
                   : 'border-border bg-surface-2 hover:bg-surface'
               }`}
             >
@@ -99,8 +99,8 @@ export const RhythmStep: React.FC<RhythmStepProps> = ({ onSelectRhythm, onBack }
 
       {selectedId === 'custom' && (
         <Card className="p-4 space-y-3 bg-surface-2 border-border">
-          <span className="text-xs font-semibold text-text uppercase tracking-wider block">
-            Custom Interval Settings
+          <span className="text-xs font-semibold text-text block">
+            Custom interval settings
           </span>
           <div className="grid grid-cols-2 gap-3">
             <div>
@@ -114,7 +114,7 @@ export const RhythmStep: React.FC<RhythmStepProps> = ({ onSelectRhythm, onBack }
                 max={180}
                 value={customFocusMin}
                 onChange={(e) => setCustomFocusMin(Number(e.target.value))}
-                className="w-full min-h-[44px] px-3 py-2 rounded-md border border-border bg-surface text-text text-sm focus-visible:outline-2 focus-visible:outline-accent"
+                className="w-full min-h-[44px] px-3 py-2 rounded-xs border border-border-strong bg-surface text-text text-sm tabular-nums focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
               />
             </div>
             <div>
@@ -128,7 +128,7 @@ export const RhythmStep: React.FC<RhythmStepProps> = ({ onSelectRhythm, onBack }
                 max={60}
                 value={customBreakMin}
                 onChange={(e) => setCustomBreakMin(Number(e.target.value))}
-                className="w-full min-h-[44px] px-3 py-2 rounded-md border border-border bg-surface text-text text-sm focus-visible:outline-2 focus-visible:outline-accent"
+                className="w-full min-h-[44px] px-3 py-2 rounded-xs border border-border-strong bg-surface text-text text-sm tabular-nums focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
               />
             </div>
           </div>

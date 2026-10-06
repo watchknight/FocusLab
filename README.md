@@ -1,6 +1,6 @@
 # FocusLab
 
-FocusLab is a free, open-source, local-first web application that helps people build sustained focus through evidence-labelled cognitive practices and test what works for them using objective reaction-time benchmarks (**Check → Practice → Compare**).
+FocusLab is a free, open-source, local-first web application that helps people build sustained focus through evidence-labelled cognitive practices and test what works for them using reaction-time benchmarks (**Check → Practice → Compare**).
 
 There are no user accounts, no analytics, no external tracking, and no servers. All personal data stays directly in your browser.
 
@@ -10,7 +10,7 @@ There are no user accounts, no analytics, no external tracking, and no servers. 
 
 Most productivity tools rely on subjective impression or pseudoscientific "brain-training" games. FocusLab takes an empirical approach:
 
-1. **Check (Objective Baseline)**: Measure sustained vigilance, reaction speed, and attention lapses via a 3-minute Psychomotor Vigilance Task (PVT-B) benchmark.
+1. **Check (Reaction-Time Baseline)**: Measure sustained vigilance, reaction speed, and attention lapses via a 3-minute Psychomotor Vigilance Task (PVT-B) benchmark in your browser.
 2. **Practice (Evidence-Labelled Tools)**: Engage in structured focus sessions with implementation intentions (If-Then planning), guided breath pacing, movement bouts, and synthetically generated soundscapes—each explicitly labelled with its empirical evidence tier.
 3. **Compare (A/B Self-Experiments)**: Run controlled alternating A/B self-experiments comparing active interventions against quiet rest or ambient noise against silence to discover what measurably moves your personal needle.
 

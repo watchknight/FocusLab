@@ -10,6 +10,7 @@ import {
 } from '@/lib/pvt';
 import { CheckTrial } from '@/store/types';
 import { useT } from '@/i18n';
+import { setCalm } from '@/lib/motion';
 
 interface TestViewProps {
   onFinishTest: (trials: CheckTrial[]) => void;
@@ -50,9 +51,16 @@ export const TestView: React.FC<TestViewProps> = ({
     if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
   }, []);
 
+  const handleAbort = useCallback(() => {
+    setCalm(false);
+    clearAllTimers();
+    onAbort();
+  }, [clearAllTimers, onAbort]);
+
   const startNextTrial = useCallback(() => {
     const elapsed = performance.now() - testStartTimeRef.current;
     if (elapsed >= testDurationMs) {
+      setCalm(false);
       clearAllTimers();
       onFinishTest(trialsRef.current);
       return;
@@ -135,8 +143,7 @@ export const TestView: React.FC<TestViewProps> = ({
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        clearAllTimers();
-        onAbort();
+        handleAbort();
       } else if (e.code === 'Space' || e.key === ' ') {
         e.preventDefault();
         handleResponse();
@@ -144,69 +151,72 @@ export const TestView: React.FC<TestViewProps> = ({
     };
 
     const abortOnHidden = () => {
-      clearAllTimers();
-      onAbort();
+      handleAbort();
     };
 
     window.addEventListener('keydown', onKeyDown);
     document.addEventListener('visibilitychange', () => document.hidden && abortOnHidden());
     window.addEventListener('blur', abortOnHidden);
+    setCalm(true);
     startNextTrial();
 
     return () => {
+      setCalm(false);
       clearInterval(minuteInterval);
       clearAllTimers();
       window.removeEventListener('keydown', onKeyDown);
       document.removeEventListener('visibilitychange', abortOnHidden);
       window.removeEventListener('blur', abortOnHidden);
     };
-  }, [clearAllTimers, handleResponse, onAbort, startNextTrial, t]);
+  }, [clearAllTimers, handleAbort, handleResponse, startNextTrial, t]);
+
+  const isLit = phase === 'stimulus';
 
   return (
     <div
       role="button"
       tabIndex={0}
-      aria-label="Reaction test area. Press Space or tap anywhere to respond. Press Escape to abort."
+      aria-label="Reaction test area. Press Space or tap anywhere to respond. Press Escape or End to exit."
       onClick={handleResponse}
-      className="fixed inset-0 z-50 flex flex-col justify-between bg-surface p-4 sm:p-6 select-none cursor-pointer focus:outline-none"
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center select-none cursor-pointer focus:outline-none"
+      style={{ backgroundColor: 'var(--bg-deep)' }}
     >
-      <div className="flex items-center justify-between text-xs text-muted">
-        <span>{t('check.testPrompt')}</span>
-        <span>{t('check.testEsc')}</span>
+      {/* Visible exit control */}
+      <div className="absolute top-[max(0.75rem,env(safe-area-inset-top))] right-[max(0.75rem,env(safe-area-inset-right))] sm:top-6 sm:right-6 z-10">
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleAbort();
+          }}
+          className="min-h-[44px] min-w-[44px] px-3.5 py-1.5 rounded-md border border-border bg-surface text-text text-xs sm:text-sm font-medium hover:bg-surface-2 focus-visible:outline-2 focus-visible:outline-ring"
+        >
+          End (Esc)
+        </button>
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-center p-4">
+      {/* Centred lamp circle and millisecond counter below it */}
+      <div className="flex flex-col items-center justify-center">
         <div
-          className={`w-full max-w-sm aspect-video rounded-xl border-2 flex flex-col items-center justify-center transition-colors ${
-            phase === 'stimulus'
-              ? 'bg-accent border-accent text-accent-contrast shadow-lg'
-              : phase === 'feedback'
-              ? 'bg-surface-2 border-border text-text'
-              : 'bg-surface-2/40 border-border/50 text-muted'
+          className={`w-24 h-24 sm:w-36 sm:h-36 rounded-full transition-colors duration-75 flex items-center justify-center ${
+            isLit
+              ? 'bg-accent border-4 border-accent-edge shadow-elevation'
+              : 'bg-surface-2 border-2 border-border'
           }`}
-        >
+          aria-hidden="true"
+        />
+
+        <div className="mt-4 sm:mt-6 h-10 flex items-center justify-center font-mono text-2xl sm:text-3xl font-bold tabular-nums text-text">
           {phase === 'stimulus' && (
-            <div className="text-center">
-              {reducedMotion ? (
-                <span className="text-2xl font-bold tracking-widest">[ {t('check.testRespond')} ]</span>
-              ) : (
-                <span className="text-4xl sm:text-5xl font-mono font-bold tracking-tight">
-                  {displayRt ?? 0} <span className="text-lg">ms</span>
-                </span>
-              )}
-            </div>
+            <span>{displayRt ?? 0} ms</span>
           )}
-
           {phase === 'feedback' && (
-            <div className="text-center font-mono">
-              <span className={`text-3xl font-bold ${feedbackText.includes('early') || feedbackText.includes('দ্রুত') ? 'text-warn' : 'text-text'}`}>
-                {feedbackText}
-              </span>
-            </div>
+            <span className={feedbackText.includes('early') || feedbackText.includes('দ্রুত') ? 'text-warn' : 'text-text'}>
+              {feedbackText}
+            </span>
           )}
-
           {phase === 'waiting' && (
-            <span className="text-xs text-muted font-mono tracking-wider">{t('check.testWait')}</span>
+            <span className="text-muted text-base font-normal tracking-wide">·</span>
           )}
         </div>
       </div>
@@ -216,10 +226,6 @@ export const TestView: React.FC<TestViewProps> = ({
           {minuteNotice}
         </div>
       )}
-
-      <div className="text-center text-xs text-muted pb-2">
-        {t('check.testInstruction')}
-      </div>
     </div>
   );
 };

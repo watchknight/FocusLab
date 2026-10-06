@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Button } from '@/components/ui/Button';
-import { Card } from '@/components/ui/Card';
+import { ParkingLot } from './ParkingLot';
+import { RingTimer, CIRCUMFERENCE } from './RingTimer';
 import {
   computeTimerSnapshot,
   calculateElapsedMs,
@@ -10,6 +11,8 @@ import {
   PauseInterval,
 } from '@/lib/timer';
 import { playSoftChime } from '@/lib/audio';
+import { setCalm } from '@/lib/motion';
+import { useWakeLock } from '@/lib/wakelock';
 import { RhythmConfig } from './RhythmStep';
 
 interface RunStepProps {
@@ -33,78 +36,97 @@ export const RunStep: React.FC<RunStepProps> = ({
   );
   const [distractions, setDistractions] = useState(0);
   const [parkedThoughts, setParkedThoughts] = useState<string[]>([]);
-  const [parkInput, setParkInput] = useState('');
-  const [chimeEnabled, setChimeEnabled] = useState(true);
   const [minuteAria, setMinuteAria] = useState('');
-  const [notifGranted, setNotifGranted] = useState(false);
 
+  const circleRef = useRef<SVGCircleElement>(null);
   const startedAtRef = useRef<number>(performance.now());
   const pausedAtRef = useRef<number | null>(null);
   const pausesRef = useRef<PauseInterval[]>([]);
-  const wakeLockRef = useRef<WakeLockSentinel | null>(null);
   const lastMinuteAnnouncedRef = useRef<number>(-1);
+  const lastSecRef = useRef<number>(-1);
 
-  const requestWakeLock = useCallback(async () => {
-    try {
-      if ('wakeLock' in navigator) wakeLockRef.current = await navigator.wakeLock.request('screen');
-    } catch {
-      /* Graceful fallback */
-    }
-  }, []);
-
-  const releaseWakeLock = useCallback(() => {
-    if (wakeLockRef.current) {
-      wakeLockRef.current.release().catch(() => {});
-      wakeLockRef.current = null;
-    }
-  }, []);
+  const { release: releaseWakeLock } = useWakeLock(!isPaused);
 
   const completeBlock = useCallback(() => {
+    setCalm(false);
     releaseWakeLock();
-    if (chimeEnabled) playSoftChime();
-    if (notifGranted && typeof window !== 'undefined' && 'Notification' in window) {
-      new Notification('Focus block finished', { body: 'Time to take a restorative break.' });
-    }
-    const elapsed = calculateElapsedMs(startedAtRef.current, pausesRef.current, pausedAtRef.current, performance.now());
+    playSoftChime();
+    const elapsed = calculateElapsedMs(
+      startedAtRef.current,
+      pausesRef.current,
+      pausedAtRef.current,
+      performance.now()
+    );
     onFinishBlock(Math.max(1, Math.floor(elapsed / 1000)), distractions, parkedThoughts);
-  }, [chimeEnabled, notifGranted, distractions, parkedThoughts, onFinishBlock, releaseWakeLock]);
+  }, [distractions, parkedThoughts, onFinishBlock, releaseWakeLock]);
+
+  const handleAbort = useCallback(() => {
+    setCalm(false);
+    releaseWakeLock();
+    onAbort();
+  }, [onAbort, releaseWakeLock]);
 
   useEffect(() => {
-    requestWakeLock();
-    if (typeof window !== 'undefined' && 'Notification' in window) {
-      setNotifGranted(Notification.permission === 'granted');
-    }
+    setCalm(true);
+    if (circleRef.current) circleRef.current.style.strokeDashoffset = '0px';
+
     const interval = setInterval(() => {
       const now = performance.now();
       const p = pausedAtRef.current;
+
       if (rhythm.isFlexible) {
         const ms = calculateElapsedMs(startedAtRef.current, pausesRef.current, p, now);
         const fmt = formatTimeRemaining(ms);
         setDisplayTime(fmt);
         document.title = `(${fmt}) FocusLab`;
+
+        const sec = Math.floor(ms / 1000);
+        if (sec !== lastSecRef.current && circleRef.current) {
+          lastSecRef.current = sec;
+          const offset = CIRCUMFERENCE * (1 - (sec % 60) / 60);
+          circleRef.current.style.strokeDashoffset = `${offset}px`;
+        }
+
         const mins = Math.floor(ms / 60000);
         if (mins !== lastMinuteAnnouncedRef.current && mins > 0) {
           lastMinuteAnnouncedRef.current = mins;
-          setMinuteAria(`${mins} minute${mins > 1 ? 's' : ''} of focus elapsed`);
+          setMinuteAria(`${mins} minute${mins > 1 ? 's' : ''} elapsed`);
         }
       } else {
-        const snap = computeTimerSnapshot(startedAtRef.current, rhythm.focusSec * 1000, now, pausesRef.current, p);
+        const totalMs = rhythm.focusSec * 1000;
+        const snap = computeTimerSnapshot(startedAtRef.current, totalMs, now, pausesRef.current, p);
         setDisplayTime(snap.formattedMinutesSeconds);
         document.title = `(${snap.formattedMinutesSeconds}) FocusLab`;
+
+        const sec = Math.floor(snap.elapsedMs / 1000);
+        if (sec !== lastSecRef.current && circleRef.current) {
+          lastSecRef.current = sec;
+          const offset = CIRCUMFERENCE * Math.min(1, snap.elapsedMs / totalMs);
+          circleRef.current.style.strokeDashoffset = `${offset}px`;
+        }
+
         const remMins = Math.floor(snap.remainingMs / 60000);
         if (remMins !== lastMinuteAnnouncedRef.current) {
           lastMinuteAnnouncedRef.current = remMins;
           setMinuteAria(`${remMins} minute${remMins > 1 ? 's' : ''} remaining`);
         }
+
         if (snap.isFinished && !p) completeBlock();
       }
     }, 250);
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') handleAbort();
+    };
+    window.addEventListener('keydown', onKeyDown);
+
     return () => {
+      setCalm(false);
       clearInterval(interval);
-      releaseWakeLock();
+      window.removeEventListener('keydown', onKeyDown);
       document.title = 'FocusLab';
     };
-  }, [rhythm, completeBlock, releaseWakeLock, requestWakeLock]);
+  }, [rhythm, completeBlock, handleAbort]);
 
   const handleTogglePause = () => {
     const now = performance.now();
@@ -114,99 +136,82 @@ export const RunStep: React.FC<RunStepProps> = ({
         pausedAtRef.current = null;
       }
       setIsPaused(false);
-      requestWakeLock();
     } else {
       pausedAtRef.current = now;
       setIsPaused(true);
-      releaseWakeLock();
     }
   };
 
-  const handleAddParkedThought = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!parkInput.trim()) return;
-    setParkedThoughts((prev) => [...prev, parkInput.trim()]);
-    setParkInput('');
-  };
-
   return (
-    <div className="space-y-6">
-      <div className="space-y-1">
-        <h2 className="text-xl font-bold tracking-tight text-text">Focus Block in Progress</h2>
-        <p className="text-xs text-muted">Intention: <strong className="text-text">{intention}</strong></p>
-        {ifThen && ifThen.when && (
-          <p className="text-xs text-accent">If {ifThen.when}, then I will {ifThen.then}</p>
-        )}
-      </div>
-
-      <div className="flex flex-wrap items-center justify-between gap-3 text-xs bg-surface-2 p-3 rounded-lg border border-border">
-        <button
-          type="button"
-          onClick={() => setChimeEnabled(!chimeEnabled)}
-          className="text-text hover:text-accent flex items-center gap-1.5 min-h-[44px]"
-        >
-          <span>{chimeEnabled ? '🔔 Chime enabled' : '🔕 Chime muted'}</span>
-        </button>
-        <button
-          type="button"
-          onClick={async () => {
-            if (typeof window !== 'undefined' && 'Notification' in window) {
-              const res = await Notification.requestPermission();
-              setNotifGranted(res === 'granted');
-            }
-          }}
-          className="text-text hover:text-accent flex items-center gap-1.5 min-h-[44px]"
-        >
-          <span>{notifGranted ? '✓ Reminders enabled' : '+ Enable reminders'}</span>
-        </button>
-      </div>
-
-      <div className="py-8 flex flex-col items-center justify-center space-y-4">
-        <span className="text-6xl sm:text-7xl font-mono font-bold tracking-tight text-text" aria-label={`Time: ${displayTime}`}>
-          {displayTime}
-        </span>
-        <div aria-live="polite" className="sr-only">{minuteAria}</div>
-        <div className="flex items-center gap-3 pt-2">
-          <Button variant="primary" onClick={handleTogglePause} className="min-w-[120px]">
-            {isPaused ? 'Resume' : 'Pause'}
-          </Button>
-          <Button variant="secondary" onClick={completeBlock}>End Block</Button>
-          <Button variant="subtle" onClick={onAbort}>Cancel</Button>
+    <div className="w-full space-y-4">
+      {/* Top Bar with visible Exit Control */}
+      <div className="flex items-center justify-between pb-1 border-b border-border">
+        <div className="min-w-0 pr-2">
+          <span className="text-xs text-muted block">Intention</span>
+          <p className="text-sm font-semibold text-text truncate max-w-sm">{intention}</p>
         </div>
+        <button
+          type="button"
+          onClick={handleAbort}
+          className="min-h-[44px] min-w-[44px] px-3 py-1.5 rounded-md border border-border bg-surface text-text text-xs sm:text-sm font-medium hover:bg-surface-2 focus-visible:outline-2 focus-visible:outline-ring shrink-0"
+        >
+          End (Esc)
+        </button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <Card className="p-3.5 space-y-2">
-          <label htmlFor="park-thought" className="block text-xs font-semibold text-text uppercase tracking-wider">
-            Park a thought
-          </label>
-          <form onSubmit={handleAddParkedThought} className="flex gap-2">
-            <input
-              id="park-thought"
-              type="text"
-              value={parkInput}
-              onChange={(e) => setParkInput(e.target.value)}
-              placeholder="Jot down a sudden distraction..."
-              className="flex-1 min-h-[44px] px-3 py-1.5 text-xs rounded border border-border bg-surface text-text focus-visible:outline-2 focus-visible:outline-accent"
-            />
-            <Button type="submit" variant="secondary" className="text-xs px-3 min-h-[44px]">Add</Button>
-          </form>
-          {parkedThoughts.length > 0 && (
-            <ul className="text-xs text-muted space-y-1 max-h-24 overflow-y-auto pt-1">
-              {parkedThoughts.map((t, idx) => (<li key={idx} className="truncate">• {t}</li>))}
-            </ul>
-          )}
-        </Card>
+      {ifThen && ifThen.when && (
+        <div className="text-xs px-3 py-1.5 rounded bg-surface-2 border border-border text-text">
+          <span className="text-muted">Plan: </span>
+          If {ifThen.when}, then I will {ifThen.then}
+        </div>
+      )}
 
-        <Card className="p-3.5 flex flex-col justify-between space-y-2">
-          <div>
-            <span className="block text-xs font-semibold text-text uppercase tracking-wider">Distraction Counter</span>
-            <p className="text-xs text-muted mt-0.5">Notice when attention drifts without judging it.</p>
+      {/* Main Focus Stage: adapts in landscape phones */}
+      <div className="landscape-compact-grid grid grid-cols-1 lg:grid-cols-12 gap-6 items-center pt-2">
+        {/* Left Column: Ring Timer + 3 Controls */}
+        <div className="lg:col-span-7 flex flex-col items-center justify-center space-y-4">
+          <RingTimer
+            circleRef={circleRef}
+            displayTime={displayTime}
+            isPaused={isPaused}
+            isFlexible={rhythm.isFlexible}
+          />
+
+          <div aria-live="polite" className="sr-only">{minuteAria}</div>
+
+          {/* Three controls: Pause, End, Distracted */}
+          <div className="flex flex-wrap items-center justify-center gap-2.5 w-full max-w-md">
+            <Button
+              variant="primary"
+              onClick={handleTogglePause}
+              className="flex-1 min-h-[44px] min-w-[100px] text-sm font-semibold"
+            >
+              {isPaused ? 'Resume' : 'Pause'}
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={completeBlock}
+              className="flex-1 min-h-[44px] min-w-[100px] text-sm font-semibold"
+            >
+              End block
+            </Button>
+            <Button
+              variant="subtle"
+              onClick={() => setDistractions((c) => c + 1)}
+              className="flex-1 min-h-[44px] min-w-[140px] text-xs font-semibold border border-border tabular-nums"
+            >
+              I got distracted ({distractions})
+            </Button>
           </div>
-          <Button variant="secondary" onClick={() => setDistractions((c) => c + 1)} className="w-full min-h-[44px] text-xs font-semibold">
-            I got distracted ({distractions})
-          </Button>
-        </Card>
+        </div>
+
+        {/* Right Column: Parking-lot field */}
+        <div className="lg:col-span-5 w-full">
+          <ParkingLot
+            thoughts={parkedThoughts}
+            onAddThought={(thought) => setParkedThoughts((prev) => [...prev, thought])}
+          />
+        </div>
       </div>
     </div>
   );

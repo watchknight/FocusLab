@@ -4,10 +4,10 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { CLAIMS, getClaimById, getReferenceById } from '@/content/evidence';
 import { ACTIVITIES } from '@/content/activities';
-import { EvidenceBadge } from '@/components/ui/EvidenceBadge';
 import { Card } from '@/components/ui/Card';
+import { EvidenceMeter } from '@/components/ui/EvidenceMeter';
 
-interface ClaimPageProps {
+interface Props {
   params: {
     claimId: string;
   };
@@ -19,11 +19,13 @@ export function generateStaticParams() {
   }));
 }
 
-export function generateMetadata({ params }: ClaimPageProps): Metadata {
+export function generateMetadata({ params }: Props): Metadata {
   const claim = getClaimById(params.claimId);
-  if (!claim) return { title: 'Claim Not Found | FocusLab' };
+  if (!claim) {
+    return { title: 'Evidence Claim | FocusLab' };
+  }
   return {
-    title: `${claim.title} | FocusLab Evidence`,
+    title: `${claim.title} | Evidence Bank`,
     description: claim.summary,
     openGraph: {
       title: `${claim.title} | FocusLab Evidence`,
@@ -32,7 +34,7 @@ export function generateMetadata({ params }: ClaimPageProps): Metadata {
   };
 }
 
-export default function ClaimDetailPage({ params }: ClaimPageProps) {
+export default function ClaimDetailPage({ params }: Props) {
   const claim = getClaimById(params.claimId);
 
   if (!claim) {
@@ -46,101 +48,72 @@ export default function ClaimDetailPage({ params }: ClaimPageProps) {
   const linkedActivities = ACTIVITIES.filter((a) => a.evidenceId === claim.id);
 
   return (
-    <article className="space-y-6 py-2">
+    <article className="space-y-6 py-2 max-w-[720px] mx-auto">
       <div>
         <Link
           href="/learn"
-          className="text-xs font-semibold text-accent hover:underline inline-flex items-center min-h-[32px]"
+          className="text-xs font-semibold text-link hover:underline inline-flex items-center min-h-[44px]"
         >
           ← Back to Evidence Bank
         </Link>
       </div>
 
-      {/* Header */}
-      <div className="space-y-2">
-        <div className="flex items-start justify-between gap-3 flex-wrap">
-          <h1 className="text-2xl font-bold tracking-tight text-text">
-            {claim.title}
-          </h1>
-          <EvidenceBadge tier={claim.tier} />
+      {/* 1. Meter and outcome first */}
+      <div className="space-y-3 p-4 sm:p-5 rounded-md border border-border bg-surface-2">
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <EvidenceMeter tier={claim.tier} />
         </div>
 
         <div className="text-sm text-muted">
           <strong className="text-text">Measured Target Outcome:</strong>{' '}
           <span className="font-medium text-text">{claim.outcome}</span>
         </div>
+
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-text font-display">
+          {claim.title}
+        </h1>
       </div>
 
-      {/* Summary */}
-      <Card className="p-4 space-y-2 bg-surface-2 border-border">
-        <h2 className="text-xs font-bold text-muted uppercase tracking-wider">
-          Plain-Language Summary
+      {/* 2. Summary */}
+      <Card className="p-4 sm:p-5 space-y-2 bg-surface-2 border-border">
+        <h2 className="text-xs font-bold text-muted uppercase tracking-wide">
+          Plain-language summary
         </h2>
-        <p className="text-sm text-text leading-relaxed">{claim.summary}</p>
+        <p className="text-sm sm:text-base text-text leading-relaxed">
+          {claim.summary}
+        </p>
       </Card>
 
-      {/* Caveat */}
-      <Card className="p-4 space-y-2 bg-surface border-border">
-        <h2 className="text-xs font-bold text-muted uppercase tracking-wider">
+      {/* 3. Caveat */}
+      <Card className="p-4 sm:p-5 space-y-2 bg-surface border-border">
+        <h2 className="text-xs font-bold text-muted uppercase tracking-wide">
           Caveats & Study Limitations
         </h2>
-        <p className="text-xs text-text leading-relaxed">{claim.caveat}</p>
+        <p className="text-sm sm:text-base text-text leading-relaxed">
+          {claim.caveat}
+        </p>
       </Card>
 
-      {/* Related Interactive Tools if any */}
-      {linkedActivities.length > 0 && (
-        <Card className="p-4 space-y-3 bg-surface border-border">
-          <h2 className="text-xs font-bold text-muted uppercase tracking-wider">
-            Related Activities in FocusLab
-          </h2>
-          <div className="space-y-2">
-            {linkedActivities.map((act) => (
-              <div
-                key={act.id}
-                className="flex items-center justify-between gap-2 flex-wrap pt-1 border-t border-border/40 first:border-0 first:pt-0"
-              >
-                <div>
-                  <div className="text-xs font-semibold text-text">{act.name}</div>
-                  <div className="text-[11px] text-muted">{act.whenToUse}</div>
-                </div>
-                <div className="flex gap-2">
-                  <Link
-                    href={`/activities/${act.id}`}
-                    className="text-xs text-accent hover:underline min-h-[32px] inline-flex items-center"
-                  >
-                    Practice →
-                  </Link>
-                  <Link
-                    href={`/experiments?activity=${act.id}`}
-                    className="text-xs text-accent hover:underline min-h-[32px] inline-flex items-center"
-                  >
-                    Test Protocol →
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Card>
-      )}
-
-      {/* Peer-Reviewed References */}
-      <div className="space-y-3 pt-2">
-        <h2 className="text-sm font-bold text-text">
+      {/* 4. References */}
+      <div className="space-y-3 pt-1">
+        <h2 className="text-lg font-bold text-text font-display">
           Citations & Primary Sources ({references.length})
         </h2>
         <div className="space-y-2.5">
           {references.map((ref) => {
             if (!ref) return null;
             return (
-              <Card key={ref.id} className="p-3.5 space-y-1.5 bg-surface border-border">
-                <p className="text-xs text-text leading-relaxed">{ref.citation}</p>
+              <Card key={ref.id} className="p-4 space-y-2 bg-surface border-border">
+                <p className="text-xs sm:text-sm text-text leading-relaxed">
+                  {ref.citation}
+                </p>
                 {ref.link && (
                   <div>
                     <a
                       href={ref.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-xs font-semibold text-accent hover:underline inline-flex items-center gap-1 min-h-[32px]"
+                      className="text-xs font-semibold text-link hover:underline inline-flex items-center gap-1 min-h-[44px]"
                     >
                       <span>Open publication (DOI / PMC)</span>
                       <span aria-hidden="true">↗</span>
@@ -152,6 +125,43 @@ export default function ClaimDetailPage({ params }: ClaimPageProps) {
           })}
         </div>
       </div>
+
+      {/* 5. Related activity link */}
+      {linkedActivities.length > 0 && (
+        <Card className="p-4 sm:p-5 space-y-3 bg-surface border-border">
+          <h2 className="text-sm font-bold text-text font-display">
+            Related Activities in FocusLab
+          </h2>
+          <div className="divide-y divide-border">
+            {linkedActivities.map((act) => (
+              <div
+                key={act.id}
+                className="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 first:pt-0 last:pb-0"
+              >
+                <div>
+                  <div className="text-sm font-bold text-text">{act.name}</div>
+                  <div className="text-xs text-muted">{act.whenToUse}</div>
+                </div>
+                <div className="flex gap-2">
+                  <Link
+                    href={`/activities/${act.id}`}
+                    className="text-xs font-semibold text-link hover:underline min-h-[44px] inline-flex items-center"
+                  >
+                    Practice activity
+                  </Link>
+                  <span className="text-muted self-center" aria-hidden="true">·</span>
+                  <Link
+                    href={`/experiments?activity=${act.id}`}
+                    className="text-xs font-semibold text-link hover:underline min-h-[44px] inline-flex items-center"
+                  >
+                    Test protocol
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
     </article>
   );
 }

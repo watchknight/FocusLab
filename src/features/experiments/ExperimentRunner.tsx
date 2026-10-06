@@ -161,14 +161,14 @@ export const ExperimentRunner: React.FC<ExperimentRunnerProps> = ({
   return (
     <Card className="max-w-md mx-auto p-6 space-y-4 bg-surface-2 border-border">
       <div className="space-y-1">
-        <span className="text-xs font-semibold text-muted uppercase tracking-wider">
-          Experiment Run #{runIndex + 1} of 10
+        <span className="text-xs font-semibold text-muted">
+          Experiment run {runIndex + 1} of 10
         </span>
         <h2 className="text-xl font-bold text-text">Condition: {condition.name}</h2>
         <p className="text-xs text-muted">
           {isConcurrent
             ? `Perform a 3-minute Focus Check while listening to ${condition.name}.`
-            : `This run consists of three steps: Focus Check (before) → ${condition.name} (3 min) → Focus Check (after).`}
+            : `This run consists of three steps: Focus Check before, 3 minutes of ${condition.name}, then Focus Check after.`}
         </p>
       </div>
 

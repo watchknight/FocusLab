@@ -2,8 +2,11 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import * as m from 'motion/react-m';
+import { AnimatePresence } from 'motion/react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import { fadeVariants, popVariants } from '@/lib/motion';
 import { EvidenceBadge } from '@/components/ui/EvidenceBadge';
 import {
   UserGoal,
@@ -73,19 +76,30 @@ export const OnboardingModal: React.FC = () => {
     setStep(3);
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div
-      ref={modalRef}
-      tabIndex={-1}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="onboarding-dialog-title"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 focus:outline-none"
-    >
-      <Card className="max-w-lg w-full p-5 sm:p-6 space-y-5 bg-surface border-border shadow-2xl overflow-y-auto max-h-[90vh]">
-        <div className="flex items-center justify-between text-xs text-muted border-b border-border pb-3">
+    <AnimatePresence>
+      {isOpen && (
+        <m.div
+          ref={modalRef}
+          tabIndex={-1}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="onboarding-dialog-title"
+          variants={fadeVariants}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-bg/60 backdrop-blur-xs p-4 focus:outline-none"
+        >
+          <m.div
+            variants={popVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            className="w-full max-w-lg"
+          >
+            <Card className="w-full p-5 sm:p-6 space-y-5 bg-surface border-border shadow-elevation overflow-y-auto max-h-[90vh]">
+        <div className="flex items-center justify-between text-sm text-muted border-b border-border pb-3">
           <span className="font-semibold text-text">{t('onboarding.step', { step })}</span>
           <button
             type="button"
@@ -102,7 +116,7 @@ export const OnboardingModal: React.FC = () => {
               <h2 id="onboarding-dialog-title" className="text-xl font-bold tracking-tight text-text">
                 {t('onboarding.goalTitle')}
               </h2>
-              <p className="text-xs text-muted">{t('onboarding.goalSub')}</p>
+              <p className="text-sm text-muted">{t('onboarding.goalSub')}</p>
             </div>
             <div className="space-y-2">
               {GOAL_KEYS.map((g) => (
@@ -115,7 +129,7 @@ export const OnboardingModal: React.FC = () => {
                   }`}
                 >
                   <span className="text-sm font-semibold text-text block">{t(g.labelKey)}</span>
-                  <span className="text-xs text-muted block mt-0.5">{t(g.descKey)}</span>
+                  <span className="text-sm text-muted block mt-0.5">{t(g.descKey)}</span>
                 </button>
               ))}
             </div>
@@ -133,7 +147,7 @@ export const OnboardingModal: React.FC = () => {
               <h2 id="onboarding-dialog-title" className="text-xl font-bold tracking-tight text-text">
                 {t('onboarding.obstacleTitle')}
               </h2>
-              <p className="text-xs text-muted">{t('onboarding.obstacleSub')}</p>
+              <p className="text-sm text-muted">{t('onboarding.obstacleSub')}</p>
             </div>
             <div className="space-y-2">
               {OBSTACLE_KEYS.map((o) => (
@@ -146,7 +160,7 @@ export const OnboardingModal: React.FC = () => {
                   }`}
                 >
                   <span className="text-sm font-semibold text-text block">{t(o.labelKey)}</span>
-                  <span className="text-xs text-muted block mt-0.5">{t(o.descKey)}</span>
+                  <span className="text-sm text-muted block mt-0.5">{t(o.descKey)}</span>
                 </button>
               ))}
             </div>
@@ -165,7 +179,7 @@ export const OnboardingModal: React.FC = () => {
               <h2 id="onboarding-dialog-title" className="text-xl font-bold tracking-tight text-text">
                 {t('onboarding.recsTitle')}
               </h2>
-              <p className="text-xs text-muted">{t('onboarding.recsSub')}</p>
+              <p className="text-sm text-muted">{t('onboarding.recsSub')}</p>
             </div>
             <div className="space-y-3">
               {recommendations.map((rec) => (
@@ -174,8 +188,8 @@ export const OnboardingModal: React.FC = () => {
                     <h3 className="text-sm font-bold text-text">{rec.title}</h3>
                     <EvidenceBadge tier={rec.tier} />
                   </div>
-                  <p className="text-xs text-muted">{rec.description}</p>
-                  <div className="pt-1.5 border-t border-border/60 text-[11px] text-muted space-y-1">
+                  <p className="text-sm text-muted">{rec.description}</p>
+                  <div className="pt-1.5 border-t border-border/60 text-sm text-muted space-y-1">
                     <p><strong className="text-text">{t('onboarding.whyThis')}</strong> {rec.whyThis}</p>
                     <p className="italic">{t('onboarding.measuredOutcome')} <span className="text-text not-italic">{rec.outcome}</span></p>
                   </div>
@@ -183,9 +197,9 @@ export const OnboardingModal: React.FC = () => {
                     <Link
                       href={rec.actionHref}
                       onClick={handleDismiss}
-                      className="text-xs font-semibold text-accent hover:underline inline-flex items-center min-h-[44px]"
+                      className="text-sm font-semibold text-signal hover:underline inline-flex items-center min-h-[44px]"
                     >
-                      {rec.actionLabel} →
+                      {rec.actionLabel}
                     </Link>
                   </div>
                 </Card>
@@ -198,7 +212,10 @@ export const OnboardingModal: React.FC = () => {
             </div>
           </div>
         )}
-      </Card>
-    </div>
+            </Card>
+          </m.div>
+        </m.div>
+      )}
+    </AnimatePresence>
   );
 };

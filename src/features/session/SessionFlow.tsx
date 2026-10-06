@@ -1,18 +1,17 @@
 'use client';
 
 import React, { useState } from 'react';
-import { IntentionStep } from './IntentionStep';
-import { EnvironmentChecklist } from '@/features/environment';
-import { RhythmStep, RhythmConfig } from './RhythmStep';
+import { SessionSetupView } from './SessionSetupView';
+import { RhythmConfig } from './RhythmStep';
 import { RunStep } from './RunStep';
 import { BreakStep } from './BreakStep';
 import { ReflectionStep } from './ReflectionStep';
 import { computeFlexibleBreakSec } from '@/lib/timer';
 
-type SessionStage = 'intention' | 'checklist' | 'rhythm' | 'run' | 'break' | 'reflection';
+type SessionStage = 'setup' | 'run' | 'break' | 'reflection';
 
 export const SessionFlow: React.FC = () => {
-  const [stage, setStage] = useState<SessionStage>('intention');
+  const [stage, setStage] = useState<SessionStage>('setup');
 
   // Session state accumulated across blocks
   const [sessionStartedAt, setSessionStartedAt] = useState<number>(0);
@@ -32,16 +31,13 @@ export const SessionFlow: React.FC = () => {
   const [allParkedThoughts, setAllParkedThoughts] = useState<string[]>([]);
   const [currentBreakSec, setCurrentBreakSec] = useState<number>(300);
 
-  const handleIntentionComplete = (
+  const handleStartSession = (
     task: string,
-    plan?: { when: string; then: string }
+    plan: { when: string; then: string } | undefined,
+    config: RhythmConfig
   ) => {
     setIntention(task);
     setIfThen(plan);
-    setStage('checklist');
-  };
-
-  const handleSelectRhythm = (config: RhythmConfig) => {
     setRhythm(config);
     setPlannedFocusSec(config.focusSec);
     setSessionStartedAt(Date.now());
@@ -69,7 +65,7 @@ export const SessionFlow: React.FC = () => {
   };
 
   const handleResetSession = () => {
-    setStage('intention');
+    setStage('setup');
     setBlocksCount(0);
     setTotalActualFocusSec(0);
     setTotalDistractions(0);
@@ -78,21 +74,12 @@ export const SessionFlow: React.FC = () => {
 
   return (
     <div className="w-full">
-      {stage === 'intention' && (
-        <IntentionStep onContinue={handleIntentionComplete} />
-      )}
-
-      {stage === 'checklist' && (
-        <EnvironmentChecklist
-          onContinue={() => setStage('rhythm')}
-          onBack={() => setStage('intention')}
-        />
-      )}
-
-      {stage === 'rhythm' && (
-        <RhythmStep
-          onSelectRhythm={handleSelectRhythm}
-          onBack={() => setStage('checklist')}
+      {stage === 'setup' && (
+        <SessionSetupView
+          initialIntention={intention}
+          initialIfThen={ifThen}
+          initialRhythm={rhythm}
+          onStartSession={handleStartSession}
         />
       )}
 
@@ -102,7 +89,7 @@ export const SessionFlow: React.FC = () => {
           ifThen={ifThen}
           rhythm={rhythm}
           onFinishBlock={handleFinishBlock}
-          onAbort={() => setStage('rhythm')}
+          onAbort={() => setStage('setup')}
         />
       )}
 

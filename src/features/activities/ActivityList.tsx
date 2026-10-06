@@ -51,7 +51,7 @@ export const ActivityList: React.FC = () => {
         <div className="flex flex-wrap items-center justify-between gap-3">
           {/* Category Filter */}
           <div className="space-y-1.5">
-            <span className="text-xs font-semibold text-muted uppercase tracking-wider block">
+            <span className="text-xs font-semibold text-muted block">
               Category
             </span>
             <div className="flex flex-wrap gap-1.5">
@@ -60,9 +60,9 @@ export const ActivityList: React.FC = () => {
                   type="button"
                   key={cat}
                   onClick={() => setCategory(cat)}
-                  className={`min-h-[36px] px-3 py-1 text-xs rounded-md font-medium border transition-colors capitalize ${
+                  className={`min-h-[44px] px-3 py-1.5 text-xs rounded-sm font-semibold border transition-colors capitalize focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-[0.98] motion-reduce:active:scale-100 ${
                     category === cat
-                      ? 'bg-accent border-accent text-accent-contrast'
+                      ? 'bg-accent border-2 border-accent-edge text-on-accent shadow-elevation'
                       : 'bg-surface border-border text-text hover:bg-surface-2'
                   }`}
                 >
@@ -74,8 +74,8 @@ export const ActivityList: React.FC = () => {
 
           {/* Max Duration Filter */}
           <div className="space-y-1.5">
-            <span className="text-xs font-semibold text-muted uppercase tracking-wider block">
-              Max Duration
+            <span className="text-xs font-semibold text-muted block">
+              Max duration
             </span>
             <div className="flex flex-wrap gap-1.5">
               {[
@@ -88,9 +88,9 @@ export const ActivityList: React.FC = () => {
                   type="button"
                   key={opt.value}
                   onClick={() => setMaxDurationSec(opt.value)}
-                  className={`min-h-[36px] px-3 py-1 text-xs rounded-md font-medium border transition-colors ${
+                  className={`min-h-[44px] px-3 py-1.5 text-xs rounded-sm font-semibold border transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-[0.98] motion-reduce:active:scale-100 ${
                     maxDurationSec === opt.value
-                      ? 'bg-accent border-accent text-accent-contrast'
+                      ? 'bg-accent border-2 border-accent-edge text-on-accent shadow-elevation'
                       : 'bg-surface border-border text-text hover:bg-surface-2'
                   }`}
                 >
@@ -104,7 +104,7 @@ export const ActivityList: React.FC = () => {
 
       {/* Standard Activities Grid */}
       <div className="space-y-3">
-        <h2 className="text-sm font-semibold text-text uppercase tracking-wider">
+        <h2 className="text-sm font-semibold text-text">
           Practice Activities ({filteredStandard.length})
         </h2>
         {filteredStandard.length === 0 ? (
@@ -124,8 +124,8 @@ export const ActivityList: React.FC = () => {
       {controlActivities.length > 0 && (
         <div className="space-y-3 pt-4 border-t border-border">
           <div className="space-y-0.5">
-            <h2 className="text-sm font-semibold text-text uppercase tracking-wider">
-              Used for Experiments
+            <h2 className="text-sm font-semibold text-text">
+              Used for experiments
             </h2>
             <p className="text-xs text-muted">
               Active baseline controls without structured sensory stimulation, used for comparing conditions.

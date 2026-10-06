@@ -43,7 +43,7 @@ export const ActivityDetail: React.FC<ActivityDetailProps> = ({ activity }) => {
           href="/activities"
           className="text-xs text-muted hover:text-text inline-flex items-center gap-1 min-h-[32px]"
         >
-          ← Back to Activities
+          Back to activities
         </Link>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-text">
@@ -90,12 +90,12 @@ export const ActivityDetail: React.FC<ActivityDetailProps> = ({ activity }) => {
               <button
                 type="button"
                 onClick={() => setShowRefs(!showRefs)}
-                className="text-xs font-semibold text-accent hover:underline min-h-[32px] inline-flex items-center"
+                className="text-xs font-semibold text-link hover:underline min-h-[44px] inline-flex items-center"
               >
                 {showRefs ? 'Hide citations' : `View citations (${references.length})`}
               </button>
               {showRefs && (
-                <ul className="mt-2 space-y-2 text-xs text-muted bg-surface p-3 rounded border border-border">
+                <ul className="mt-2 space-y-2 text-xs text-muted bg-surface p-3 rounded-xs border border-border">
                   {references.map((r) =>
                     r ? (
                       <li key={r.id} className="leading-relaxed">
@@ -105,7 +105,7 @@ export const ActivityDetail: React.FC<ActivityDetailProps> = ({ activity }) => {
                             href={r.link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="ml-1 text-accent underline"
+                            className="ml-1 text-link underline"
                           >
                             [Link]
                           </a>
@@ -122,8 +122,8 @@ export const ActivityDetail: React.FC<ActivityDetailProps> = ({ activity }) => {
 
       {/* Cautions */}
       {activity.cautions && activity.cautions.length > 0 && (
-        <Card className="p-4 space-y-2 border-warn/30 bg-warn/5">
-          <h2 className="text-sm font-bold text-warn">Cautions</h2>
+        <Card className="p-4 space-y-2 border-tier-not-supported/40 bg-surface-2">
+          <h2 className="text-sm font-bold text-tier-not-supported">Cautions</h2>
           <ul className="space-y-1 text-xs text-muted list-disc list-inside">
             {activity.cautions.map((caution, idx) => (
               <li key={idx}>{caution}</li>
@@ -134,8 +134,8 @@ export const ActivityDetail: React.FC<ActivityDetailProps> = ({ activity }) => {
 
       {/* Duration Picker and Launch Action */}
       <Card className="p-4 sm:p-5 space-y-4">
-        <span className="text-xs font-semibold text-text uppercase tracking-wider block">
-          Select Duration
+        <span className="text-xs font-semibold text-text block">
+          Select duration
         </span>
         <div className="flex flex-wrap gap-2">
           {activity.durationOptionsSec.map((sec) => (
@@ -143,9 +143,9 @@ export const ActivityDetail: React.FC<ActivityDetailProps> = ({ activity }) => {
               type="button"
               key={sec}
               onClick={() => setSelectedDuration(sec)}
-              className={`min-h-[44px] px-4 py-2 text-sm font-semibold rounded-md border transition-colors ${
+              className={`min-h-[44px] px-4 py-2 text-sm font-semibold rounded-sm border transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-[0.98] motion-reduce:active:scale-100 ${
                 selectedDuration === sec
-                  ? 'bg-accent border-accent text-accent-contrast'
+                  ? 'bg-accent border-2 border-accent-edge text-on-accent shadow-elevation'
                   : 'bg-surface-2 border-border text-text hover:bg-surface'
               }`}
             >
@@ -160,14 +160,14 @@ export const ActivityDetail: React.FC<ActivityDetailProps> = ({ activity }) => {
             onClick={() => setIsPlaying(true)}
             className="w-full sm:w-auto"
           >
-            Start Activity
+            Start activity
           </Button>
 
           <Link
             href={`/experiments?activity=${activity.id}`}
-            className="text-xs text-accent hover:underline min-h-[44px] inline-flex items-center"
+            className="text-xs font-semibold text-link hover:underline min-h-[44px] inline-flex items-center"
           >
-            Test this activity in an experiment →
+            Test this activity in an experiment
           </Link>
         </div>
       </Card>

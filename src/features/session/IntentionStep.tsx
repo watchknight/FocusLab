@@ -57,9 +57,9 @@ export const IntentionStep: React.FC<IntentionStepProps> = ({ onContinue }) => {
   return (
     <form onSubmit={handleProceed} className="space-y-6">
       <div className="space-y-2">
-        <h1 className="text-2xl font-bold tracking-tight text-text">Set Your Focus Intention</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-text">Set your focus intention</h1>
         <p className="text-sm text-muted">
-          Define a single clear objective before starting your work block.
+          Define a single clear goal before starting your work block.
         </p>
       </div>
 
@@ -74,7 +74,7 @@ export const IntentionStep: React.FC<IntentionStepProps> = ({ onContinue }) => {
           onChange={(e) => setTask(e.target.value)}
           placeholder="e.g. Write section 2 of the project proposal"
           maxLength={120}
-          className="w-full min-h-[44px] px-3 py-2 rounded-md border border-border bg-surface text-text text-sm focus-visible:outline-2 focus-visible:outline-accent"
+          className="w-full min-h-[44px] px-3 py-2 rounded-xs border border-border-strong bg-surface text-text text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
           autoFocus
         />
       </Card>
@@ -82,13 +82,13 @@ export const IntentionStep: React.FC<IntentionStepProps> = ({ onContinue }) => {
       <Card className="space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold text-text">If-Then Plan (Optional)</span>
+            <span className="text-sm font-semibold text-text">If-then plan (optional)</span>
             {claim && <EvidenceBadge tier={claim.tier} />}
           </div>
           <button
             type="button"
             onClick={() => setShowIfThen(!showIfThen)}
-            className="text-xs text-accent hover:underline self-start sm:self-auto min-h-[44px] inline-flex items-center"
+            className="text-xs font-semibold text-link hover:underline self-start sm:self-auto min-h-[44px] inline-flex items-center"
           >
             {showIfThen ? 'Hide if-then plan' : '+ Add an if-then plan'}
           </button>
@@ -103,7 +103,7 @@ export const IntentionStep: React.FC<IntentionStepProps> = ({ onContinue }) => {
         {showIfThen && (
           <div className="space-y-3 pt-1 border-t border-border">
             <div className="space-y-1.5">
-              <span className="text-xs font-semibold text-muted uppercase tracking-wider">
+              <span className="text-xs font-semibold text-muted block">
                 Starter templates
               </span>
               <div className="flex flex-wrap gap-1.5">
@@ -112,7 +112,7 @@ export const IntentionStep: React.FC<IntentionStepProps> = ({ onContinue }) => {
                     type="button"
                     key={tmpl.label}
                     onClick={() => applyTemplate(tmpl)}
-                    className="min-h-[44px] px-2.5 py-1 text-xs rounded border border-border bg-surface text-text hover:bg-surface-2 transition-colors text-left"
+                    className="min-h-[44px] px-2.5 py-1 text-xs rounded-xs border border-border-strong bg-surface text-text hover:bg-surface-2 transition-colors text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
                   >
                     {tmpl.label}
                   </button>
@@ -131,7 +131,7 @@ export const IntentionStep: React.FC<IntentionStepProps> = ({ onContinue }) => {
                   value={whenTrigger}
                   onChange={(e) => setWhenTrigger(e.target.value)}
                   placeholder="e.g. I reach for my phone"
-                  className="w-full min-h-[44px] px-3 py-2 rounded-md border border-border bg-surface text-text text-sm focus-visible:outline-2 focus-visible:outline-accent"
+                  className="w-full min-h-[44px] px-3 py-2 rounded-xs border border-border-strong bg-surface text-text text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
                 />
               </div>
               <div>
@@ -144,7 +144,7 @@ export const IntentionStep: React.FC<IntentionStepProps> = ({ onContinue }) => {
                   value={thenAction}
                   onChange={(e) => setThenAction(e.target.value)}
                   placeholder="e.g. take one breath and return"
-                  className="w-full min-h-[44px] px-3 py-2 rounded-md border border-border bg-surface text-text text-sm focus-visible:outline-2 focus-visible:outline-accent"
+                  className="w-full min-h-[44px] px-3 py-2 rounded-xs border border-border-strong bg-surface text-text text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
                 />
               </div>
             </div>

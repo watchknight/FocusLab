@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { create } from 'zustand';
 import en from './en.json';
 import bn from './bn.json';
@@ -15,25 +15,8 @@ interface LanguageState {
   setLocale: (locale: Locale) => void;
 }
 
-const getInitialLocale = (): Locale => {
-  if (typeof window !== 'undefined') {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored === 'bn' || stored === 'en') {
-        if (typeof document !== 'undefined') {
-          document.documentElement.lang = stored;
-        }
-        return stored;
-      }
-    } catch {
-      // Ignored
-    }
-  }
-  return 'en';
-};
-
 export const useLanguageStore = create<LanguageState>((set) => ({
-  locale: getInitialLocale(),
+  locale: 'en',
   setLocale: (nextLocale: Locale) => {
     if (typeof window !== 'undefined') {
       try {
@@ -48,6 +31,24 @@ export const useLanguageStore = create<LanguageState>((set) => ({
     set({ locale: nextLocale });
   },
 }));
+
+let hasInitialized = false;
+
+export function initLanguageStore(): void {
+  if (typeof window === 'undefined' || hasInitialized) return;
+  hasInitialized = true;
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored === 'bn' || stored === 'en') {
+      if (typeof document !== 'undefined') {
+        document.documentElement.lang = stored;
+      }
+      useLanguageStore.setState({ locale: stored });
+    }
+  } catch {
+    // Ignored
+  }
+}
 
 export function translate(
   key: I18nKey,
@@ -80,6 +81,10 @@ export function translate(
 export function useT() {
   const locale = useLanguageStore((state) => state.locale);
   const setLocale = useLanguageStore((state) => state.setLocale);
+
+  useEffect(() => {
+    initLanguageStore();
+  }, []);
 
   const t = useCallback(
     (key: I18nKey, params?: Record<string, string | number>) =>

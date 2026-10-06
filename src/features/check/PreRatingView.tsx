@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/Button';
-import { Card } from '@/components/ui/Card';
+import { Panel } from '@/components/ui/Panel';
 import { Rating1To5 } from '@/store/types';
 import { useT } from '@/i18n';
 
@@ -28,94 +28,106 @@ export const PreRatingView: React.FC<PreRatingViewProps> = ({ onRatingsComplete,
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="space-y-1">
-        <h2 className="text-xl font-bold text-text">{t('check.ratingsTitle')}</h2>
-        <p className="text-xs text-muted">
-          {t('check.ratingsSub')}
-        </p>
-      </div>
-
-      <Card className="space-y-3">
-        <label className="block text-sm font-semibold text-text" id="alertness-label">
-          {t('check.alertnessLabel')}
-        </label>
-        <div
-          role="radiogroup"
-          aria-labelledby="alertness-label"
-          className="grid grid-cols-5 gap-2"
-        >
-          {RATING_VALUES.map((val) => {
-            const isSelected = alertness === val;
-            return (
-              <button
-                type="button"
-                key={val}
-                role="radio"
-                aria-checked={isSelected}
-                onClick={() => setAlertness(val)}
-                className={`min-h-[44px] min-w-[44px] rounded-md border text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-accent ${
-                  isSelected
-                    ? 'border-accent bg-accent text-accent-contrast'
-                    : 'border-border bg-surface-2 text-text hover:bg-surface'
-                }`}
-              >
-                {val}
-              </button>
-            );
-          })}
+    <form onSubmit={handleSubmit} className="w-full flex justify-center py-2 sm:py-4">
+      <Panel className="w-full max-w-[720px] space-y-6">
+        <div className="space-y-1">
+          <h2 className="text-xl font-bold tracking-tight text-text">{t('check.ratingsTitle')}</h2>
+          <p className="text-xs sm:text-sm text-muted">
+            {t('check.ratingsSub')}
+          </p>
         </div>
-      </Card>
 
-      <Card className="space-y-3">
-        <label className="block text-sm font-semibold text-text" id="mind-wandering-label">
-          {t('check.wanderingLabel')}
-        </label>
-        <div
-          role="radiogroup"
-          aria-labelledby="mind-wandering-label"
-          className="grid grid-cols-5 gap-2"
-        >
-          {RATING_VALUES.map((val) => {
-            const isSelected = mindWandering === val;
-            return (
-              <button
-                type="button"
-                key={val}
-                role="radio"
-                aria-checked={isSelected}
-                onClick={() => setMindWandering(val)}
-                className={`min-h-[44px] min-w-[44px] rounded-md border text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-accent ${
-                  isSelected
-                    ? 'border-accent bg-accent text-accent-contrast'
-                    : 'border-border bg-surface-2 text-text hover:bg-surface'
-                }`}
-              >
-                {val}
-              </button>
-            );
-          })}
+        {/* Alertness 5-step segmented control */}
+        <div className="space-y-2">
+          <label className="block text-sm font-semibold text-text" id="alertness-label">
+            Current Alertness
+          </label>
+          <div
+            role="radiogroup"
+            aria-labelledby="alertness-label"
+            className="grid grid-cols-5 p-1 rounded-md bg-surface border border-border"
+          >
+            {RATING_VALUES.map((val) => {
+              const isSelected = alertness === val;
+              return (
+                <button
+                  type="button"
+                  key={val}
+                  role="radio"
+                  aria-checked={isSelected}
+                  onClick={() => setAlertness(val)}
+                  className={`min-h-[44px] min-w-[44px] rounded-xs text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-accent tabular-nums flex items-center justify-center ${
+                    isSelected
+                      ? 'bg-accent text-accent-contrast shadow-sm'
+                      : 'text-text hover:bg-surface-2'
+                  }`}
+                >
+                  {val}
+                </button>
+              );
+            })}
+          </div>
+          <div className="flex justify-between items-center text-xs text-muted px-1">
+            <span>1 — Exhausted</span>
+            <span>5 — Fully alert</span>
+          </div>
         </div>
-      </Card>
 
-      <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
-        <Button
-          type="submit"
-          variant="primary"
-          disabled={!canProceed}
-          className="w-full sm:w-auto min-h-[44px]"
-        >
-          {t('check.btnStartTest')}
-        </Button>
-        <Button
-          type="button"
-          variant="subtle"
-          onClick={onBack}
-          className="w-full sm:w-auto min-h-[44px]"
-        >
-          {t('common.back')}
-        </Button>
-      </div>
+        {/* Mind Wandering 5-step segmented control */}
+        <div className="space-y-2">
+          <label className="block text-sm font-semibold text-text" id="mind-wandering-label">
+            Mind Wandering
+          </label>
+          <div
+            role="radiogroup"
+            aria-labelledby="mind-wandering-label"
+            className="grid grid-cols-5 p-1 rounded-md bg-surface border border-border"
+          >
+            {RATING_VALUES.map((val) => {
+              const isSelected = mindWandering === val;
+              return (
+                <button
+                  type="button"
+                  key={val}
+                  role="radio"
+                  aria-checked={isSelected}
+                  onClick={() => setMindWandering(val)}
+                  className={`min-h-[44px] min-w-[44px] rounded-xs text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-accent tabular-nums flex items-center justify-center ${
+                    isSelected
+                      ? 'bg-accent text-accent-contrast shadow-sm'
+                      : 'text-text hover:bg-surface-2'
+                  }`}
+                >
+                  {val}
+                </button>
+              );
+            })}
+          </div>
+          <div className="flex justify-between items-center text-xs text-muted px-1">
+            <span>1 — Grounded</span>
+            <span>5 — Highly distracted</span>
+          </div>
+        </div>
+
+        <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
+          <Button
+            type="submit"
+            variant="primary"
+            disabled={!canProceed}
+            className="w-full sm:w-auto min-h-[44px]"
+          >
+            {t('check.btnStartTest')}
+          </Button>
+          <Button
+            type="button"
+            variant="subtle"
+            onClick={onBack}
+            className="w-full sm:w-auto min-h-[44px]"
+          >
+            {t('common.back')}
+          </Button>
+        </div>
+      </Panel>
     </form>
   );
 };

@@ -7,8 +7,9 @@ import { EvidenceBadge } from '@/components/ui/EvidenceBadge';
 import { getClaimById } from '@/content/evidence';
 
 interface EnvironmentChecklistProps {
-  onContinue: () => void;
-  onBack: () => void;
+  onContinue?: () => void;
+  onBack?: () => void;
+  embedded?: boolean;
 }
 
 interface ChecklistItemConfig {
@@ -50,6 +51,7 @@ const CHECKLIST_ITEMS: ChecklistItemConfig[] = [
 export const EnvironmentChecklist: React.FC<EnvironmentChecklistProps> = ({
   onContinue,
   onBack,
+  embedded = false,
 }) => {
   const [checkedIds, setCheckedIds] = useState<Record<string, boolean>>({});
   const [openInfoId, setOpenInfoId] = useState<string | null>(null);
@@ -63,15 +65,15 @@ export const EnvironmentChecklist: React.FC<EnvironmentChecklistProps> = ({
   };
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-2">
-        <h2 className="text-xl font-bold tracking-tight text-text">Environment Setup</h2>
-        <p className="text-sm text-muted">
-          Optional adjustments to reduce friction and external interruptions. You can proceed at any time.
+    <div className="space-y-4">
+      <div className="space-y-1">
+        <h3 className="text-base font-bold tracking-tight text-text">Environment Checklist</h3>
+        <p className="text-xs text-muted">
+          Adjustments to reduce friction and external interruptions.
         </p>
       </div>
 
-      <div className="space-y-2.5">
+      <div className="space-y-2">
         {CHECKLIST_ITEMS.map((item) => {
           const isChecked = !!checkedIds[item.id];
           const isInfoOpen = openInfoId === item.id;
@@ -85,7 +87,7 @@ export const EnvironmentChecklist: React.FC<EnvironmentChecklistProps> = ({
                     type="checkbox"
                     checked={isChecked}
                     onChange={() => toggleCheck(item.id)}
-                    className="w-5 h-5 rounded border-border text-accent focus:ring-accent"
+                    className="w-5 h-5 rounded-xs border border-border-strong bg-surface text-accent accent-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring cursor-pointer"
                   />
                   <span className={`text-sm ${isChecked ? 'line-through text-muted' : 'text-text'}`}>
                     {item.label}
@@ -97,7 +99,7 @@ export const EnvironmentChecklist: React.FC<EnvironmentChecklistProps> = ({
                   onClick={() => toggleInfo(item.id)}
                   aria-expanded={isInfoOpen}
                   aria-label={`View evidence for ${item.label}`}
-                  className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center text-xs font-mono text-muted hover:text-text focus-visible:outline-2 focus-visible:outline-accent rounded"
+                  className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center text-xs font-mono text-muted hover:text-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring rounded-xs"
                 >
                   ⓘ
                 </button>
@@ -124,14 +126,18 @@ export const EnvironmentChecklist: React.FC<EnvironmentChecklistProps> = ({
         })}
       </div>
 
-      <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
-        <Button variant="primary" onClick={onContinue} className="w-full sm:w-auto">
-          Continue to Rhythm
-        </Button>
-        <Button variant="subtle" onClick={onBack} className="w-full sm:w-auto">
-          Back
-        </Button>
-      </div>
+      {!embedded && onContinue && (
+        <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
+          <Button variant="primary" onClick={onContinue} className="w-full sm:w-auto">
+            Continue to Rhythm
+          </Button>
+          {onBack && (
+            <Button variant="subtle" onClick={onBack} className="w-full sm:w-auto">
+              Back
+            </Button>
+          )}
+        </div>
+      )}
     </div>
   );
 };

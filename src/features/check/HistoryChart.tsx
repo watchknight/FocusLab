@@ -11,6 +11,8 @@ import {
   CartesianGrid,
 } from 'recharts';
 
+import { useMotionAllowed } from '@/lib/motion';
+
 interface HistoryPoint {
   index: number;
   medianRt: number;
@@ -19,9 +21,11 @@ interface HistoryPoint {
 
 interface HistoryChartProps {
   data: HistoryPoint[];
+  animate?: boolean;
 }
 
-export const HistoryChart: React.FC<HistoryChartProps> = ({ data }) => {
+export const HistoryChart: React.FC<HistoryChartProps> = ({ data, animate = true }) => {
+  const motionAllowed = useMotionAllowed();
   if (data.length === 0) {
     return (
       <div className="p-4 text-center text-xs text-muted">
@@ -70,7 +74,9 @@ export const HistoryChart: React.FC<HistoryChartProps> = ({ data }) => {
             strokeWidth={2}
             dot={{ r: 3, fill: 'var(--accent)' }}
             activeDot={{ r: 5 }}
-            isAnimationActive={false}
+            isAnimationActive={animate && motionAllowed}
+            animationDuration={600}
+            animationEasing="ease-out"
           />
         </LineChart>
       </ResponsiveContainer>

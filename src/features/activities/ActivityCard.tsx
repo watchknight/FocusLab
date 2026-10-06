@@ -2,8 +2,8 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Card } from '@/components/ui/Card';
-import { EvidenceBadge } from '@/components/ui/EvidenceBadge';
+import { Plate } from '@/components/ui/Plate';
+import { EvidenceMeter } from '@/components/ui/EvidenceMeter';
 import { Activity } from '@/content/types';
 import { getClaimById } from '@/content/evidence';
 
@@ -17,39 +17,41 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({ activity }) => {
   return (
     <Link
       href={`/activities/${activity.id}`}
-      className="block group focus-visible:outline-2 focus-visible:outline-accent rounded-lg"
+      className="block group focus-visible:outline-2 focus-visible:outline-ring rounded-md h-full"
     >
-      <Card className="h-full p-4 flex flex-col justify-between transition-colors group-hover:border-accent/60">
+      <Plate
+        tier={claim?.tier}
+        caption={
+          claim ? (
+            <span className="text-xs text-muted">
+              Outcome: <strong className="text-text font-semibold">{claim.outcome}</strong>
+            </span>
+          ) : undefined
+        }
+        meter={claim ? <EvidenceMeter tier={claim.tier} /> : null}
+        className="h-full transition-colors group-hover:border-accent"
+      >
         <div className="space-y-2.5">
-          <div className="flex items-start justify-between gap-2">
-            <h3 className="text-base font-bold text-text group-hover:text-accent transition-colors">
-              {activity.name}
-            </h3>
-            {claim && <EvidenceBadge tier={claim.tier} />}
-          </div>
+          <h3 className="text-base font-bold text-text group-hover:text-accent transition-colors">
+            {activity.name}
+          </h3>
 
-          {claim && (
-            <p className="text-xs text-muted">
-              Evidenced for <span className="font-semibold text-text">{claim.outcome}</span>
-            </p>
-          )}
-
-          <p className="text-xs text-muted line-clamp-2">
+          <p className="text-sm text-muted line-clamp-2">
             {activity.whenToUse}
           </p>
-        </div>
 
-        <div className="pt-4 flex flex-wrap gap-1.5 items-center">
-          {activity.durationOptionsSec.map((sec) => (
-            <span
-              key={sec}
-              className="text-[11px] font-mono font-medium px-2 py-0.5 rounded bg-surface border border-border text-text"
-            >
-              {sec < 60 ? `${sec}s` : `${Math.round(sec / 60)}m`}
-            </span>
-          ))}
+          <div className="pt-2 flex flex-wrap gap-1.5 items-center">
+            {activity.durationOptionsSec.map((sec) => (
+              <span
+                key={sec}
+                className="text-xs font-mono font-medium px-2 py-0.5 rounded-xs bg-surface border border-border text-text tabular-nums"
+              >
+                {sec < 60 ? `${sec}s` : `${Math.round(sec / 60)}m`}
+              </span>
+            ))}
+          </div>
         </div>
-      </Card>
+      </Plate>
     </Link>
   );
 };

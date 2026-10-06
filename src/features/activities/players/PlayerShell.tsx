@@ -8,6 +8,7 @@ import { Activity } from '@/content/types';
 import { getClaimById } from '@/content/evidence';
 import { computeTimerSnapshot, calculateElapsedMs, PauseInterval } from '@/lib/timer';
 import { useFocusLabStore } from '@/store';
+import { setCalm } from '@/lib/motion';
 
 export interface PlayerShellProps {
   activity: Activity;
@@ -43,6 +44,11 @@ export const PlayerShell: React.FC<PlayerShellProps> = ({
   const addActivityLog = useFocusLabStore((state) => state.addActivityLog);
   const claim = getClaimById(activity.evidenceId);
 
+  const handleClose = useCallback(() => {
+    setCalm(false);
+    onClose();
+  }, [onClose]);
+
   const handleFinish = useCallback(() => {
     setIsCompleted(true);
     if (!hasSavedRef.current) {
@@ -58,10 +64,11 @@ export const PlayerShell: React.FC<PlayerShellProps> = ({
   }, [activity.id, durationSec, addActivityLog]);
 
   useEffect(() => {
+    setCalm(true);
     setReducedMotion(window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') handleClose();
     };
     window.addEventListener('keydown', onKeyDown);
 
@@ -90,10 +97,11 @@ export const PlayerShell: React.FC<PlayerShellProps> = ({
     }, 200);
 
     return () => {
+      setCalm(false);
       clearInterval(interval);
       window.removeEventListener('keydown', onKeyDown);
     };
-  }, [durationSec, isCompleted, onClose, handleFinish]);
+  }, [durationSec, isCompleted, handleClose, handleFinish]);
 
   const togglePause = () => {
     const now = performance.now();
@@ -115,7 +123,7 @@ export const PlayerShell: React.FC<PlayerShellProps> = ({
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-surface p-4">
         <Card className="max-w-md w-full p-6 text-center space-y-4 bg-surface-2 border-border">
-          <div className="w-12 h-12 rounded-full bg-accent/10 text-accent flex items-center justify-center mx-auto text-2xl font-bold">
+          <div className="w-12 h-12 rounded-full border-2 border-accent bg-surface text-accent flex items-center justify-center mx-auto text-2xl font-bold">
             ✓
           </div>
           <div className="space-y-1">
@@ -136,7 +144,7 @@ export const PlayerShell: React.FC<PlayerShellProps> = ({
           )}
 
           <div className="pt-3 flex gap-2 justify-center">
-            <Button variant="primary" onClick={onClose} className="w-full sm:w-auto">
+            <Button variant="primary" onClick={handleClose} className="w-full sm:w-auto">
               Return to Activities
             </Button>
           </div>
@@ -148,20 +156,20 @@ export const PlayerShell: React.FC<PlayerShellProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-surface select-none">
       {/* Top Bar */}
-      <div className="flex items-center justify-between p-4 border-b border-border bg-surface-2/40">
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-text">{activity.name}</span>
+      <div className="flex items-center justify-between p-2.5 sm:p-4 border-b border-border bg-surface-2 pt-[env(safe-area-inset-top,0px)]">
+        <div className="flex items-center gap-2 min-w-0 pr-2">
+          <span className="text-sm font-semibold text-text truncate">{activity.name}</span>
           {claim && <EvidenceBadge tier={claim.tier} />}
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           <button
             type="button"
             onClick={() => setAudioEnabled(!audioEnabled)}
-            className="text-xs text-muted hover:text-text min-h-[32px] px-2 rounded"
+            className="text-xs text-muted hover:text-text min-h-[44px] px-2 rounded"
           >
             Sound: {audioEnabled ? 'On' : 'Off'}
           </button>
-          <Button variant="subtle" onClick={onClose} className="text-xs min-h-[36px] px-2.5">
+          <Button variant="subtle" onClick={handleClose} className="text-xs min-h-[44px] px-3">
             Exit (Esc)
           </Button>
         </div>
@@ -187,9 +195,9 @@ export const PlayerShell: React.FC<PlayerShellProps> = ({
       </div>
 
       {/* Bottom Controls */}
-      <div className="p-4 border-t border-border bg-surface flex items-center justify-between text-xs text-muted">
-        <span>{remainingSec}s remaining</span>
-        <Button variant="secondary" onClick={togglePause} className="min-w-[100px] min-h-[40px]">
+      <div className="p-2.5 sm:p-4 border-t border-border bg-surface flex items-center justify-between text-xs text-muted pb-[env(safe-area-inset-bottom,0px)]">
+        <span className="tabular-nums font-mono">{remainingSec}s remaining</span>
+        <Button variant="secondary" onClick={togglePause} className="min-w-[100px] min-h-[44px]">
           {isPaused ? 'Resume' : 'Pause'}
         </Button>
       </div>

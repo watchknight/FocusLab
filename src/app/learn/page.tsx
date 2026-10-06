@@ -18,7 +18,7 @@ export default function LearnPage() {
   return (
     <div className="space-y-6 py-2">
       <div className="space-y-1">
-        <h1 className="text-2xl font-bold tracking-tight text-text">
+        <h1 className="text-2xl font-bold tracking-tight text-text font-display">
           Evidence Bank
         </h1>
         <p className="text-sm text-muted">

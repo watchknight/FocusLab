@@ -79,7 +79,7 @@ export const useFocusLabStore = create<FocusLabStore>()(
       addExperimentRun: (experimentId, run) => {
         set((state) => ({
           experiments: state.experiments.map((e) =>
-            e.id === experimentId ? { ...e, runs: [...e.runs, run] } : e
+            e.id === experimentId ? { ...e, runs: [...(e.runs ?? []), run] } : e
           ),
         }));
       },
@@ -133,11 +133,18 @@ export const useFocusLabStore = create<FocusLabStore>()(
       name: 'focuslab:v1',
       version: 1,
       storage: createJSONStorage(() => safeStorage),
-      migrate: (persistedState: unknown, version: number) => {
-        if (version < 1) {
-          return persistedState as FocusLabStore;
-        }
-        return persistedState as FocusLabStore;
+      migrate: (persistedState: unknown, _version: number) => {
+        const state =
+          persistedState && typeof persistedState === 'object'
+            ? (persistedState as Record<string, unknown>)
+            : {};
+        return {
+          checks: Array.isArray(state.checks) ? state.checks : [],
+          sessions: Array.isArray(state.sessions) ? state.sessions : [],
+          activityLogs: Array.isArray(state.activityLogs) ? state.activityLogs : [],
+          experiments: Array.isArray(state.experiments) ? state.experiments : [],
+          ...state,
+        } as FocusLabStore;
       },
     }
   )

@@ -3,8 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
-import { Card } from '@/components/ui/Card';
-import { EvidenceBadge } from '@/components/ui/EvidenceBadge';
+import { Plate } from '@/components/ui/Plate';
 import { getActivityById } from '@/content/activities';
 import { getClaimById } from '@/content/evidence';
 import { computeTimerSnapshot, formatTimeRemaining } from '@/lib/timer';
@@ -64,8 +63,8 @@ export const BreakStep: React.FC<BreakStepProps> = ({
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <span className="text-xs font-semibold text-muted uppercase tracking-wider">
-          Block #{blockNumber} Complete
+        <span className="text-xs font-semibold text-muted">
+          Block #{blockNumber} complete
         </span>
         <h2 className="text-xl font-bold tracking-tight text-text">Rest & Restore</h2>
         <p className="text-sm text-muted">
@@ -73,8 +72,8 @@ export const BreakStep: React.FC<BreakStepProps> = ({
         </p>
       </div>
 
-      <div className="py-6 flex flex-col items-center justify-center space-y-2">
-        <span className="text-5xl sm:text-6xl font-mono font-bold tracking-tight text-text">
+      <div className="py-4 flex flex-col items-center justify-center space-y-2">
+        <span className="text-5xl sm:text-6xl font-display font-bold tracking-tight text-text tabular-nums">
           {remainingTime}
         </span>
         <span className="text-xs text-muted font-mono">
@@ -83,37 +82,46 @@ export const BreakStep: React.FC<BreakStepProps> = ({
       </div>
 
       {activity && (
-        <Card className="p-4 space-y-3 bg-surface-2 border-border">
-          <div className="flex items-center justify-between gap-2">
+        <Plate
+          tier={claim?.tier}
+          caption={claim?.outcome ? `Evidenced for: ${claim.outcome}` : undefined}
+          className="max-w-lg mx-auto w-full"
+        >
+          <div className="space-y-3">
             <div>
-              <span className="text-xs font-semibold text-muted uppercase tracking-wider block">
-                Suggested Break Activity
+              <span className="text-xs font-semibold text-muted block">
+                Suggested break activity
               </span>
               <h3 className="text-base font-bold text-text mt-0.5">{activity.name}</h3>
+              <p className="text-xs text-muted mt-1 leading-relaxed">{activity.whenToUse}</p>
             </div>
-            {claim && <EvidenceBadge tier={claim.tier} />}
-          </div>
 
-          <p className="text-xs text-muted">{activity.whenToUse}</p>
-
-          <div className="pt-1 flex items-center gap-3">
-            <Link
-              href="/activities"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs font-semibold text-accent hover:underline inline-flex items-center min-h-[44px]"
-            >
-              Open guided activity ↗
-            </Link>
+            <div className="pt-2 flex items-center gap-4">
+              <Link
+                href={`/activities/${activity.id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center min-h-[44px] px-4 rounded-xs bg-accent text-on-accent font-semibold text-xs sm:text-sm hover:brightness-105 focus-visible:outline-2 focus-visible:outline-ring"
+              >
+                Start activity
+              </Link>
+              <button
+                type="button"
+                onClick={onNextBlock}
+                className="text-xs sm:text-sm text-muted hover:text-text underline min-h-[44px] inline-flex items-center"
+              >
+                Skip break
+              </button>
+            </div>
           </div>
-        </Card>
+        </Plate>
       )}
 
-      <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
-        <Button variant="primary" onClick={onNextBlock} className="w-full sm:w-auto">
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+        <Button variant="primary" onClick={onNextBlock} className="w-full sm:w-auto min-h-[44px]">
           Start Next Block (#{blockNumber + 1})
         </Button>
-        <Button variant="secondary" onClick={onFinishSession} className="w-full sm:w-auto">
+        <Button variant="secondary" onClick={onFinishSession} className="w-full sm:w-auto min-h-[44px]">
           Finish Session & Reflect
         </Button>
       </div>

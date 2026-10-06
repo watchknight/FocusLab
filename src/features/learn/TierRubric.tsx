@@ -61,11 +61,11 @@ const TIER_DEFINITIONS: TierDefinition[] = [
 export const TierRubric: React.FC = () => {
   return (
     <div className="space-y-4">
-      <div className="text-xs text-muted leading-relaxed space-y-1">
+      <div className="text-base text-muted leading-relaxed space-y-1">
         <p>
           In FocusLab, scientific claims are rated according to strict, transparent criteria.
           A rating applies <strong>strictly to the named outcome</strong> (e.g. physiological arousal,
-          reaction time, or goal attainment), not to vague notions of &ldquo;better brain power&rdquo;.
+          reaction time, or goal attainment), not to vague performance promises.
         </p>
       </div>
 
@@ -73,15 +73,15 @@ export const TierRubric: React.FC = () => {
         {TIER_DEFINITIONS.map((item) => (
           <Card key={item.tier} className="p-4 space-y-2 bg-surface border-border">
             <div className="flex items-start justify-between gap-2 flex-wrap">
-              <h3 className="text-sm font-bold text-text">{item.title}</h3>
+              <h3 className="text-base font-bold text-text">{item.title}</h3>
               <EvidenceBadge tier={item.tier} />
             </div>
 
-            <p className="text-xs text-text leading-relaxed">
+            <p className="text-sm text-text leading-relaxed">
               {item.definition}
             </p>
 
-            <div className="pt-2 border-t border-border/50 text-[11px] space-y-1 text-muted">
+            <div className="pt-2 border-t border-border/50 text-sm space-y-1 text-muted">
               <div>
                 <strong className="text-text">Standard:</strong> {item.criteria}
               </div>

@@ -26,10 +26,10 @@ export const QuietRest: React.FC<QuietRestProps> = ({
         return (
           <div className="flex flex-col items-center justify-center space-y-6 max-w-sm w-full text-center">
             <div className="space-y-1">
-              <span className="text-xs font-semibold text-muted uppercase tracking-wider">
-                Unstructured Baseline Rest
+              <span className="text-xs font-semibold text-muted">
+                Unstructured baseline rest
               </span>
-              <span className="text-6xl sm:text-7xl font-mono font-bold tracking-tight text-text block">
+              <span className="text-6xl sm:text-7xl font-mono font-bold tracking-tight text-text block tabular-nums">
                 {timeDisplay}
               </span>
               <span className="text-xs text-muted block">

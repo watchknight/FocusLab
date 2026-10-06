@@ -1,10 +1,9 @@
 services:
-  - type: web
+  - type: static
     name: focuslab
-    runtime: node
     plan: free
     buildCommand: npm install && npm run build
-    startCommand: npm start
+    staticPublishPath: ./out
     envVars:
       - key: NODE_VERSION
         value: 18.20.0
