@@ -1,0 +1,2 @@
+/** Inline <head> script. Runs before first paint. Sets data-fx ("full" | "lite" | "off") and data-hero-seen. */
+export const FX_SCRIPT = `(function(){var d=document.documentElement;try{var reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;var nav=navigator;var low=(nav.hardwareConcurrency||8)<=4||(nav.deviceMemory||8)<=4||!!(nav.connection&&nav.connection.saveData);d.dataset.fx=reduced?'off':(low?'lite':'full');if(sessionStorage.getItem('focuslab:intro')){d.dataset.heroSeen='1'}}catch(e){d.dataset.fx='off'}})();`;

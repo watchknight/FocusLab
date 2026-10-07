@@ -24,34 +24,43 @@ src/app (routes) · src/components/ui · src/features/{check,session,activities,
 - Privacy: all data stays in the browser. Provide Export JSON, Import JSON (validated) and Delete all data.
 - Never run destructive git commands. Never run `npm audit fix --force`.
 
-## Design (v2, replaces the old Design section)
-Direction: "Cyanotype & Lamp". Attention is a lens: what you attend to is sharp and lit, everything else softens. Three colour profiles (Night, Daylight, Contrast) plus System. Colours come only from CSS variables in src/styles/tokens.css; no raw hex or Tailwind palette colours in components.
-Typography: Atkinson Hyperlegible Next (text), Archivo (display, variable width), Hind Siliguri (Bengali), self-hosted through next/font. Body at least 16px, line length at most 70ch, tabular numerals on every timer, score and stat.
-Avoid template chrome: no all-caps tracked eyebrow labels, no arrows appended to links or buttons, no "A · B · C" meta strings, no identical rounded cards everywhere, no single accented word in a headline, no gradient washes, no fade-up on every section, no hover-lift on non-interactive cards. Numerals 1-2-3 only for the real Check → Practice → Compare sequence.
-Spend boldness in one place: the landing hero. Everything else stays quiet.
-Copy: plain, active, sentence case. A button says exactly what happens. Never write "objective" about the Check; it is an informal browser test.
+## Design (v3, replaces the old Design and Motion sections)
+Direction: "Rack Focus" (photographic language: aperture, viewfinder HUD, bokeh, lens coatings). The full specification is docs/DESIGN-V3.md. Read it before any UI task. The target look is docs/target/hero.png.
+The interface is neutral and has no accent colour. Colours come only from tokens in src/styles/tokens.css; no raw hex or Tailwind palette colours in components. Three profiles (Studio, Darkroom, Contrast) plus System. Test stages (Check, focus run, breathing players) use the fixed stage tokens in every profile.
+Type: Bricolage Grotesque (text and display), Martian Mono (HUD readouts and live counters only), Anek Bangla (Bengali), self-hosted through next/font. Display letter-spacing never tighter than -0.02em.
+Avoid template chrome: no all-caps tracked eyebrows, no arrows on links or buttons, no "A · B · C" meta strings, no identical rounded cards in a row, no gradient washes (the iridescent coating is allowed only on the lens rim, the primary-button hover sheen and the focus-ring glow), no stock imagery, no fake numbers, testimonials or "% improved" claims. Never write "objective" about the Check.
 
-## Motion rules
-- Library: Motion (package "motion", import from "motion/react"). Use LazyMotion with the m component; load domAnimation lazily. Do not use domMax or layout animations.
-- Animate only transform, opacity and, briefly and on small areas, filter. Never width, height, top or left.
-- Timing, easing and spring values live in src/lib/motion.ts. No magic numbers in components.
-- Non-user-triggered motion is limited to the hero focus-pull and the hero pointer lamp. Everything else responds to a user action.
-- prefers-reduced-motion: opacity-only fades of at most 150 ms; no parallax, pointer lamp or blur.
-- Calm mode: while the Check test, a focus session or a breathing player runs, all decorative animation is off (data-calm="on" on <html>) and nothing animates on the main thread during the Check test.
-- Low-end mode: if hardwareConcurrency <= 4, deviceMemory <= 4 or saveData is on (feature-detect each), disable blur, backdrop-filter and the pointer lamp.
-- Never flash; nothing changes more than 3 times per second.
-- Never put a transform on an ancestor of a position: fixed element.
+## Motion rules (v3, GSAP)
+- Library: GSAP from the public "gsap" package with "@gsap/react" (useGSAP). Every plugin we use (ScrollTrigger, SplitText, Flip, Draggable, InertiaPlugin, ScrambleTextPlugin, DrawSVGPlugin, CustomEase) is free and ships in "gsap". Never look for a licence, trial package or private registry. Lenis only for smooth scroll. Remove the old "motion" package and every Motion import.
+- Register plugins in src/lib/gsap.ts. Animate only inside useGSAP with a scope (automatic cleanup). Never mix a CSS transition and GSAP on the same property.
+- Animate transform, opacity and, on small areas, filter blur. Never width, height, top or left. Use quickTo for pointer-driven values.
+- fx tiers come from html[data-fx] (full, lite, off), set before first paint by FX_SCRIPT. lite (low-end or save-data): opacity and transform reveals only; no blur, cursor, smooth scroll, pinned scene, bokeh drift or grain. off (prefers-reduced-motion): no motion, content visible at once, opacity fades of at most 150 ms.
+- Calm routes (Check test stage, focus run, breathing players): html[data-calm="on"], every decorative animation off, no ScrollTrigger, cursor, smooth scroll or page transition. While calm, gsap.globalTimeline.getChildren().length must be 0.
+- Above-the-fold animated elements carry data-hide-until-js; set data-js-ready on <html> when GSAP mounts. Below-the-fold elements are never pre-hidden.
+- Pointer effects only for (hover: hover) and (pointer: fine). Pinned scenes only from 1024px. Never trap scroll or focus.
+- Call ScrollTrigger.refresh() after document.fonts.ready and after route layout changes. Nothing flashes; nothing changes faster than 3 times per second.
+- Easing "focus" (cubic-bezier .16,1,.3,1) for reveals and locks, power3.inOut for wipes, none for scrubbed scroll. Durations: micro 0.2, ui 0.4, reveal 0.9-1.1, scene scrub 0.6.
 
 ## Responsive rules
 - Mobile-first. Breakpoints 360, 640, 768, 1024, 1280, 1536. Test widths 320, 360, 390, 430, 768, 1024, 1280, 1440, 1920.
 - No horizontal scroll at any width. A nav never uses a scrollbar. Use min-w-0 on flex and grid children, dvh instead of vh, env(safe-area-inset-*) on fixed bars, scroll-padding-top equal to the sticky header height.
 - Fluid type and spacing with clamp(). Container max-width 1200px (reading pages 720px). Content must reflow at 320px width and at 200% text zoom.
 
-## Dependencies and hosting
-Allowed new dependency: motion. Fonts through next/font only (or @fontsource-variable packages if next/font lacks a font). FocusLab has no server features: prefer Next.js static export on a Render Static Site (confirm in the audit).
+## Dependencies and hosting (updated)
+Allowed new dependencies: gsap, @gsap/react, lenis. Fonts through next/font only (or @fontsource packages if next/font lacks a font). Keep the Responsive rules and the Honesty rules unchanged.
 
 ## Workflow for every task
 1. Reply with a plan of 8 lines or fewer (files to touch, risks). Do not wait for approval unless something is ambiguous.
 2. Implement only what the task asks. Do not refactor unrelated files.
 3. Run `npm run lint`, `npm run typecheck`, `npm test` and `npm run build`. Fix every error at its root cause.
 4. End with a checklist of the acceptance criteria: done or not done, and how you verified each.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

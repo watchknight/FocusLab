@@ -1,6 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-  <rect width="512" height="512" rx="108" fill="#fafaf8"/>
-  <circle cx="256" cy="256" r="180" fill="none" stroke="#0f766e" stroke-width="24"/>
-  <circle cx="256" cy="256" r="100" fill="none" stroke="#0f766e" stroke-width="16" stroke-dasharray="12 12"/>
-  <circle cx="256" cy="256" r="44" fill="#0f766e"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-52 -52 104 104" width="96" height="96"><title>FocusLab</title><style>.m{fill:none;stroke:#0E0F12;stroke-width:2.4;stroke-linejoin:round}.c{fill:none;stroke:#0E0F12;stroke-width:4}.h{fill:#0E0F12}@media (prefers-color-scheme:dark){.m,.c{stroke:#F2F3F5}.h{fill:#F2F3F5}}</style><circle class="c" r="50"/><path class="m" d="M15.05 -9.60 L45.11 9.01 A46 46 0 0 1 21.08 40.88 Z"/><path class="m" d="M16.89 5.78 L21.08 40.88 A46 46 0 0 1 -18.82 41.97 Z"/><path class="m" d="M6.01 16.81 L-18.82 41.97 A46 46 0 0 1 -44.55 11.46 Z"/><path class="m" d="M-9.39 15.18 L-44.55 11.46 A46 46 0 0 1 -36.73 -27.69 Z"/><path class="m" d="M-17.72 2.12 L-36.73 -27.69 A46 46 0 0 1 -1.26 -45.98 Z"/><path class="m" d="M-12.71 -12.53 L-1.26 -45.98 A46 46 0 0 1 35.17 -29.65 Z"/><path class="m" d="M1.88 -17.75 L35.17 -29.65 A46 46 0 0 1 45.11 9.01 Z"/><path class="h" d="M16.89 5.78 L6.01 16.81 L-9.39 15.18 L-17.72 2.12 L-12.71 -12.53 L1.88 -17.75 L15.05 -9.60 Z"/></svg>
