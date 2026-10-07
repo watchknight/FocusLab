@@ -32,8 +32,8 @@ export const Plate: React.FC<PlateProps> = ({
         {children}
       </div>
       {(caption || tier || meter) && (
-        <div className="px-4 py-2.5 bg-surface border-t border-border flex items-center justify-between gap-3 text-xs text-muted min-w-0">
-          <div className="truncate font-medium">{caption}</div>
+        <div className="px-4 py-2.5 bg-surface border-t border-border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1.5 sm:gap-3 text-sm text-muted min-w-0">
+          <div className="font-medium min-w-0 w-full sm:w-auto line-clamp-2 sm:line-clamp-none sm:truncate">{caption}</div>
           <div className="shrink-0">
             {meter ?? (tier ? <EvidenceMeter tier={tier} /> : null)}
           </div>

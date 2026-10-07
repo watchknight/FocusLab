@@ -1,5 +1,6 @@
 import type { Myth } from './types';
 
+// TODO(evidence): The explanations below are derived summaries directly linked to peer-reviewed claims in evidence.ts via claimId.
 export const MYTHS: Myth[] = [
   {
     id: 'myth-brain-training',

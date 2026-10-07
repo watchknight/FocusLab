@@ -81,7 +81,7 @@ export const BreathCounter: React.FC<BreathCounterProps> = ({
               onClick={handleNinthExhale}
               className={`min-h-[56px] sm:min-h-[64px] px-3 py-2 rounded-md border text-sm sm:text-base font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-ring flex flex-col items-center justify-center shadow-sm ${
                 currentCount === 9
-                  ? 'border-accent-edge bg-accent text-on-accent animate-pulse'
+                  ? 'border-accent-edge bg-accent text-on-accent animate-pulse motion-reduce:animate-none'
                   : 'border-border bg-surface-2 text-text hover:bg-surface'
               }`}
               aria-label="Ninth exhale, complete cycle and restart"

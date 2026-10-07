@@ -4,9 +4,9 @@ import { ACTIVITIES, getActivityById } from '@/content/activities';
 import { ActivityDetail } from '@/features/activities';
 
 interface ActivityPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export const dynamicParams = false;
@@ -18,8 +18,9 @@ export function generateStaticParams() {
 }
 
 
-export default function ActivityPage({ params }: ActivityPageProps) {
-  const activity = getActivityById(params.id);
+export default async function ActivityPage({ params }: ActivityPageProps) {
+  const { id } = await params;
+  const activity = getActivityById(id);
 
   if (!activity) {
     notFound();

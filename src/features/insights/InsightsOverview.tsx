@@ -105,7 +105,7 @@ export const InsightsOverview: React.FC = () => {
 
       {/* 1. "This week" panel with four stats in display numerals */}
       <Panel variant="surface-2" className="space-y-4">
-        <h2 className="text-sm font-bold text-text uppercase tracking-wide">This week</h2>
+        <h2 className="text-sm font-semibold text-text">This week</h2>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <div className="p-3 rounded-md bg-surface border border-border space-y-1">
             <span className="text-xs font-semibold text-muted block">Practice Days</span>
@@ -148,7 +148,7 @@ export const InsightsOverview: React.FC = () => {
           <TimeOfDayChart data={timeBucketsData} />
         ) : (
           <div className="space-y-3 py-2">
-            <p className="text-xs text-muted">
+            <p className="text-sm text-muted">
               Complete at least 5 focus sessions to reveal your time-of-day focus distribution ({totalSessions}/5 completed).
             </p>
             <Button variant="primary" onClick={() => router.push('/focus')} className="w-full sm:w-auto text-xs">
@@ -168,7 +168,7 @@ export const InsightsOverview: React.FC = () => {
           <HistoryChart data={baselineHistory} />
         ) : (
           <div className="space-y-3 py-2">
-            <p className="text-xs text-muted">Complete your first Focus Check to view your baseline reaction time trend.</p>
+            <p className="text-sm text-muted">Complete your first Focus Check to view your baseline reaction time trend.</p>
             <Button variant="primary" onClick={() => router.push('/check')} className="w-full sm:w-auto text-xs">
               Take a Focus Check
             </Button>
@@ -187,7 +187,7 @@ export const InsightsOverview: React.FC = () => {
 
         {experiments.length === 0 ? (
           <div className="space-y-3 py-2">
-            <p className="text-xs text-muted">Start a 10-run self-experiment to measure what helps your focus compared to quiet rest.</p>
+            <p className="text-sm text-muted">Start a 10-run self-experiment to measure what helps your focus compared to quiet rest.</p>
             <Button variant="primary" onClick={() => router.push('/experiments')} className="w-full sm:w-auto text-xs">
               Start an Experiment
             </Button>
@@ -205,7 +205,7 @@ export const InsightsOverview: React.FC = () => {
                       {exp.runs.length}/10 runs ({analysis.totalPairs} pairs completed)
                     </span>
                   </div>
-                  <p className="text-xs font-medium text-text">{analysis.verdict}</p>
+                  <p className="text-sm font-medium text-text">{analysis.verdict}</p>
                 </div>
               );
             })}

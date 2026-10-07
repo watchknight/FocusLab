@@ -9,6 +9,7 @@ import { getConditionById } from '@/lib/conditions';
 import { Button } from '@/components/ui/Button';
 import { Panel } from '@/components/ui/Panel';
 import { Plate } from '@/components/ui/Plate';
+import { FeatureErrorBoundary } from '@/components/ui/FeatureErrorBoundary';
 import { ExperimentRunner } from './ExperimentRunner';
 
 const ExperimentDotPlot = dynamic(() => import('./ExperimentDotPlot'), {
@@ -43,14 +44,19 @@ export const ExperimentDetail: React.FC<ExperimentDetailProps> = ({
 
   if (isRunning && nextItem) {
     return (
-      <ExperimentRunner
-        experimentId={experiment.id}
-        design={experiment.design}
-        runIndex={completedCount}
-        conditionId={nextItem.conditionId}
-        onRunComplete={() => setIsRunning(false)}
-        onAbort={() => setIsRunning(false)}
-      />
+      <FeatureErrorBoundary
+        featureName="Experiment Runner"
+        onReset={() => setIsRunning(false)}
+      >
+        <ExperimentRunner
+          experimentId={experiment.id}
+          design={experiment.design}
+          runIndex={completedCount}
+          conditionId={nextItem.conditionId}
+          onRunComplete={() => setIsRunning(false)}
+          onAbort={() => setIsRunning(false)}
+        />
+      </FeatureErrorBoundary>
     );
   }
 
@@ -63,7 +69,7 @@ export const ExperimentDetail: React.FC<ExperimentDetailProps> = ({
           onClick={onBack}
           className="text-xs font-semibold text-link hover:underline min-h-[44px] inline-flex items-center"
         >
-          ← Back to all experiments
+          Back to all experiments
         </button>
       )}
 

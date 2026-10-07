@@ -50,8 +50,8 @@ describe('i18n system and translate logic', () => {
     const enKeys = Object.keys(en);
     const bnKeys = Object.keys(bn);
 
-    expect(enKeys.length).toBe(124);
-    expect(bnKeys.length).toBe(124);
+    expect(enKeys.length).toBe(130);
+    expect(bnKeys.length).toBe(130);
 
     for (const key of enKeys) {
       const bnVal = (bn as Record<string, string>)[key];

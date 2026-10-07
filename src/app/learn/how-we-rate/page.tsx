@@ -22,7 +22,7 @@ export default function HowWeRatePage() {
           href="/learn"
           className="text-xs font-semibold text-link hover:underline inline-flex items-center min-h-[44px]"
         >
-          ← Back to Evidence Bank
+          Back to Evidence Bank
         </Link>
       </div>
 

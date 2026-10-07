@@ -1,5 +1,4 @@
 import React from 'react';
-import { Card } from '@/components/ui/Card';
 import { EvidenceBadge, EvidenceTier } from '@/components/ui/EvidenceBadge';
 
 interface TierDefinition {
@@ -69,9 +68,9 @@ export const TierRubric: React.FC = () => {
         </p>
       </div>
 
-      <div className="space-y-3">
+      <div className="border-y border-border divide-y divide-border">
         {TIER_DEFINITIONS.map((item) => (
-          <Card key={item.tier} className="p-4 space-y-2 bg-surface border-border">
+          <div key={item.tier} className="py-5 space-y-2">
             <div className="flex items-start justify-between gap-2 flex-wrap">
               <h3 className="text-base font-bold text-text">{item.title}</h3>
               <EvidenceBadge tier={item.tier} />
@@ -81,7 +80,7 @@ export const TierRubric: React.FC = () => {
               {item.definition}
             </p>
 
-            <div className="pt-2 border-t border-border/50 text-sm space-y-1 text-muted">
+            <div className="pt-2 text-sm space-y-1 text-muted">
               <div>
                 <strong className="text-text">Standard:</strong> {item.criteria}
               </div>
@@ -89,7 +88,7 @@ export const TierRubric: React.FC = () => {
                 <strong className="text-text">Examples in literature:</strong> {item.example}
               </div>
             </div>
-          </Card>
+          </div>
         ))}
       </div>
     </div>

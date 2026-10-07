@@ -21,13 +21,7 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({ activity }) => {
     >
       <Plate
         tier={claim?.tier}
-        caption={
-          claim ? (
-            <span className="text-xs text-muted">
-              Outcome: <strong className="text-text font-semibold">{claim.outcome}</strong>
-            </span>
-          ) : undefined
-        }
+        caption={claim ? `Outcome: ${claim.outcome}` : undefined}
         meter={claim ? <EvidenceMeter tier={claim.tier} /> : null}
         className="h-full transition-colors group-hover:border-accent"
       >

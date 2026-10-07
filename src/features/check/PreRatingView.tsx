@@ -32,7 +32,7 @@ export const PreRatingView: React.FC<PreRatingViewProps> = ({ onRatingsComplete,
       <Panel className="w-full max-w-[720px] space-y-6">
         <div className="space-y-1">
           <h2 className="text-xl font-bold tracking-tight text-text">{t('check.ratingsTitle')}</h2>
-          <p className="text-xs sm:text-sm text-muted">
+          <p className="text-sm sm:text-base text-muted">
             {t('check.ratingsSub')}
           </p>
         </div>

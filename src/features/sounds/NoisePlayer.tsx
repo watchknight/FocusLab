@@ -6,19 +6,13 @@ import { Button } from '@/components/ui/Button';
 import { Panel } from '@/components/ui/Panel';
 import { NoiseColor, NoiseSettings, DEFAULT_NOISE_SETTINGS, startNoise, updateNoiseSettings, stopNoise } from '@/lib/noise';
 import { createExperimentSchedule } from '@/lib/experiments';
-import { useMotionAllowed, useCalm } from '@/lib/motion';
 import { useFocusLabStore } from '@/store';
 import { Experiment } from '@/store/types';
 
 const STORAGE_KEY = 'focuslab:noise_settings';
 
-// Exactly 12 bars with staggered delays for audio visualizer
-const BAR_DELAYS = ['0.0s', '0.18s', '0.36s', '0.54s', '0.12s', '0.42s', '0.24s', '0.6s', '0.3s', '0.48s', '0.15s', '0.33s'];
-
 export const NoisePlayer: React.FC = () => {
   const router = useRouter();
-  const motionAllowed = useMotionAllowed();
-  const { calm } = useCalm();
   const addExperiment = useFocusLabStore((state) => state.addExperiment);
 
   const [settings, setSettings] = useState<NoiseSettings>(() => {
@@ -102,7 +96,6 @@ export const NoisePlayer: React.FC = () => {
   };
 
   const isPlaying = settings.color !== 'off';
-  const isAnimated = isPlaying && motionAllowed && !calm;
 
   return (
     <Panel variant="surface-2" className="space-y-6">
@@ -130,21 +123,35 @@ export const NoisePlayer: React.FC = () => {
         </div>
       </div>
 
-      {/* 2. 12-bar level indicator */}
-      <div className="space-y-1.5">
-        <div className="flex justify-between items-center text-xs text-muted">
-          <span className="font-semibold text-text">Output Level</span>
-          <span className="font-mono tabular-nums">{isPlaying ? `${settings.color} noise active` : 'Inactive'}</span>
+      {/* 2. Honest output state indicator */}
+      <div className="p-4 rounded-md bg-surface border border-border flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <span
+            className={`w-3 h-3 rounded-full border ${
+              isPlaying
+                ? 'bg-accent border-accent-edge shadow-[0_0_8px_rgba(255,194,71,0.5)]'
+                : 'bg-surface-2 border-border-strong'
+            }`}
+            aria-hidden="true"
+          />
+          <div>
+            <span className="text-sm font-semibold text-text block">
+              {isPlaying ? `${settings.color.charAt(0).toUpperCase() + settings.color.slice(1)} noise playing` : 'Sound stopped'}
+            </span>
+            <span className="text-xs text-muted">
+              {isPlaying ? `Volume ${Math.round((settings.volume / 0.6) * 100)}%, softness ${Math.round(settings.softness * 100)}%` : 'Select a noise profile above'}
+            </span>
+          </div>
         </div>
-        <div className="flex items-end justify-center gap-1.5 sm:gap-2 h-12 py-1 px-4 rounded-md bg-surface border border-border overflow-hidden" aria-hidden="true">
-          {BAR_DELAYS.map((delay, idx) => (
-            <div
-              key={idx}
-              className={`w-2 sm:w-2.5 h-9 rounded-xs transition-transform ${isPlaying ? 'bg-accent' : 'bg-border'} ${isAnimated ? 'sound-bar-animating' : ''}`}
-              style={{ animationDelay: delay, transform: !isAnimated ? 'scaleY(0.18)' : undefined, transformOrigin: 'bottom' }}
-            />
-          ))}
-        </div>
+        <span
+          className={`px-2.5 py-1 text-xs font-semibold rounded-xs border ${
+            isPlaying
+              ? 'bg-tier-strong/10 text-tier-strong border-tier-strong/30'
+              : 'bg-surface-2 text-muted border-border'
+          }`}
+        >
+          {isPlaying ? 'Active' : 'Off'}
+        </span>
       </div>
 
       {/* Empty State Banner when audio is inactive */}

@@ -8,8 +8,9 @@ import * as m from 'motion/react-m';
 import { AnimatePresence } from 'motion/react';
 import { fadeVariants, popVariants } from '@/lib/motion';
 import { useFocusLabStore } from '@/store';
+import { FeatureErrorBoundary } from '@/components/ui/FeatureErrorBoundary';
 
-export const DataManagement: React.FC = () => {
+const DataManagementContent: React.FC = () => {
   const [importStatus, setImportStatus] = useState<{ success: boolean; msg: string } | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -165,5 +166,11 @@ export const DataManagement: React.FC = () => {
     </Panel>
   );
 };
+
+export const DataManagement: React.FC = () => (
+  <FeatureErrorBoundary featureName="Data Management">
+    <DataManagementContent />
+  </FeatureErrorBoundary>
+);
 
 export default DataManagement;

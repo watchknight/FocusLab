@@ -1,7 +1,6 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Card } from '@/components/ui/Card';
 import { DataManagement } from '@/features/insights/DataManagement';
 
 export const metadata: Metadata = {
@@ -25,26 +24,28 @@ export default function PrivacyPage() {
         </p>
       </div>
 
-      <Card className="p-5 space-y-3 bg-surface border-border">
-        <h2 className="text-lg font-bold text-text">1. Zero Accounts, Zero Remote Servers</h2>
-        <p className="text-base text-text leading-relaxed">
-          FocusLab requires no login, email address, password, or profile. There is no remote backend database storing user entries. Every reaction-time score, focus session, reflection note, and experiment trial is written directly into your device&apos;s browser <code className="text-accent bg-surface-2 px-1.5 py-0.5 rounded font-mono text-sm">localStorage</code>.
-        </p>
-      </Card>
+      <div className="border-t border-border divide-y divide-border">
+        <section className="py-6 space-y-3">
+          <h2 className="text-lg font-bold text-text">Zero accounts, zero remote servers</h2>
+          <p className="text-base text-text leading-relaxed">
+            FocusLab requires no login, email address, password, or profile. There is no remote backend database storing user entries. Every reaction-time score, focus session, reflection note, and experiment trial is written directly into your device&apos;s browser <code className="text-accent bg-surface-2 px-1.5 py-0.5 rounded font-mono text-sm">localStorage</code>.
+          </p>
+        </section>
 
-      <Card className="p-5 space-y-3 bg-surface border-border">
-        <h2 className="text-lg font-bold text-text">2. No Tracking, Analytics, or Advertising</h2>
-        <p className="text-base text-text leading-relaxed">
-          We do not embed Google Analytics, Mixpanel, Meta Pixel, tracking pixels, or advertisement SDKs. We do not use third-party CDN scripts or font trackers. When you use FocusLab, your browser communicates only with the static host delivering the app assets.
-        </p>
-      </Card>
+        <section className="py-6 space-y-3">
+          <h2 className="text-lg font-bold text-text">No tracking, analytics, or advertising</h2>
+          <p className="text-base text-text leading-relaxed">
+            We do not embed Google Analytics, Mixpanel, Meta Pixel, tracking pixels, or advertisement SDKs. We do not use third-party CDN scripts or font trackers. When you use FocusLab, your browser communicates only with the static host delivering the app assets.
+          </p>
+        </section>
 
-      <Card className="p-5 space-y-3 bg-surface border-border">
-        <h2 className="text-lg font-bold text-text">3. Full Data Portability & Eradication</h2>
-        <p className="text-base text-text leading-relaxed">
-          Because data is stored locally, you maintain total custody over your records. You can export your full history as a validated JSON file at any time, import it on another device, or wipe all records permanently with a single click.
-        </p>
-      </Card>
+        <section className="py-6 space-y-3">
+          <h2 className="text-lg font-bold text-text">Full data portability and eradication</h2>
+          <p className="text-base text-text leading-relaxed">
+            Because data is stored locally, you maintain total custody over your records. You can export your full history as a validated JSON file at any time, import it on another device, or wipe all records permanently with a single click.
+          </p>
+        </section>
+      </div>
 
       {/* Embedded Data Management Controls */}
       <div className="space-y-2 pt-2">

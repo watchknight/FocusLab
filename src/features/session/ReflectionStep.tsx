@@ -156,7 +156,7 @@ export const ReflectionStep: React.FC<ReflectionStepProps> = ({
             <button
               type="button"
               onClick={handleCopyParked}
-              className="text-xs text-accent hover:underline min-h-[32px] inline-flex items-center"
+              className="text-xs text-accent hover:underline min-h-[44px] inline-flex items-center"
             >
               {copied ? 'Copied!' : 'Copy list'}
             </button>

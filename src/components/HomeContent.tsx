@@ -59,18 +59,19 @@ export const HomeContent: React.FC = () => {
       <HeroLamp />
 
       {/* 2. How it works: ONE wide Plate split into three columns by 1px rules */}
-      <section className="space-y-4">
+      {/* 2. How it works: Open 3-column editorial layout split by 1px rules */}
+      <section className="space-y-6 pt-2">
         <h2 className="text-xl sm:text-2xl font-bold text-text">How it works</h2>
-        <Plate as="div" className="w-full">
+        <div className="border-y border-border py-6 sm:py-8">
           <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border">
             {/* Step 1: Check */}
-            <div className="p-5 sm:p-6 flex flex-col justify-between space-y-4">
+            <div className="p-4 sm:p-6 flex flex-col justify-between space-y-4">
               <div className="space-y-2.5">
-                <span className="block font-display font-extrabold text-3xl sm:text-4xl text-accent tabular-nums">
+                <span className="block font-display font-extrabold text-3xl sm:text-4xl text-text tabular-nums">
                   1
                 </span>
                 <h3 className="text-base sm:text-lg font-bold text-text">Check</h3>
-                <p className="text-sm text-muted leading-relaxed">
+                <p className="text-base text-muted leading-relaxed">
                   Take an informal 3-minute reaction test in your browser to spot lapses in alertness.
                   Repeating it over days builds your personal baseline on your own hardware.
                 </p>
@@ -86,13 +87,13 @@ export const HomeContent: React.FC = () => {
             </div>
 
             {/* Step 2: Practice */}
-            <div className="p-5 sm:p-6 flex flex-col justify-between space-y-4">
+            <div className="p-4 sm:p-6 flex flex-col justify-between space-y-4">
               <div className="space-y-2.5">
-                <span className="block font-display font-extrabold text-3xl sm:text-4xl text-accent tabular-nums">
+                <span className="block font-display font-extrabold text-3xl sm:text-4xl text-text tabular-nums">
                   2
                 </span>
                 <h3 className="text-base sm:text-lg font-bold text-text">Practice</h3>
-                <p className="text-sm text-muted leading-relaxed">
+                <p className="text-base text-muted leading-relaxed">
                   Try short focus sessions, breathwork, or deliberate rest blocks.
                   Every activity clearly lists what outcome it is evidenced for, from mood to sustained attention.
                 </p>
@@ -108,13 +109,13 @@ export const HomeContent: React.FC = () => {
             </div>
 
             {/* Step 3: Compare */}
-            <div className="p-5 sm:p-6 flex flex-col justify-between space-y-4">
+            <div className="p-4 sm:p-6 flex flex-col justify-between space-y-4">
               <div className="space-y-2.5">
-                <span className="block font-display font-extrabold text-3xl sm:text-4xl text-accent tabular-nums">
+                <span className="block font-display font-extrabold text-3xl sm:text-4xl text-text tabular-nums">
                   3
                 </span>
                 <h3 className="text-base sm:text-lg font-bold text-text">Compare</h3>
-                <p className="text-sm text-muted leading-relaxed">
+                <p className="text-base text-muted leading-relaxed">
                   Run simple self-directed tests to see what actually works for your own workday.
                   Compare an active technique against quiet rest using your measured reaction times.
                 </p>
@@ -129,31 +130,31 @@ export const HomeContent: React.FC = () => {
               </div>
             </div>
           </div>
-        </Plate>
+        </div>
       </section>
 
-      {/* 3. Evidence section: 5 tiers + real claim Plate */}
+      {/* 3. Evidence section: 5 tiers rubric + real claim Plate */}
       <section className="space-y-6">
         <div className="space-y-1">
           <h2 className="text-xl sm:text-2xl font-bold text-text">
             Every tip shows how strong its evidence is.
           </h2>
-          <p className="text-sm text-muted">
+          <p className="text-base text-muted">
             We rate claims strictly for the specific outcome measured in randomized trials.
           </p>
         </div>
 
-        {/* Five tiers rubric in order */}
-        <div className="rounded-md border border-border bg-surface-2 p-5 sm:p-6 space-y-3.5 shadow-elevation">
+        {/* Five tiers rubric in order — open list separated by 1px rules */}
+        <div className="border-y border-border divide-y divide-border/70 py-1">
           {TIER_ROWS.map((row) => (
             <div
               key={row.tier}
-              className="flex flex-col sm:flex-row sm:items-baseline gap-1.5 sm:gap-4 py-2 border-b border-border/60 last:border-b-0"
+              className="flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-6 py-3.5"
             >
-              <div className="w-40 shrink-0">
+              <div className="w-44 shrink-0">
                 <EvidenceMeter tier={row.tier} />
               </div>
-              <p className="text-sm text-muted leading-relaxed flex-1">
+              <p className="text-base text-muted leading-relaxed flex-1">
                 {row.desc}
               </p>
             </div>
@@ -167,23 +168,23 @@ export const HomeContent: React.FC = () => {
             caption={
               <Link
                 href={`/learn/${breathworkClaim.id}`}
-                className="text-xs font-semibold text-link underline hover:text-text inline-flex items-center min-h-[32px]"
+                className="text-xs font-semibold text-link underline hover:text-text inline-flex items-center min-h-[44px]"
               >
                 View scientific reference
               </Link>
             }
           >
             <div className="space-y-2">
-              <h3 className="text-base font-bold text-text">
+              <h3 className="text-base sm:text-lg font-bold text-text">
                 {breathworkClaim.title}
               </h3>
-              <p className="text-xs font-semibold text-muted">
+              <p className="text-sm font-semibold text-muted">
                 Outcome: {breathworkClaim.outcome}
               </p>
-              <p className="text-sm text-text leading-relaxed">
+              <p className="text-base text-text leading-relaxed">
                 {breathworkClaim.summary}
               </p>
-              <p className="text-xs text-muted border-t border-border/60 pt-2 leading-relaxed">
+              <p className="text-sm text-muted border-t border-border/60 pt-2 leading-relaxed">
                 <strong>Caveat:</strong> {breathworkClaim.caveat}
               </p>
             </div>

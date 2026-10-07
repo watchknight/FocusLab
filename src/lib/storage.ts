@@ -1,3 +1,7 @@
+/**
+ * @deprecated Legacy export validation logic preserved for backwards compatibility with v0 backups.
+ * Active application uses store snapshot validation in src/store/validation.ts.
+ */
 import { SelfCheckLog, PracticeSessionLog } from './legacy-types';
 
 export interface FocusLabDataExport {

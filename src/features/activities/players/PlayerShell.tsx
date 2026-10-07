@@ -184,7 +184,7 @@ export const PlayerShell: React.FC<PlayerShellProps> = ({
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col items-center justify-center p-4 relative overflow-hidden">
+      <div className="flex-1 flex flex-col items-center justify-center p-4 relative overflow-y-auto">
         {children({
           elapsedSec,
           remainingSec,

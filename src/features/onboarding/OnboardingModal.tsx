@@ -15,6 +15,7 @@ import {
   RecommendationItem,
 } from '@/lib/recommend';
 import { useT, I18nKey } from '@/i18n';
+import { handleFocusTrapKeyDown } from '@/lib/focus-trap';
 
 const ONBOARDED_KEY = 'focuslab:onboarded';
 
@@ -54,22 +55,33 @@ export const OnboardingModal: React.FC = () => {
     return () => window.removeEventListener('focuslab:open-onboarding', handleOpen);
   }, []);
 
+  const handleDismiss = () => {
+    try { localStorage.setItem(ONBOARDED_KEY, 'true'); } catch { /* Ignored */ }
+    setIsOpen(false);
+  };
+
   useEffect(() => {
     if (isOpen) {
       prevActiveEl.current = document.activeElement as HTMLElement;
-      modalRef.current?.focus();
-      const onKeyDown = (e: KeyboardEvent) => { if (e.key === 'Escape') handleDismiss(); };
+      // Focus first interactive element or dialog
+      const firstFocusable = modalRef.current?.querySelector<HTMLElement>(
+        'button, a[href], input, [tabindex]:not([tabindex="-1"])'
+      );
+      if (firstFocusable) {
+        firstFocusable.focus();
+      } else {
+        modalRef.current?.focus();
+      }
+
+      const onKeyDown = (e: KeyboardEvent) => {
+        handleFocusTrapKeyDown(e, modalRef.current, handleDismiss);
+      };
       window.addEventListener('keydown', onKeyDown);
       return () => window.removeEventListener('keydown', onKeyDown);
     } else if (prevActiveEl.current) {
       prevActiveEl.current.focus();
     }
   }, [isOpen]);
-
-  const handleDismiss = () => {
-    try { localStorage.setItem(ONBOARDED_KEY, 'true'); } catch { /* Ignored */ }
-    setIsOpen(false);
-  };
 
   const handleNextToRecommendations = () => {
     setRecommendations(getRecommendationsForObstacle(selectedObstacle));
@@ -89,6 +101,7 @@ export const OnboardingModal: React.FC = () => {
           initial="initial"
           animate="animate"
           exit="exit"
+          onKeyDown={(e) => handleFocusTrapKeyDown(e, modalRef.current, handleDismiss)}
           className="fixed inset-0 z-50 flex items-center justify-center bg-bg/60 backdrop-blur-xs p-4 focus:outline-none"
         >
           <m.div

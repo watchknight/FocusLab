@@ -41,19 +41,19 @@ export const MythCard: React.FC<MythCardProps> = ({ myth, defaultOpen = false })
         </div>
       </summary>
 
-      <div className="pt-3 mt-3 border-t border-border space-y-3 text-xs">
+      <div className="pt-3 mt-3 border-t border-border space-y-3 text-sm">
         <div className="space-y-1">
-          <span className="font-semibold text-muted block">What research shows</span>
-          <p className="text-text leading-relaxed text-sm">{myth.explanation}</p>
+          <span className="font-semibold text-muted block text-sm">What research shows</span>
+          <p className="text-text leading-relaxed text-base">{myth.explanation}</p>
         </div>
 
         {myth.claimId && (
           <div className="pt-1">
             <Link
               href={`/learn/${myth.claimId}`}
-              className="text-xs font-semibold text-link hover:underline min-h-[44px] inline-flex items-center"
+              className="text-sm font-semibold text-link hover:underline min-h-[44px] inline-flex items-center"
             >
-              Read full claim details and evidence →
+              Read full claim details and evidence
             </Link>
           </div>
         )}

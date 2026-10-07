@@ -4,13 +4,12 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { CLAIMS, getClaimById, getReferenceById } from '@/content/evidence';
 import { ACTIVITIES } from '@/content/activities';
-import { Card } from '@/components/ui/Card';
 import { EvidenceMeter } from '@/components/ui/EvidenceMeter';
 
 interface Props {
-  params: {
+  params: Promise<{
     claimId: string;
-  };
+  }>;
 }
 
 export const dynamicParams = false;
@@ -22,8 +21,9 @@ export function generateStaticParams() {
 }
 
 
-export function generateMetadata({ params }: Props): Metadata {
-  const claim = getClaimById(params.claimId);
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { claimId } = await params;
+  const claim = getClaimById(claimId);
   if (!claim) {
     return { title: 'Evidence Claim | FocusLab' };
   }
@@ -37,8 +37,9 @@ export function generateMetadata({ params }: Props): Metadata {
   };
 }
 
-export default function ClaimDetailPage({ params }: Props) {
-  const claim = getClaimById(params.claimId);
+export default async function ClaimDetailPage({ params }: Props) {
+  const { claimId } = await params;
+  const claim = getClaimById(claimId);
 
   if (!claim) {
     notFound();
@@ -57,7 +58,7 @@ export default function ClaimDetailPage({ params }: Props) {
           href="/learn"
           className="text-xs font-semibold text-link hover:underline inline-flex items-center min-h-[44px]"
         >
-          ← Back to Evidence Bank
+          Back to Evidence Bank
         </Link>
       </div>
 
@@ -77,36 +78,37 @@ export default function ClaimDetailPage({ params }: Props) {
         </h1>
       </div>
 
-      {/* 2. Summary */}
-      <Card className="p-4 sm:p-5 space-y-2 bg-surface-2 border-border">
-        <h2 className="text-xs font-bold text-muted uppercase tracking-wide">
-          Plain-language summary
-        </h2>
-        <p className="text-sm sm:text-base text-text leading-relaxed">
-          {claim.summary}
-        </p>
-      </Card>
+      {/* 2. Summary & Caveat */}
+      <div className="border-t border-border divide-y divide-border">
+        <section className="py-5 space-y-2">
+          <h2 className="text-sm font-semibold text-text">
+            Plain-language summary
+          </h2>
+          <p className="text-sm sm:text-base text-text leading-relaxed">
+            {claim.summary}
+          </p>
+        </section>
 
-      {/* 3. Caveat */}
-      <Card className="p-4 sm:p-5 space-y-2 bg-surface border-border">
-        <h2 className="text-xs font-bold text-muted uppercase tracking-wide">
-          Caveats & Study Limitations
-        </h2>
-        <p className="text-sm sm:text-base text-text leading-relaxed">
-          {claim.caveat}
-        </p>
-      </Card>
+        <section className="py-5 space-y-2">
+          <h2 className="text-sm font-semibold text-text">
+            Caveats & study limitations
+          </h2>
+          <p className="text-sm sm:text-base text-text leading-relaxed">
+            {claim.caveat}
+          </p>
+        </section>
+      </div>
 
-      {/* 4. References */}
+      {/* 3. References */}
       <div className="space-y-3 pt-1">
         <h2 className="text-lg font-bold text-text font-display">
-          Citations & Primary Sources ({references.length})
+          Citations & primary sources ({references.length})
         </h2>
-        <div className="space-y-2.5">
+        <div className="border-y border-border divide-y divide-border">
           {references.map((ref) => {
             if (!ref) return null;
             return (
-              <Card key={ref.id} className="p-4 space-y-2 bg-surface border-border">
+              <div key={ref.id} className="py-3.5 space-y-1.5">
                 <p className="text-xs sm:text-sm text-text leading-relaxed">
                   {ref.citation}
                 </p>
@@ -116,43 +118,41 @@ export default function ClaimDetailPage({ params }: Props) {
                       href={ref.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-xs font-semibold text-link hover:underline inline-flex items-center gap-1 min-h-[44px]"
+                      className="text-xs font-semibold text-link hover:underline inline-flex items-center min-h-[44px]"
                     >
-                      <span>Open publication (DOI / PMC)</span>
-                      <span aria-hidden="true">↗</span>
+                      Open publication (DOI / PMC)
                     </a>
                   </div>
                 )}
-              </Card>
+              </div>
             );
           })}
         </div>
       </div>
 
-      {/* 5. Related activity link */}
+      {/* 4. Related activity link */}
       {linkedActivities.length > 0 && (
-        <Card className="p-4 sm:p-5 space-y-3 bg-surface border-border">
+        <section className="space-y-3 pt-2">
           <h2 className="text-sm font-bold text-text font-display">
-            Related Activities in FocusLab
+            Related activities in FocusLab
           </h2>
-          <div className="divide-y divide-border">
+          <div className="border-y border-border divide-y divide-border">
             {linkedActivities.map((act) => (
               <div
                 key={act.id}
-                className="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 first:pt-0 last:pb-0"
+                className="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
               >
                 <div>
                   <div className="text-sm font-bold text-text">{act.name}</div>
                   <div className="text-xs text-muted">{act.whenToUse}</div>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex items-center gap-3">
                   <Link
                     href={`/activities/${act.id}`}
                     className="text-xs font-semibold text-link hover:underline min-h-[44px] inline-flex items-center"
                   >
                     Practice activity
                   </Link>
-                  <span className="text-muted self-center" aria-hidden="true">·</span>
                   <Link
                     href={`/experiments?activity=${act.id}`}
                     className="text-xs font-semibold text-link hover:underline min-h-[44px] inline-flex items-center"
@@ -163,7 +163,7 @@ export default function ClaimDetailPage({ params }: Props) {
               </div>
             ))}
           </div>
-        </Card>
+        </section>
       )}
     </article>
   );

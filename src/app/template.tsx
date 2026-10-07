@@ -1,12 +1,14 @@
 'use client';
 
-import React, { useEffect } from 'react';
-import * as m from 'motion/react-m';
-import { useMotionAllowed, easings, setCalm } from '@/lib/motion';
+import React, { useRef, useEffect } from 'react';
+import { useGSAP } from '@gsap/react';
+import { gsap } from '@/lib/gsap';
+import { durations, easings, setCalm, useMotionAllowed } from '@/lib/motion';
 
 let isFirstRender = true;
 
 export default function Template({ children }: { children: React.ReactNode }) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const motionOk = useMotionAllowed();
 
   useEffect(() => {
@@ -17,16 +19,42 @@ export default function Template({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  const shouldAnimate = motionOk && !isFirstRender;
+  useGSAP(
+    () => {
+      if (isFirstRender || !motionOk || !containerRef.current) return;
+
+      const mm = gsap.matchMedia();
+
+      mm.add('(prefers-reduced-motion: no-preference)', () => {
+        gsap.fromTo(
+          containerRef.current,
+          { opacity: 0 },
+          {
+            opacity: 1,
+            duration: durations.quick,
+            ease: easings.out,
+          }
+        );
+      });
+
+      mm.add('(prefers-reduced-motion: reduce)', () => {
+        gsap.fromTo(
+          containerRef.current,
+          { opacity: 0 },
+          {
+            opacity: 1,
+            duration: durations.instant,
+            ease: easings.out,
+          }
+        );
+      });
+    },
+    { scope: containerRef, dependencies: [motionOk] }
+  );
 
   return (
-    <m.div
-      initial={shouldAnimate ? { opacity: 0 } : false}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.22, ease: easings.out }}
-      className="w-full min-w-0"
-    >
+    <div ref={containerRef} className="w-full min-w-0">
       {children}
-    </m.div>
+    </div>
   );
 }

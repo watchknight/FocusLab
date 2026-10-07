@@ -2,6 +2,8 @@ import type { MetadataRoute } from 'next';
 import { ACTIVITIES } from '@/content/activities';
 import { CLAIMS } from '@/content/evidence';
 
+export const dynamic = 'force-static';
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://focuslab.app';
 

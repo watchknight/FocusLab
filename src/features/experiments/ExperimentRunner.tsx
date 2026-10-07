@@ -146,7 +146,7 @@ export const ExperimentRunner: React.FC<ExperimentRunnerProps> = ({
           ✓
         </div>
         <h2 className="text-xl font-bold text-text">Run #{runIndex + 1} Saved</h2>
-        <p className="text-xs text-muted">
+        <p className="text-sm text-muted">
           {condition.name} condition performance successfully recorded.
         </p>
         <div className="pt-2">
@@ -165,14 +165,14 @@ export const ExperimentRunner: React.FC<ExperimentRunnerProps> = ({
           Experiment run {runIndex + 1} of 10
         </span>
         <h2 className="text-xl font-bold text-text">Condition: {condition.name}</h2>
-        <p className="text-xs text-muted">
+        <p className="text-sm text-muted">
           {isConcurrent
             ? `Perform a 3-minute Focus Check while listening to ${condition.name}.`
             : `This run consists of three steps: Focus Check before, 3 minutes of ${condition.name}, then Focus Check after.`}
         </p>
       </div>
 
-      <div className="p-3 bg-surface rounded text-xs text-muted space-y-1 border border-border">
+      <div className="p-3 bg-surface rounded text-sm text-muted space-y-1 border border-border">
         <p className="font-semibold text-text">Recommendation</p>
         <p>Try to run all checks around the same time of day to keep baseline alertness consistent.</p>
       </div>

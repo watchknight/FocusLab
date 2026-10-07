@@ -17,6 +17,13 @@
   }
 }
 
+@media (max-height: 500px) {
+  :root {
+    --header-height: 48px;
+    --sticky-header-height: var(--header-height);
+  }
+}
+
 html {
   scroll-padding-top: var(--header-height);
   -webkit-text-size-adjust: 100%;
@@ -31,6 +38,7 @@ body {
   margin: 0;
   padding: 0;
   min-height: 100dvh;
+  overflow-wrap: break-word;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -137,6 +145,18 @@ html[data-calm='on'] body {
 html[data-calm='on'] [data-chrome] {
   opacity: 0;
   pointer-events: none;
+  visibility: hidden;
+}
+
+/* Windows High Contrast / Forced Colors: ensure visible focus rings and control borders */
+@media (forced-colors: active) {
+  :focus-visible {
+    outline: 2px solid Highlight !important;
+    outline-offset: 2px;
+  }
+  button, input, select, textarea {
+    border: 1px solid ButtonBorder !important;
+  }
 }
 
 /* Static radial vignette overlay (opacity only, no large area blur) */
@@ -258,20 +278,4 @@ html[data-low-end='true'] .hero-focus-line-1, html[data-low-end='true'] .hero-fo
   }
 }
 
-/* Sound Bar Animation: transform only (scaleY), origin bottom */
-@keyframes sound-bar-pulse {
-  0% {
-    transform: scaleY(0.2);
-  }
-  50% {
-    transform: scaleY(0.85);
-  }
-  100% {
-    transform: scaleY(0.35);
-  }
-}
 
-.sound-bar-animating {
-  animation: sound-bar-pulse 1.2s ease-in-out infinite alternate;
-  transform-origin: bottom;
-}

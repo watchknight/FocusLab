@@ -105,7 +105,7 @@ export const ReflexLamp: React.FC = () => {
         'hero-focus-card w-full max-w-sm mx-auto min-h-[300px] rounded-md border p-6 flex flex-col items-center justify-center text-center transition-colors duration-200 select-none cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
         borderGlow
           ? 'border-accent bg-surface-2 ring-2 ring-accent shadow-[0_0_24px_rgba(255,194,71,0.35)]'
-          : 'border-border bg-surface-2 shadow-elevation hover:border-border-strong'
+          : 'border-border-strong bg-surface-2 shadow-elevation hover:border-accent/80'
       )}
     >
       {/* Polite live region announces only the final result */}
@@ -121,16 +121,19 @@ export const ReflexLamp: React.FC = () => {
           <div
             className={clsx(
               'w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 flex items-center justify-center transition-all duration-150',
-              state === 'idle' && 'border-border-strong bg-surface text-muted',
-              state === 'armed' && 'border-accent/40 bg-surface text-text',
+              state === 'idle' && 'border-accent/70 bg-surface shadow-[inset_0_0_12px_rgba(255,194,71,0.12)]',
+              state === 'armed' && 'border-accent bg-surface text-text ring-2 ring-accent/30',
               state === 'early' && 'border-tier-not-supported bg-surface text-tier-not-supported',
-              state === 'lit' && 'border-accent bg-accent shadow-[0_0_32px_rgba(255,194,71,0.9)] scale-105'
+              state === 'lit' && 'border-2 border-accent-edge bg-accent shadow-[0_0_32px_rgba(255,194,71,0.9)] scale-105'
             )}
           >
             <div
               className={clsx(
                 'w-4 h-4 rounded-full transition-colors',
-                state === 'lit' ? 'bg-on-accent' : 'bg-border-strong/60'
+                state === 'idle' && 'bg-accent/80 border border-accent-edge shadow-[0_0_8px_rgba(255,194,71,0.5)]',
+                state === 'armed' && 'bg-accent/40 animate-pulse',
+                state === 'early' && 'bg-tier-not-supported',
+                state === 'lit' && 'bg-on-accent'
               )}
             />
           </div>

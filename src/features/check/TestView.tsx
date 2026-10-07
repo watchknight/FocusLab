@@ -29,10 +29,8 @@ export const TestView: React.FC<TestViewProps> = ({
 }) => {
   const { t } = useT();
   const [phase, setPhase] = useState<TestPhase>('waiting');
-  const [displayRt, setDisplayRt] = useState<number | null>(null);
   const [feedbackText, setFeedbackText] = useState<string>('');
   const [minuteNotice, setMinuteNotice] = useState<string>('');
-  const [reducedMotion, setReducedMotion] = useState(false);
 
   const trialsRef = useRef<CheckTrial[]>([]);
   const testStartTimeRef = useRef<number>(0);
@@ -67,7 +65,6 @@ export const TestView: React.FC<TestViewProps> = ({
     }
 
     setPhase('waiting');
-    setDisplayRt(null);
     setFeedbackText('');
 
     const isi = getRandomIsi(rng);
@@ -88,10 +85,17 @@ export const TestView: React.FC<TestViewProps> = ({
     }, isi);
   }, [testDurationMs, rng, clearAllTimers, onFinishTest, t]);
 
+  const phaseRef = useRef<TestPhase>(phase);
+  phaseRef.current = phase;
+
+  const handleAbortRef = useRef(handleAbort);
+  handleAbortRef.current = handleAbort;
+
   const handleResponse = useCallback(() => {
     const responseTime = performance.now();
+    const currentPhase = phaseRef.current;
 
-    if (phase === 'waiting') {
+    if (currentPhase === 'waiting') {
       if (isiTimerRef.current) clearTimeout(isiTimerRef.current);
       trialsRef.current.push({ isiMs: currentIsiRef.current, rtMs: null, falseStart: true });
       setPhase('feedback');
@@ -100,10 +104,9 @@ export const TestView: React.FC<TestViewProps> = ({
       return;
     }
 
-    if (phase === 'stimulus') {
+    if (currentPhase === 'stimulus') {
       if (timeoutTimerRef.current) clearTimeout(timeoutTimerRef.current);
       const rt = Math.round(responseTime - onsetTimeRef.current);
-      setDisplayRt(rt);
 
       const isFalseStart = rt < MIN_VALID_RT_MS;
       trialsRef.current.push({ isiMs: currentIsiRef.current, rtMs: rt, falseStart: isFalseStart });
@@ -111,28 +114,13 @@ export const TestView: React.FC<TestViewProps> = ({
       setFeedbackText(isFalseStart ? t('check.testTooEarly') : `${rt} ms`);
       feedbackTimerRef.current = setTimeout(startNextTrial, FEEDBACK_DURATION_MS);
     }
-  }, [phase, startNextTrial, t]);
+  }, [startNextTrial, t]);
 
-  useEffect(() => {
-    if (phase !== 'stimulus' || reducedMotion) {
-      if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
-      return;
-    }
-
-    const updateCounter = () => {
-      setDisplayRt(Math.floor(performance.now() - onsetTimeRef.current));
-      rafIdRef.current = requestAnimationFrame(updateCounter);
-    };
-
-    rafIdRef.current = requestAnimationFrame(updateCounter);
-    return () => {
-      if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
-    };
-  }, [phase, reducedMotion]);
+  const handleResponseRef = useRef(handleResponse);
+  handleResponseRef.current = handleResponse;
 
   useEffect(() => {
     testStartTimeRef.current = performance.now();
-    setReducedMotion(window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
     const minuteInterval = setInterval(() => {
       const minutes = Math.floor((performance.now() - testStartTimeRef.current) / 60000);
@@ -143,20 +131,26 @@ export const TestView: React.FC<TestViewProps> = ({
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        handleAbort();
+        handleAbortRef.current();
       } else if (e.code === 'Space' || e.key === ' ') {
         e.preventDefault();
-        handleResponse();
+        handleResponseRef.current();
       }
     };
 
-    const abortOnHidden = () => {
-      handleAbort();
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        handleAbortRef.current();
+      }
+    };
+
+    const handleBlur = () => {
+      handleAbortRef.current();
     };
 
     window.addEventListener('keydown', onKeyDown);
-    document.addEventListener('visibilitychange', () => document.hidden && abortOnHidden());
-    window.addEventListener('blur', abortOnHidden);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('blur', handleBlur);
     setCalm(true);
     startNextTrial();
 
@@ -165,10 +159,10 @@ export const TestView: React.FC<TestViewProps> = ({
       clearInterval(minuteInterval);
       clearAllTimers();
       window.removeEventListener('keydown', onKeyDown);
-      document.removeEventListener('visibilitychange', abortOnHidden);
-      window.removeEventListener('blur', abortOnHidden);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('blur', handleBlur);
     };
-  }, [clearAllTimers, handleAbort, handleResponse, startNextTrial, t]);
+  }, [clearAllTimers, startNextTrial, t]);
 
   const isLit = phase === 'stimulus';
 
@@ -207,16 +201,10 @@ export const TestView: React.FC<TestViewProps> = ({
         />
 
         <div className="mt-4 sm:mt-6 h-10 flex items-center justify-center font-mono text-2xl sm:text-3xl font-bold tabular-nums text-text">
-          {phase === 'stimulus' && (
-            <span>{displayRt ?? 0} ms</span>
-          )}
           {phase === 'feedback' && (
             <span className={feedbackText.includes('early') || feedbackText.includes('দ্রুত') ? 'text-warn' : 'text-text'}>
               {feedbackText}
             </span>
-          )}
-          {phase === 'waiting' && (
-            <span className="text-muted text-base font-normal tracking-wide">·</span>
           )}
         </div>
       </div>

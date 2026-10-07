@@ -14,7 +14,7 @@ export const ClaimCard: React.FC<ClaimCardProps> = ({ claim }) => {
       as="article"
       tier={claim.tier}
       meter={<EvidenceMeter tier={claim.tier} />}
-      caption={<span className="text-xs text-muted truncate">{claim.outcome}</span>}
+      caption={claim.outcome}
       className="h-full flex flex-col justify-between hover:border-accent transition-colors"
     >
       <div className="space-y-2.5">
@@ -26,12 +26,12 @@ export const ClaimCard: React.FC<ClaimCardProps> = ({ claim }) => {
         </div>
 
         {/* One-sentence outcome */}
-        <div className="text-xs text-text">
+        <div className="text-sm text-text">
           <span className="font-semibold text-muted">Target outcome: </span>
           <span className="font-medium text-text">{claim.outcome}</span>
         </div>
 
-        <p className="text-xs text-muted line-clamp-2 leading-relaxed">
+        <p className="text-base text-muted line-clamp-2 leading-relaxed">
           {claim.summary}
         </p>
       </div>
@@ -39,9 +39,9 @@ export const ClaimCard: React.FC<ClaimCardProps> = ({ claim }) => {
       <div className="pt-3">
         <Link
           href={`/learn/${claim.id}`}
-          className="text-xs font-semibold text-link hover:underline inline-flex items-center min-h-[44px]"
+          className="text-sm font-semibold text-link hover:underline inline-flex items-center min-h-[44px]"
         >
-          View study details and citations ({claim.refIds.length}) →
+          View study details and citations ({claim.refIds.length})
         </Link>
       </div>
     </Plate>

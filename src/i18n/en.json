@@ -32,7 +32,7 @@
   "home.ctaCheck": "Start the 3-minute Check",
   "home.ctaLearn": "How we rate evidence",
   "home.loopTitle": "The FocusLab loop",
-  "home.loopSubtitle": "Move beyond subjective guesswork through structured self-experimentation.",
+  "home.loopSubtitle": "Add a behavioural measure alongside your own impressions.",
   "home.loop1Step": "1. Check",
   "home.loop1Title": "Measure your baseline",
   "home.loop1Desc": "Take a 3-minute reaction-time test (PVT-B) in your browser to measure sustained attention and alertness lapses.",
@@ -109,7 +109,7 @@
   "check.testPrompt": "Press Space or tap anywhere",
   "check.testEsc": "Press Esc to abort",
   "check.testWait": "Wait for stimulus...",
-  "check.testRespond": "RESPOND NOW",
+  "check.testRespond": "Respond now",
   "check.testTooEarly": "Too early",
   "check.testTimeout": "Time out (>10 s)",
   "check.testInstruction": "Keep your eyes on the box. Respond as quickly as possible.",
@@ -127,5 +127,12 @@
   "footer.about": "About",
   "footer.privacy": "Privacy",
   "footer.disclaimer": "Disclaimer",
-  "footer.evidence": "Evidence"
+  "footer.evidence": "Evidence",
+
+  "sounds.evidenceTitle": "What the science says",
+  "sounds.evidenceReadFull": "Read full claim details",
+  "sounds.findingLabel": "Finding:",
+  "sounds.caveatLabel": "Caveat:",
+  "sounds.tryThenTestTitle": "Try it, then test it.",
+  "sounds.tryThenTestBody": "Background noise may aid attention in higher-distraction environments while distracting in quiet spaces. Use the secondary button above to schedule a 10-run self-experiment against silence."
 }

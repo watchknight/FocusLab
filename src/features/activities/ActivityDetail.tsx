@@ -41,7 +41,7 @@ export const ActivityDetail: React.FC<ActivityDetailProps> = ({ activity }) => {
       <div className="space-y-3">
         <Link
           href="/activities"
-          className="text-xs text-muted hover:text-text inline-flex items-center gap-1 min-h-[32px]"
+          className="text-xs text-muted hover:text-text inline-flex items-center gap-1 min-h-[44px]"
         >
           Back to activities
         </Link>

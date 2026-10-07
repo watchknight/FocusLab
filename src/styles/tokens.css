@@ -240,7 +240,7 @@
 }
 
 /* Calm Mode: suppress decorative animations */
-html[data-calm='on'] :not(body):not([data-chrome]):not(body::after) {
+html[data-calm='on'] :not(body):not([data-chrome]) {
   animation: none !important;
 }
 html[data-calm='on'] .pointer-lamp,
