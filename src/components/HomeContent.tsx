@@ -61,74 +61,50 @@ export const HomeContent: React.FC = () => {
       {/* 2. How it works: ONE wide Plate split into three columns by 1px rules */}
       {/* 2. How it works: Open 3-column editorial layout split by 1px rules */}
       <section className="space-y-6 pt-2">
-        <h2 className="text-xl sm:text-2xl font-bold text-text">How it works</h2>
+        <h2 className="text-xl sm:text-2xl font-bold text-text">{t('home.loopTitle')}</h2>
         <div className="border-y border-border py-6 sm:py-8">
           <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border">
-            {/* Step 1: Check */}
-            <div className="p-4 sm:p-6 flex flex-col justify-between space-y-4">
-              <div className="space-y-2.5">
-                <span className="block font-display font-extrabold text-3xl sm:text-4xl text-text tabular-nums">
-                  1
-                </span>
-                <h3 className="text-base sm:text-lg font-bold text-text">Check</h3>
-                <p className="text-base text-muted leading-relaxed">
-                  Take an informal 3-minute reaction test in your browser to spot lapses in alertness.
-                  Repeating it over days builds your personal baseline on your own hardware.
-                </p>
+            {[
+              {
+                num: '1',
+                title: t('home.loop1Title'),
+                desc: t('home.loop1Desc'),
+                cta: t('home.loop1Cta'),
+                href: '/check',
+              },
+              {
+                num: '2',
+                title: t('home.loop2Title'),
+                desc: t('home.loop2Desc'),
+                cta: t('home.loop2Cta'),
+                href: '/activities',
+              },
+              {
+                num: '3',
+                title: t('home.loop3Title'),
+                desc: t('home.loop3Desc'),
+                cta: t('home.loop3Cta'),
+                href: '/experiments',
+              },
+            ].map((step) => (
+              <div key={step.num} className="p-4 sm:p-6 flex flex-col justify-between space-y-4">
+                <div className="space-y-2.5">
+                  <span className="block font-display font-extrabold text-3xl sm:text-4xl text-text tabular-nums">
+                    {step.num}
+                  </span>
+                  <h3 className="text-base sm:text-lg font-bold text-text">{step.title}</h3>
+                  <p className="text-base text-muted leading-relaxed">{step.desc}</p>
+                </div>
+                <div className="pt-2">
+                  <Link
+                    href={step.href}
+                    className="text-sm font-semibold text-link underline hover:text-text min-h-[44px] inline-flex items-center"
+                  >
+                    {step.cta}
+                  </Link>
+                </div>
               </div>
-              <div className="pt-2">
-                <Link
-                  href="/check"
-                  className="text-sm font-semibold text-link underline hover:text-text min-h-[44px] inline-flex items-center"
-                >
-                  Take the Check
-                </Link>
-              </div>
-            </div>
-
-            {/* Step 2: Practice */}
-            <div className="p-4 sm:p-6 flex flex-col justify-between space-y-4">
-              <div className="space-y-2.5">
-                <span className="block font-display font-extrabold text-3xl sm:text-4xl text-text tabular-nums">
-                  2
-                </span>
-                <h3 className="text-base sm:text-lg font-bold text-text">Practice</h3>
-                <p className="text-base text-muted leading-relaxed">
-                  Try short focus sessions, breathwork, or deliberate rest blocks.
-                  Every activity clearly lists what outcome it is evidenced for, from mood to sustained attention.
-                </p>
-              </div>
-              <div className="pt-2">
-                <Link
-                  href="/activities"
-                  className="text-sm font-semibold text-link underline hover:text-text min-h-[44px] inline-flex items-center"
-                >
-                  Browse activities
-                </Link>
-              </div>
-            </div>
-
-            {/* Step 3: Compare */}
-            <div className="p-4 sm:p-6 flex flex-col justify-between space-y-4">
-              <div className="space-y-2.5">
-                <span className="block font-display font-extrabold text-3xl sm:text-4xl text-text tabular-nums">
-                  3
-                </span>
-                <h3 className="text-base sm:text-lg font-bold text-text">Compare</h3>
-                <p className="text-base text-muted leading-relaxed">
-                  Run simple self-directed tests to see what actually works for your own workday.
-                  Compare an active technique against quiet rest using your measured reaction times.
-                </p>
-              </div>
-              <div className="pt-2">
-                <Link
-                  href="/experiments"
-                  className="text-sm font-semibold text-link underline hover:text-text min-h-[44px] inline-flex items-center"
-                >
-                  Run an experiment
-                </Link>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
@@ -137,10 +113,10 @@ export const HomeContent: React.FC = () => {
       <section className="space-y-6">
         <div className="space-y-1">
           <h2 className="text-xl sm:text-2xl font-bold text-text">
-            Every tip shows how strong its evidence is.
+            {t('home.evidenceStripTitle')}
           </h2>
           <p className="text-base text-muted">
-            We rate claims strictly for the specific outcome measured in randomized trials.
+            {t('home.evidenceStripSub')}
           </p>
         </div>
 
@@ -226,10 +202,10 @@ export const HomeContent: React.FC = () => {
       <section className="rounded-md border border-border bg-surface-2 p-6 sm:p-8 text-center space-y-4 shadow-elevation">
         <div className="space-y-1.5 max-w-reading mx-auto">
           <h2 className="text-xl sm:text-2xl font-bold text-text">
-            Build focus you can measure.
+            {t('home.headline')}
           </h2>
           <p className="text-sm text-muted">
-            Three minutes. Zero accounts. All data stays right in your browser.
+            {t('home.subhead')}
           </p>
         </div>
         <div className="pt-2">

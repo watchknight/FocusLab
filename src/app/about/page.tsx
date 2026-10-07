@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { RestartOnboardingButton } from '@/features/onboarding';
 
 export const metadata: Metadata = {
-  title: 'About FocusLab | Philosophy & Honesty Rules',
+  title: 'About — Philosophy & Honesty Rules',
   description:
     'Learn about our evidence-first philosophy, local-only data storage, and strict honesty rules.',
   openGraph: {

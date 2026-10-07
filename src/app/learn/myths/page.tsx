@@ -5,11 +5,11 @@ import { MYTHS } from '@/content/myths';
 import { MythCard } from '@/features/learn';
 
 export const metadata: Metadata = {
-  title: 'Six Myths About Focus | FocusLab',
+  title: 'Six Myths About Focus',
   description:
     'Examine six widespread productivity claims that are unsupported or strongly conflicting in cognitive science.',
   openGraph: {
-    title: 'Six Myths About Focus | FocusLab',
+    title: 'Six Myths About Focus',
     description:
       'Examine six widespread productivity claims that are unsupported or strongly conflicting in cognitive science.',
   },

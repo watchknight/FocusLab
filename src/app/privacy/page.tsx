@@ -4,11 +4,11 @@ import Link from 'next/link';
 import { DataManagement } from '@/features/insights/DataManagement';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy | FocusLab',
+  title: 'Privacy Policy',
   description:
     'FocusLab is completely local-first: no accounts, no telemetry, no cookies. All data stays in your browser.',
   openGraph: {
-    title: 'Privacy Policy | FocusLab',
+    title: 'Privacy Policy',
     description:
       'FocusLab is completely local-first: no accounts, no telemetry, no cookies. All data stays in your browser.',
   },

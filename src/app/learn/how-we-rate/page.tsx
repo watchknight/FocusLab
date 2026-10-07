@@ -4,11 +4,11 @@ import Link from 'next/link';
 import { TierRubric } from '@/features/learn';
 
 export const metadata: Metadata = {
-  title: 'How We Rate Evidence | FocusLab',
+  title: 'How We Rate Evidence',
   description:
     'Our transparent five-tier methodology for evaluating scientific research on focus, attention, and cognitive practices.',
   openGraph: {
-    title: 'How We Rate Evidence | FocusLab',
+    title: 'How We Rate Evidence',
     description:
       'Our transparent five-tier methodology for evaluating scientific research on focus, attention, and cognitive practices.',
   },

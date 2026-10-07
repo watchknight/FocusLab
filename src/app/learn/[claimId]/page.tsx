@@ -25,10 +25,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { claimId } = await params;
   const claim = getClaimById(claimId);
   if (!claim) {
-    return { title: 'Evidence Claim | FocusLab' };
+    return { title: 'Evidence Claim' };
   }
   return {
-    title: `${claim.title} | Evidence Bank`,
+    title: claim.title,
     description: claim.summary,
     openGraph: {
       title: `${claim.title} | FocusLab Evidence`,

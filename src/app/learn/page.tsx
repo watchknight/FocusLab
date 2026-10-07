@@ -4,11 +4,11 @@ import { CLAIMS } from '@/content/evidence';
 import { ClaimList } from '@/features/learn';
 
 export const metadata: Metadata = {
-  title: 'Learn — Evidence Bank | FocusLab',
+  title: 'Evidence Bank',
   description:
     'Explore peer-reviewed evidence, effect sizes, and caveats behind focus practices and attention interventions.',
   openGraph: {
-    title: 'Evidence Bank | FocusLab',
+    title: 'Evidence Bank',
     description:
       'Explore peer-reviewed evidence, effect sizes, and caveats behind focus practices and attention interventions.',
   },

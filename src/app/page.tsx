@@ -3,7 +3,9 @@ import type { Metadata } from 'next';
 import { HomeContent } from '@/components/HomeContent';
 
 export const metadata: Metadata = {
-  title: 'FocusLab — Build focus you can measure',
+  title: {
+    absolute: 'FocusLab — Build focus you can measure',
+  },
   description:
     'A calm, local-first web laboratory pairing evidence-graded attention practices with an informal browser reaction-time test to find what works for you.',
   openGraph: {

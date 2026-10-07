@@ -3,11 +3,11 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Medical Disclaimer | FocusLab',
+  title: 'Medical Disclaimer',
   description:
     'FocusLab is an educational self-experimentation tool, not a medical device or ADHD screening instrument.',
   openGraph: {
-    title: 'Medical Disclaimer | FocusLab',
+    title: 'Medical Disclaimer',
     description:
       'FocusLab is an educational self-experimentation tool, not a medical device or ADHD screening instrument.',
   },
