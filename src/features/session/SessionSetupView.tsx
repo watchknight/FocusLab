@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
-import { EvidenceBadge } from '@/components/ui/EvidenceBadge';
+import { EvidenceMeter } from '@/components/ui/EvidenceMeter';
 import { EnvironmentChecklist } from '@/features/environment';
 import { getClaimById } from '@/content/evidence';
 import { IfThenPlanEditor } from './IfThenPlanEditor';
@@ -123,7 +123,7 @@ export const SessionSetupView: React.FC<SessionSetupViewProps> = ({
           <Card className="space-y-3">
             <div className="flex items-center justify-between gap-2">
               <span className="text-sm font-semibold text-text">Choose rhythm</span>
-              {breaksClaim && <EvidenceBadge tier={breaksClaim.tier} />}
+              {breaksClaim && <EvidenceMeter tier={breaksClaim.tier} />}
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">

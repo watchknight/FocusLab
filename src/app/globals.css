@@ -1,5 +1,5 @@
 @import '../styles/tokens.css';
-
+@import '../styles/fx.css';
 
 @tailwind base;
 @tailwind components;
@@ -33,7 +33,7 @@ body {
   background-color: var(--bg);
   color: var(--text);
   font-family: var(--font-text);
-  font-size: var(--font-size-body, 1rem);
+  font-size: var(--font-size-body, 1.0625rem);
   line-height: 1.6;
   margin: 0;
   padding: 0;
@@ -43,36 +43,48 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Global visible focus ring: 2px ring, 2px offset */
+@media (max-width: 639px) {
+  body {
+    font-size: 1rem;
+  }
+}
+
+/* Global visible focus ring: 2px ring, 2px offset + iridescent outer glow where allowed */
 :focus-visible {
   outline: 2px solid var(--ring);
   outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(192, 60, 255, 0.2);
 }
 
-/* Headings typography and fluid scale */
+/* Headings typography and fluid scale (v3 Rack Focus) */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
   color: var(--text);
+  text-wrap: balance;
 }
 
 h1 {
   font-size: var(--font-size-h1);
-  font-stretch: 112%;
-  line-height: 1.1;
+  font-weight: 780;
+  font-stretch: 92%;
+  line-height: 0.92;
   letter-spacing: -0.02em;
 }
 
 h2 {
   font-size: var(--font-size-h2);
-  font-stretch: 112%;
-  line-height: 1.2;
-  letter-spacing: -0.015em;
+  font-weight: 780;
+  font-stretch: 92%;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
 }
 
 h3 {
   font-size: var(--font-size-h3);
-  line-height: 1.3;
-  letter-spacing: -0.01em;
+  font-weight: 650;
+  font-stretch: 96%;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
 }
 
 small {

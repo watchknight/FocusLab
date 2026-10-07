@@ -4,9 +4,6 @@ import React, { useState, useRef } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Panel } from '@/components/ui/Panel';
 import { Card } from '@/components/ui/Card';
-import * as m from 'motion/react-m';
-import { AnimatePresence } from 'motion/react';
-import { fadeVariants, popVariants } from '@/lib/motion';
 import { useFocusLabStore } from '@/store';
 import { FeatureErrorBoundary } from '@/components/ui/FeatureErrorBoundary';
 
@@ -116,53 +113,41 @@ const DataManagementContent: React.FC = () => {
       </div>
 
       {/* Delete Confirmation Dialog */}
-      <AnimatePresence>
-        {showDeleteConfirm && (
-          <m.div
-            variants={fadeVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            className="fixed inset-0 z-50 flex items-center justify-center bg-bg/80 backdrop-blur-xs p-4"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="delete-dialog-title"
-          >
-            <m.div
-              variants={popVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              className="w-full max-w-sm"
-            >
-              <Card className="w-full p-5 space-y-4 bg-surface border-border shadow-elevation">
-                <h3 id="delete-dialog-title" className="text-base font-bold text-text">
-                  Permanently delete all data?
-                </h3>
-                <p className="text-xs text-muted leading-relaxed">
-                  This will erase all Focus Checks, sessions, activity logs, and experiments stored in this browser. This action cannot be undone.
-                </p>
-                <div className="flex gap-2 justify-end pt-2">
-                  <Button
-                    variant="secondary"
-                    onClick={() => setShowDeleteConfirm(false)}
-                    className="text-xs min-h-[44px]"
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    variant="danger"
-                    onClick={handleConfirmDelete}
-                    className="text-xs min-h-[44px]"
-                  >
-                    Confirm Delete
-                  </Button>
-                </div>
-              </Card>
-            </m.div>
-          </m.div>
-        )}
-      </AnimatePresence>
+      {showDeleteConfirm && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-bg/80 backdrop-blur-xs p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="delete-dialog-title"
+        >
+          <div className="w-full max-w-sm">
+            <Card className="w-full p-5 space-y-4 bg-surface border-border shadow-elevation">
+              <h3 id="delete-dialog-title" className="text-base font-bold text-text">
+                Permanently delete all data?
+              </h3>
+              <p className="text-xs text-muted leading-relaxed">
+                This will erase all Focus Checks, sessions, activity logs, and experiments stored in this browser. This action cannot be undone.
+              </p>
+              <div className="flex gap-2 justify-end pt-2">
+                <Button
+                  variant="secondary"
+                  onClick={() => setShowDeleteConfirm(false)}
+                  className="text-xs min-h-[44px]"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="danger"
+                  onClick={handleConfirmDelete}
+                  className="text-xs min-h-[44px]"
+                >
+                  Confirm Delete
+                </Button>
+              </div>
+            </Card>
+          </div>
+        </div>
+      )}
     </Panel>
   );
 };

@@ -1,17 +1,11 @@
 import localFont from 'next/font/local';
-import { Archivo, Hind_Siliguri } from 'next/font/google';
 
 export const textFont = localFont({
   src: [
     {
-      path: '../../node_modules/@fontsource-variable/atkinson-hyperlegible-next/files/atkinson-hyperlegible-next-latin-wght-normal.woff2',
-      weight: '100 900',
+      path: '../../node_modules/@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-standard-normal.woff2',
+      weight: '200 800',
       style: 'normal',
-    },
-    {
-      path: '../../node_modules/@fontsource-variable/atkinson-hyperlegible-next/files/atkinson-hyperlegible-next-latin-wght-italic.woff2',
-      weight: '100 900',
-      style: 'italic',
     },
   ],
   variable: '--font-text',
@@ -19,19 +13,51 @@ export const textFont = localFont({
   preload: true,
 });
 
-export const displayFont = Archivo({
-  subsets: ['latin'],
-  axes: ['wdth'],
+export const displayFont = localFont({
+  src: [
+    {
+      path: '../../node_modules/@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-standard-normal.woff2',
+      weight: '200 800',
+      style: 'normal',
+    },
+  ],
   variable: '--font-display',
   display: 'swap',
   preload: true,
 });
 
-export const bnFont = Hind_Siliguri({
-  weight: ['400', '600'],
-  subsets: ['bengali'],
+export const monoFont = localFont({
+  src: [
+    {
+      path: '../../node_modules/@fontsource/martian-mono/files/martian-mono-latin-400-normal.woff2',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: '../../node_modules/@fontsource/martian-mono/files/martian-mono-latin-500-normal.woff2',
+      weight: '500',
+      style: 'normal',
+    },
+  ],
+  variable: '--font-mono',
+  display: 'swap',
+  preload: true,
+});
+
+export const bnFont = localFont({
+  src: [
+    {
+      path: '../../node_modules/@fontsource/anek-bangla/files/anek-bangla-bengali-400-normal.woff2',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: '../../node_modules/@fontsource/anek-bangla/files/anek-bangla-bengali-500-normal.woff2',
+      weight: '500',
+      style: 'normal',
+    },
+  ],
   preload: false,
   variable: '--font-bn',
   display: 'swap',
 });
-

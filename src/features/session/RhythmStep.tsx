@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
-import { EvidenceBadge } from '@/components/ui/EvidenceBadge';
+import { EvidenceMeter } from '@/components/ui/EvidenceMeter';
 import { getClaimById } from '@/content/evidence';
 
 export interface RhythmConfig {
@@ -139,7 +139,7 @@ export const RhythmStep: React.FC<RhythmStepProps> = ({ onSelectRhythm, onBack }
         <Card className="space-y-2 border-border bg-surface-2 text-xs">
           <div className="flex items-center gap-2">
             <span className="font-semibold text-text">Breaks and Performance</span>
-            <EvidenceBadge tier={claim.tier} />
+            <EvidenceMeter tier={claim.tier} />
           </div>
           <p className="text-muted">
             Breaks support vigor and reduce fatigue, but research shows no single work/break ratio is proven best for task performance.

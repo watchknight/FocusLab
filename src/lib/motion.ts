@@ -4,7 +4,20 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
-import { useReducedMotion } from 'motion/react';
+
+/** Native hook: returns whether prefers-reduced-motion matches. */
+export function useReducedMotion(): boolean {
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setReduced(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setReduced(e.matches);
+    mq.addEventListener?.('change', handler);
+    return () => mq.removeEventListener?.('change', handler);
+  }, []);
+  return reduced;
+}
 
 export const durations = {
   instant: 0.12,
@@ -42,8 +55,7 @@ export const SPRING_SOFT = springs.soft;
 export const SPRING_SNAPPY = springs.snappy;
 export const SPRING_GENTLE = springs.soft;
 
-export const loadDomAnimation = () =>
-  import('motion/react').then((res) => res.domAnimation);
+export const loadDomAnimation = () => Promise.resolve();
 
 export const fadeVariants = {
   initial: { opacity: 0 },

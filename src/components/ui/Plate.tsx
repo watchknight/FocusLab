@@ -23,17 +23,19 @@ export const Plate: React.FC<PlateProps> = ({
   return (
     <Component
       className={clsx(
-        'rounded-md border border-border bg-surface-2 overflow-hidden flex flex-col text-text shadow-elevation',
+        'rounded-[16px] border border-border bg-surface overflow-hidden flex flex-col text-text shadow-elevation',
         className
       )}
       {...props}
     >
-      <div className={clsx('p-4 sm:p-5 flex-1 min-w-0', contentClassName)}>
+      <div className={clsx('p-5 sm:p-6 flex-1 min-w-0', contentClassName)}>
         {children}
       </div>
       {(caption || tier || meter) && (
-        <div className="px-4 py-2.5 bg-surface border-t border-border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1.5 sm:gap-3 text-sm text-muted min-w-0">
-          <div className="font-medium min-w-0 w-full sm:w-auto line-clamp-2 sm:line-clamp-none sm:truncate">{caption}</div>
+        <div className="px-5 py-3 bg-surface-2 border-t border-border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4 text-sm text-muted min-w-0">
+          <div className="font-medium min-w-0 w-full sm:w-auto line-clamp-2 sm:line-clamp-none sm:truncate text-text">
+            {caption}
+          </div>
           <div className="shrink-0">
             {meter ?? (tier ? <EvidenceMeter tier={tier} /> : null)}
           </div>

@@ -1,31 +1,55 @@
-import React from 'react';
+'use client';
+
+import React, { forwardRef, useRef } from 'react';
 import clsx from 'clsx';
+import { useMagnetic } from '@/lib/motion-hooks';
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'ghost' | 'subtle' | 'danger';
+  variant?: 'primary' | 'secondary' | 'secondary-glass' | 'ghost' | 'subtle' | 'danger';
   fullWidth?: boolean;
+  magnetic?: boolean;
 }
 
-export const Button: React.FC<ButtonProps> = ({
-  children,
-  variant = 'secondary',
-  fullWidth = false,
-  className,
-  ...props
-}) => {
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
+  {
+    children,
+    variant = 'secondary',
+    fullWidth = false,
+    magnetic = false,
+    className,
+    ...props
+  },
+  ref
+) {
+  const innerRef = useRef<HTMLButtonElement | null>(null);
+
+  // Magnetic button only in fx full when requested (e.g. primary CTAs)
+  useMagnetic(magnetic ? innerRef : { current: null });
+
+  const setRefs = (node: HTMLButtonElement | null) => {
+    innerRef.current = node;
+    if (typeof ref === 'function') {
+      ref(node);
+    } else if (ref) {
+      (ref as React.MutableRefObject<HTMLButtonElement | null>).current = node;
+    }
+  };
+
   const base =
-    'min-h-[44px] min-w-[44px] px-4 py-2 text-sm font-semibold rounded-sm transition duration-150 inline-flex items-center justify-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:opacity-50 disabled:cursor-not-allowed select-none active:scale-[0.98] motion-reduce:active:scale-100';
+    'h-[52px] min-h-[44px] px-7 text-sm font-semibold rounded-full transition-colors duration-150 inline-flex items-center justify-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:opacity-50 disabled:cursor-not-allowed select-none active:scale-[0.98] motion-reduce:active:scale-100';
 
   const variants: Record<string, string> = {
     primary:
-      'bg-accent text-on-accent border-2 border-accent-edge hover:brightness-105 shadow-elevation',
+      'bg-primary-bg text-primary-text border border-transparent relative overflow-hidden group hover:opacity-95 before:content-[""] before:absolute before:inset-0 before:-translate-x-full hover:before:translate-x-full before:transition-transform before:duration-700 before:ease-in-out before:bg-[linear-gradient(135deg,rgba(192,60,255,0.30),rgba(53,255,165,0.24),rgba(255,184,74,0.22))] before:pointer-events-none',
     secondary:
-      'bg-surface-2 text-text border border-border-strong hover:bg-surface shadow-elevation',
+      'bg-[var(--glass)] backdrop-blur-[18px] text-text border border-border hover:bg-surface',
+    'secondary-glass':
+      'bg-[var(--glass)] backdrop-blur-[18px] text-text border border-border hover:bg-surface',
     ghost:
-      'bg-transparent text-text hover:underline focus-visible:underline active:opacity-80',
+      'bg-transparent text-text relative after:content-[""] after:absolute after:bottom-3 after:left-7 after:right-7 after:h-[1px] after:bg-text after:origin-left after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-200',
     subtle:
-      'bg-transparent text-text hover:underline focus-visible:underline active:opacity-80',
+      'bg-transparent text-text relative after:content-[""] after:absolute after:bottom-3 after:left-7 after:right-7 after:h-[1px] after:bg-text after:origin-left after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-200',
     danger:
       'bg-surface-2 text-tier-not-supported border border-tier-not-supported hover:bg-surface',
   };
@@ -34,10 +58,15 @@ export const Button: React.FC<ButtonProps> = ({
 
   return (
     <button
+      ref={setRefs}
       className={clsx(base, selectedVariant, fullWidth && 'w-full', className)}
       {...props}
     >
-      {children}
+      <span className="relative z-10 inline-flex items-center justify-center gap-2">
+        {children}
+      </span>
     </button>
   );
-};
+});
+
+export default Button;

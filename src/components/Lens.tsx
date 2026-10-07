@@ -1,7 +1,7 @@
-import { useId } from "react";
+import { useId, forwardRef } from "react";
 import { apertureBlades, openToGeometry } from "@/lib/aperture";
 
-interface LensProps {
+export interface LensProps {
   /** 0 (nearly closed) to 1 (wide open). Animate later with tweenAperture(svg, from, to). */
   open?: number;
   n?: number;
@@ -11,12 +11,16 @@ interface LensProps {
 }
 
 /** The FocusLab lens. Blades carry data-blade and the opening carries data-hole so applyAperture() can drive them. */
-export function Lens({ open = 0.45, n = 7, className, title }: LensProps) {
+export const Lens = forwardRef<SVGSVGElement, LensProps>(function Lens(
+  { open = 0.45, n = 7, className, title },
+  ref
+) {
   const uid = useId().replace(/:/g, "");
   const { r, rot } = openToGeometry(open);
   const { blades, hole } = apertureBlades({ n, R: 100, r, rot });
   return (
     <svg
+      ref={ref}
       viewBox="-124 -124 248 248"
       className={className}
       data-lens=""
@@ -58,4 +62,4 @@ export function Lens({ open = 0.45, n = 7, className, title }: LensProps) {
       <circle r="107.4" fill="none" stroke="#FFB84A" strokeOpacity=".22" strokeWidth=".7" />
     </svg>
   );
-}
+});

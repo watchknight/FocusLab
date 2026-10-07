@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { setCalmMode, subscribeCalm, getCalmState } from '@/lib/motion';
+import { gsap } from '@/lib/gsap';
 
 interface CalmContextType {
   calm: boolean;
@@ -23,6 +24,18 @@ export const CalmProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setCalmState(getCalmState());
     return subscribeCalm((val) => setCalmState(val));
   }, []);
+
+  useEffect(() => {
+    if (process.env.NODE_ENV !== 'production' && calm) {
+      const checkId = setTimeout(() => {
+        const activeChildren = gsap.globalTimeline.getChildren();
+        if (activeChildren.length > 0) {
+          console.warn('FocusLab calm route warning: gsap.globalTimeline has children during calm mode:', activeChildren);
+        }
+      }, 100);
+      return () => clearTimeout(checkId);
+    }
+  }, [calm]);
 
   const setCalm = (action: boolean | ((prev: boolean) => boolean)) => {
     const next = typeof action === 'function' ? action(getCalmState()) : action;

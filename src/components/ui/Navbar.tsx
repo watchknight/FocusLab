@@ -1,110 +1,107 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
-import Link from 'next/link';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import { Container } from './Container';
 import { ThemeToggle } from './ThemeToggle';
 import { LanguageToggle } from './LanguageToggle';
+import { Lens } from '@/components/Lens';
+import { TransitionLink, isCalmRoute } from '@/components/IrisTransition';
 import { useT, I18nKey } from '@/i18n';
+import { useCalm } from '@/components/motion/CalmProvider';
 import { handleFocusTrapKeyDown } from '@/lib/focus-trap';
 import { durations, easings, useGsapPresence } from '@/lib/motion';
-import { gsap, useGSAP } from '@/lib/gsap';
+import { gsap, useGSAP, ScrollTrigger } from '@/lib/gsap';
 
-interface NavItem { key: I18nKey; href: string }
+interface NavItem {
+  key: I18nKey;
+  href: string;
+}
 
-const PRIMARY_NAV: NavItem[] = [
+const PRIMARY_FIVE: NavItem[] = [
   { key: 'nav.check', href: '/check' },
   { key: 'nav.focus', href: '/focus' },
   { key: 'nav.activities', href: '/activities' },
   { key: 'nav.experiments', href: '/experiments' },
   { key: 'nav.insights', href: '/insights' },
 ];
-const EXTRA_NAV: NavItem[] = [
+
+const EXTRA_TWO: NavItem[] = [
   { key: 'nav.sounds', href: '/sounds' },
   { key: 'nav.learn', href: '/learn' },
-  { key: 'nav.about', href: '/about' },
 ];
-const POPOVER_NAV: NavItem[] = [...EXTRA_NAV];
+
+const POPOVER_ITEMS: NavItem[] = [...EXTRA_TWO, { key: 'nav.about', href: '/about' }];
 
 export const Navbar: React.FC = () => {
   const pathname = usePathname();
+  const { calm } = useCalm();
   const { t } = useT();
+  const headerRef = useRef<HTMLElement | null>(null);
   const [moreOpen, setMoreOpen] = useState(false);
   const moreTriggerRef = useRef<HTMLButtonElement | null>(null);
   const moreScopeRef = useRef<HTMLDivElement | null>(null);
   const moreMenuRef = useRef<HTMLDivElement | null>(null);
-  const navRef = useRef<HTMLElement | null>(null);
-  const indicatorRef = useRef<HTMLDivElement | null>(null);
-  const hasPositioned = useRef(false);
-  const [resizeTick, setResizeTick] = useState(0);
 
-  const { isRendered: isMoreRendered, onExitComplete: onMoreExitComplete } = useGsapPresence(moreOpen);
+  const { isRendered, onExitComplete } = useGsapPresence(moreOpen);
 
-  useEffect(() => {
-    if (!navRef.current) return;
-    const ro = new ResizeObserver(() => setResizeTick((tk) => tk + 1));
-    ro.observe(navRef.current);
-    navRef.current.querySelectorAll('a').forEach((el) => ro.observe(el));
-    return () => ro.disconnect();
+  useGSAP(
+    () => {
+      const header = headerRef.current;
+      if (!header || calm || isCalmRoute(pathname)) {
+        if (header) header.classList.remove('header-glass');
+        return;
+      }
+
+      const st = ScrollTrigger.create({
+        start: 24,
+        end: 999999,
+        toggleClass: { targets: header, className: 'header-glass' },
+      });
+
+      return () => {
+        st.kill();
+        header.classList.remove('header-glass');
+      };
+    },
+    { scope: headerRef, dependencies: [pathname, calm] }
+  );
+
+  useGSAP(
+    () => {
+      if (!isRendered || !moreMenuRef.current) return;
+      const mm = gsap.matchMedia();
+      mm.add('(prefers-reduced-motion: no-preference)', () => {
+        if (moreOpen) {
+          gsap.fromTo(moreMenuRef.current, { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: durations.quick, ease: easings.out });
+        } else {
+          gsap.to(moreMenuRef.current, { opacity: 0, scale: 0.96, duration: 0.14, ease: easings.out, onComplete: onExitComplete });
+        }
+      });
+      mm.add('(prefers-reduced-motion: reduce)', () => {
+        if (moreOpen) {
+          gsap.fromTo(moreMenuRef.current, { opacity: 0 }, { opacity: 1, duration: durations.instant, ease: easings.out });
+        } else {
+          gsap.to(moreMenuRef.current, { opacity: 0, duration: durations.instant, ease: easings.out, onComplete: onExitComplete });
+        }
+      });
+    },
+    { scope: moreScopeRef, dependencies: [moreOpen, isRendered] }
+  );
+
+  const closeMore = useCallback(() => {
+    setMoreOpen(false);
+    moreTriggerRef.current?.focus();
   }, []);
-
-  useGSAP(() => {
-    if (!navRef.current || !indicatorRef.current) return;
-    const activeEl = navRef.current.querySelector<HTMLElement>('a[aria-current="page"]');
-    const mm = gsap.matchMedia();
-    if (!activeEl) {
-      gsap.to(indicatorRef.current, { opacity: 0, duration: durations.quick, ease: easings.out, overwrite: 'auto' });
-      return;
-    }
-    const navRect = navRef.current.getBoundingClientRect();
-    const linkRect = activeEl.getBoundingClientRect();
-    const targetX = linkRect.left - navRect.left;
-    const targetScaleX = Math.max(1, linkRect.width);
-
-    mm.add('(prefers-reduced-motion: no-preference)', () => {
-      if (!hasPositioned.current) {
-        hasPositioned.current = true;
-        gsap.set(indicatorRef.current, { x: targetX, scaleX: targetScaleX, opacity: 1 });
-      } else {
-        gsap.to(indicatorRef.current, { x: targetX, scaleX: targetScaleX, opacity: 1, duration: durations.quick, ease: easings.out, overwrite: 'auto' });
-      }
-    });
-    mm.add('(prefers-reduced-motion: reduce)', () => {
-      hasPositioned.current = true;
-      gsap.set(indicatorRef.current, { x: targetX, scaleX: targetScaleX });
-      gsap.to(indicatorRef.current, { opacity: 1, duration: durations.instant, ease: easings.out, overwrite: 'auto' });
-    });
-  }, { scope: navRef, dependencies: [pathname, resizeTick] });
-
-  useGSAP(() => {
-    if (!isMoreRendered || !moreMenuRef.current) return;
-    const mm = gsap.matchMedia();
-    mm.add('(prefers-reduced-motion: no-preference)', () => {
-      if (moreOpen) {
-        gsap.fromTo(moreMenuRef.current, { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: durations.quick, ease: easings.out, overwrite: 'auto' });
-      } else {
-        gsap.to(moreMenuRef.current, { opacity: 0, scale: 0.96, duration: 0.14, ease: easings.out, overwrite: 'auto', onComplete: onMoreExitComplete });
-      }
-    });
-    mm.add('(prefers-reduced-motion: reduce)', () => {
-      if (moreOpen) {
-        gsap.fromTo(moreMenuRef.current, { opacity: 0 }, { opacity: 1, duration: durations.instant, ease: easings.out, overwrite: 'auto' });
-      } else {
-        gsap.to(moreMenuRef.current, { opacity: 0, duration: durations.instant, ease: easings.out, overwrite: 'auto', onComplete: onMoreExitComplete });
-      }
-    });
-  }, { scope: moreScopeRef, dependencies: [moreOpen, isMoreRendered] });
-
-  const closeMore = () => { setMoreOpen(false); moreTriggerRef.current?.focus(); };
 
   useEffect(() => {
     if (!moreOpen) return;
     const onDown = (e: MouseEvent) => {
-      if (moreMenuRef.current && !moreMenuRef.current.contains(e.target as Node) && moreTriggerRef.current && !moreTriggerRef.current.contains(e.target as Node)) {
-        setMoreOpen(false);
-      }
+      if (
+        moreMenuRef.current && !moreMenuRef.current.contains(e.target as Node) &&
+        moreTriggerRef.current && !moreTriggerRef.current.contains(e.target as Node)
+      ) setMoreOpen(false);
     };
     document.addEventListener('mousedown', onDown);
     return () => document.removeEventListener('mousedown', onDown);
@@ -114,90 +111,122 @@ export const Navbar: React.FC = () => {
     if (moreOpen && moreMenuRef.current) moreMenuRef.current.querySelector<HTMLAnchorElement>('a')?.focus();
   }, [moreOpen]);
 
-  const renderLink = (item: NavItem) => {
+  const renderNavLink = (item: NavItem) => {
     const active = pathname === item.href;
+    const label = t(item.key);
     return (
-      <Link
+      <TransitionLink
         key={item.href}
         href={item.href}
         aria-current={active ? 'page' : undefined}
         className={clsx(
-          'min-h-[44px] px-3 py-2 rounded-md text-sm font-semibold inline-flex items-center transition-colors',
-          active ? 'bg-surface-2 text-text border border-border font-bold' : 'text-muted hover:text-text hover:bg-surface-2'
+          'group relative min-h-[44px] px-3 py-2 text-sm font-semibold inline-flex items-center justify-center select-none transition-colors rounded-xs focus-visible:outline-2 focus-visible:outline-ring whitespace-nowrap',
+          active ? 'text-text font-bold' : 'text-muted hover:text-text'
         )}
       >
-        {t(item.key)}
-      </Link>
+        <span className="relative inline-flex flex-col h-[1.3em] overflow-hidden leading-[1.3em]">
+          <span className="inline-block transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-y-full motion-reduce:group-hover:transform-none">
+            {label}
+          </span>
+          <span aria-hidden="true" className="inline-block transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-y-full motion-reduce:hidden">
+            {label}
+          </span>
+        </span>
+        <span
+          aria-hidden="true"
+          className={clsx(
+            'absolute bottom-1.5 left-2.5 right-2.5 h-[2px] bg-text origin-left transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none pointer-events-none',
+            active ? 'scale-x-100' : 'scale-x-0'
+          )}
+        />
+      </TransitionLink>
     );
   };
 
-  const isPopoverActive = POPOVER_NAV.some((item) => pathname === item.href);
+  const isPopoverActive = POPOVER_ITEMS.some((item) => pathname === item.href);
 
   return (
-    <header data-chrome="header" className="w-full sticky top-0 z-20 h-14 md:h-16 bg-surface pt-[env(safe-area-inset-top,0px)]">
-      <Container className="h-full flex items-center justify-between gap-3 min-w-0 !max-w-[1536px]">
-        <Link href="/" className="text-base font-bold text-text hover:text-accent flex items-center gap-2 focus-visible:outline-2 focus-visible:outline-ring rounded-sm py-1 min-h-[44px] shrink-0">
-          <span className="w-2.5 h-2.5 rounded-full bg-accent border border-accent-edge inline-block" aria-hidden="true" />
-          <span className="tracking-tight">FocusLab</span>
-        </Link>
-        <nav ref={navRef} aria-label="Main Navigation" className="relative hidden lg:flex items-center gap-1 min-w-0">
-          <div ref={indicatorRef} aria-hidden="true" className="absolute bottom-0 left-0 h-[2px] bg-accent pointer-events-none origin-left opacity-0" style={{ width: 1 }} />
-          {PRIMARY_NAV.map(renderLink)}
-          <div className="hidden xl:flex items-center gap-1">{EXTRA_NAV.map(renderLink)}</div>
+    <header
+      ref={headerRef}
+      data-chrome="header"
+      className="w-full sticky top-0 z-30 h-14 md:h-16 pt-[env(safe-area-inset-top,0px)] bg-transparent border-b border-transparent transition-[background-color,border-color,box-shadow,backdrop-filter] duration-300"
+    >
+      <Container className="h-full flex items-center justify-between gap-2 sm:gap-3 min-w-0 !max-w-none px-3 sm:px-6 md:px-[clamp(20px,5vw,72px)]">
+        <TransitionLink
+          href="/"
+          aria-label="FocusLab home"
+          className="flex items-center gap-2 sm:gap-2.5 min-h-[44px] shrink-0 text-text group focus-visible:outline-2 focus-visible:outline-ring rounded-full px-1 py-1"
+        >
+          <Lens open={0.42} className="w-7 h-7 sm:w-8 sm:h-8 shrink-0 transition-transform duration-300 group-hover:scale-105" />
+          <span className="font-display font-extrabold text-lg sm:text-xl tracking-[-0.02em] leading-none text-text">
+            FocusLab
+          </span>
+        </TransitionLink>
+
+        <nav aria-label="Main Navigation" className="relative hidden lg:flex items-center gap-0.5 xl:gap-1 min-w-0">
+          {PRIMARY_FIVE.map(renderNavLink)}
+          <div className="hidden xl:flex items-center gap-1">{EXTRA_TWO.map(renderNavLink)}</div>
+
           <div ref={moreScopeRef} className="relative xl:hidden">
             <button
               ref={moreTriggerRef}
               type="button"
               onClick={() => setMoreOpen(!moreOpen)}
+              onKeyDown={(e) => {
+                if (e.key === 'Escape' && moreOpen) {
+                  e.preventDefault();
+                  closeMore();
+                }
+              }}
               aria-haspopup="menu"
               aria-expanded={moreOpen}
               className={clsx(
-                'min-h-[44px] px-3 py-2 rounded-md text-sm font-semibold inline-flex items-center gap-1 transition-colors',
-                isPopoverActive || moreOpen ? 'bg-surface-2 text-text border border-border font-bold' : 'text-muted hover:text-text hover:bg-surface-2'
+                'min-h-[44px] px-3 py-2 rounded-xs text-sm font-semibold inline-flex items-center transition-colors select-none focus-visible:outline-2 focus-visible:outline-ring whitespace-nowrap',
+                isPopoverActive || moreOpen ? 'text-text font-bold bg-surface-2' : 'text-muted hover:text-text hover:bg-surface-2'
               )}
             >
               <span>{t('nav.more')}</span>
-              <span aria-hidden="true" className="text-xs">▾</span>
             </button>
-            {isMoreRendered && (
+            {isRendered && (
               <div
                 ref={moreMenuRef}
                 role="menu"
                 aria-label="Additional navigation links"
                 onKeyDown={(e) => handleFocusTrapKeyDown(e, moreMenuRef.current, closeMore)}
-                className="absolute left-0 top-full mt-1.5 z-50 min-w-[150px] rounded-md border border-border bg-surface-2 shadow-lg p-1 space-y-0.5 origin-top-left"
+                className="absolute left-0 top-full mt-1.5 z-50 min-w-[150px] rounded-md border border-border bg-surface shadow-elevation p-1 space-y-0.5 origin-top-left"
               >
-                {POPOVER_NAV.map((item) => {
+                {POPOVER_ITEMS.map((item) => {
                   const active = pathname === item.href;
                   return (
-                    <Link
+                    <TransitionLink
                       key={item.href}
                       href={item.href}
                       role="menuitem"
                       onClick={() => setMoreOpen(false)}
                       aria-current={active ? 'page' : undefined}
                       className={clsx(
-                        'min-h-[44px] w-full px-3 py-2 text-sm font-semibold rounded text-left flex items-center transition-colors',
-                        active ? 'bg-surface text-text font-bold' : 'text-muted hover:text-text hover:bg-surface'
+                        'min-h-[44px] w-full px-3 py-2 text-sm font-semibold rounded-sm text-left flex items-center transition-colors focus-visible:outline-2 focus-visible:outline-ring whitespace-nowrap',
+                        active ? 'bg-surface-2 text-text font-bold' : 'text-muted hover:text-text hover:bg-surface-2'
                       )}
                     >
                       {t(item.key)}
-                    </Link>
+                    </TransitionLink>
                   );
                 })}
               </div>
             )}
           </div>
         </nav>
-        <div className="flex items-center gap-2 shrink-0">
+
+        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
           <LanguageToggle />
           <ThemeToggle />
-          <Link
+          <TransitionLink
             href="/check"
-            className="hidden xl:inline-flex min-h-[44px] px-3.5 py-1.5 text-sm font-semibold rounded-md border border-border bg-surface-2 text-text hover:bg-surface items-center justify-center transition select-none active:scale-[0.98] motion-reduce:active:scale-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+            className="hidden xl:inline-flex min-h-[44px] px-5 py-2 text-sm font-semibold rounded-full bg-primary-bg text-primary-text items-center justify-center hover:opacity-90 transition select-none active:scale-[0.98] motion-reduce:active:scale-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring whitespace-nowrap"
           >
             {t('nav.startCheck')}
-          </Link>
+          </TransitionLink>
         </div>
       </Container>
     </header>

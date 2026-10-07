@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
-import { EvidenceBadge } from '@/components/ui/EvidenceBadge';
+import { EvidenceMeter } from '@/components/ui/EvidenceMeter';
 import { Activity } from '@/content/types';
 import { getClaimById } from '@/content/evidence';
 import { computeTimerSnapshot, calculateElapsedMs, PauseInterval } from '@/lib/timer';
@@ -137,7 +137,7 @@ export const PlayerShell: React.FC<PlayerShellProps> = ({
             <div className="pt-2 flex flex-col items-center gap-2 border-t border-border">
               <div className="flex items-center gap-2">
                 <span className="text-xs font-semibold text-text">{claim.title}</span>
-                <EvidenceBadge tier={claim.tier} />
+                <EvidenceMeter tier={claim.tier} />
               </div>
               <p className="text-xs text-muted max-w-sm">{claim.summary}</p>
             </div>
@@ -159,7 +159,7 @@ export const PlayerShell: React.FC<PlayerShellProps> = ({
       <div className="flex items-center justify-between p-2.5 sm:p-4 border-b border-border bg-surface-2 pt-[env(safe-area-inset-top,0px)]">
         <div className="flex items-center gap-2 min-w-0 pr-2">
           <span className="text-sm font-semibold text-text truncate">{activity.name}</span>
-          {claim && <EvidenceBadge tier={claim.tier} />}
+          {claim && <EvidenceMeter tier={claim.tier} />}
         </div>
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           <button

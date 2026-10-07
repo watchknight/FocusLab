@@ -2,12 +2,9 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import * as m from 'motion/react-m';
-import { AnimatePresence } from 'motion/react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
-import { fadeVariants, popVariants } from '@/lib/motion';
-import { EvidenceBadge } from '@/components/ui/EvidenceBadge';
+import { EvidenceMeter } from '@/components/ui/EvidenceMeter';
 import {
   UserGoal,
   UserObstacle,
@@ -89,28 +86,18 @@ export const OnboardingModal: React.FC = () => {
   };
 
   return (
-    <AnimatePresence>
+    <>
       {isOpen && (
-        <m.div
+        <div
           ref={modalRef}
           tabIndex={-1}
           role="dialog"
           aria-modal="true"
           aria-labelledby="onboarding-dialog-title"
-          variants={fadeVariants}
-          initial="initial"
-          animate="animate"
-          exit="exit"
           onKeyDown={(e) => handleFocusTrapKeyDown(e, modalRef.current, handleDismiss)}
           className="fixed inset-0 z-50 flex items-center justify-center bg-bg/60 backdrop-blur-xs p-4 focus:outline-none"
         >
-          <m.div
-            variants={popVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            className="w-full max-w-lg"
-          >
+          <div className="w-full max-w-lg">
             <Card className="w-full p-5 sm:p-6 space-y-5 bg-surface border-border shadow-elevation overflow-y-auto max-h-[90vh]">
         <div className="flex items-center justify-between text-sm text-muted border-b border-border pb-3">
           <span className="font-semibold text-text">{t('onboarding.step', { step })}</span>
@@ -199,7 +186,7 @@ export const OnboardingModal: React.FC = () => {
                 <Card key={rec.id} className="p-3.5 space-y-2 bg-surface-2 border-border">
                   <div className="flex items-start justify-between gap-2">
                     <h3 className="text-sm font-bold text-text">{rec.title}</h3>
-                    <EvidenceBadge tier={rec.tier} />
+                    <EvidenceMeter tier={rec.tier} />
                   </div>
                   <p className="text-sm text-muted">{rec.description}</p>
                   <div className="pt-1.5 border-t border-border/60 text-sm text-muted space-y-1">
@@ -226,9 +213,9 @@ export const OnboardingModal: React.FC = () => {
           </div>
         )}
             </Card>
-          </m.div>
-        </m.div>
+          </div>
+        </div>
       )}
-    </AnimatePresence>
+    </>
   );
 };

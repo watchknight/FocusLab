@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
-import { EvidenceBadge } from '@/components/ui/EvidenceBadge';
+import { EvidenceMeter } from '@/components/ui/EvidenceMeter';
 import { getClaimById } from '@/content/evidence';
 
 interface IntentionStepProps {
@@ -83,7 +83,7 @@ export const IntentionStep: React.FC<IntentionStepProps> = ({ onContinue }) => {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <span className="text-sm font-semibold text-text">If-then plan (optional)</span>
-            {claim && <EvidenceBadge tier={claim.tier} />}
+            {claim && <EvidenceMeter tier={claim.tier} />}
           </div>
           <button
             type="button"

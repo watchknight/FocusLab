@@ -18,8 +18,8 @@ export const Container: React.FC<ContainerProps> = ({
   return (
     <Component
       className={clsx(
-        'w-full mx-auto px-[clamp(16px,4vw,40px)] min-w-0',
-        variant === 'prose' ? 'max-w-[720px]' : 'max-w-[1200px]',
+        'w-full mx-auto px-[clamp(20px,5vw,72px)] min-w-0',
+        variant === 'prose' ? 'max-w-[720px]' : 'max-w-[1320px]',
         className
       )}
       {...props}
@@ -28,3 +28,5 @@ export const Container: React.FC<ContainerProps> = ({
     </Component>
   );
 };
+
+export default Container;

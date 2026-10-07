@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
-import { EvidenceBadge } from '@/components/ui/EvidenceBadge';
+import { EvidenceMeter } from '@/components/ui/EvidenceMeter';
 import { getClaimById } from '@/content/evidence';
 
 interface EnvironmentChecklistProps {
@@ -111,7 +111,7 @@ export const EnvironmentChecklist: React.FC<EnvironmentChecklistProps> = ({
                     <>
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-text">{claim.title}</span>
-                        <EvidenceBadge tier={claim.tier} />
+                        <EvidenceMeter tier={claim.tier} />
                       </div>
                       <p>{claim.summary}</p>
                       <p className="italic">{claim.caveat}</p>

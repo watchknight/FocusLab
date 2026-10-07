@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import { HomeContent } from '@/components/HomeContent';
+import { IntroOverlay } from '@/components/IntroOverlay';
 
 export const metadata: Metadata = {
   title: {
@@ -31,6 +32,7 @@ export default function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
       />
+      <IntroOverlay />
       <HomeContent />
     </>
   );

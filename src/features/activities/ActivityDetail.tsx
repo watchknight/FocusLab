@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
-import { EvidenceBadge } from '@/components/ui/EvidenceBadge';
+import { EvidenceMeter } from '@/components/ui/EvidenceMeter';
 import { Activity } from '@/content/types';
 import { getClaimById, getReferenceById } from '@/content/evidence';
 import { ActivityPlayer } from './players/ActivityPlayer';
@@ -49,7 +49,7 @@ export const ActivityDetail: React.FC<ActivityDetailProps> = ({ activity }) => {
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-text">
             {activity.name}
           </h1>
-          {claim && <EvidenceBadge tier={claim.tier} />}
+          {claim && <EvidenceMeter tier={claim.tier} />}
         </div>
         <p className="text-sm text-muted">{activity.whenToUse}</p>
       </div>
@@ -71,7 +71,7 @@ export const ActivityDetail: React.FC<ActivityDetailProps> = ({ activity }) => {
         <Card className="p-4 sm:p-5 space-y-3 bg-surface-2 border-border">
           <div className="flex items-center justify-between gap-2">
             <h2 className="text-base font-bold text-text">What the science says</h2>
-            <EvidenceBadge tier={claim.tier} />
+            <EvidenceMeter tier={claim.tier} />
           </div>
 
           <div className="text-xs space-y-2">

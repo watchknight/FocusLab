@@ -1,36 +1,43 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import clsx from 'clsx';
 import { handleFocusTrapKeyDown } from '@/lib/focus-trap';
 import { durations, easings, useGsapPresence } from '@/lib/motion';
 import { gsap, useGSAP } from '@/lib/gsap';
+import {
+  SystemIcon,
+  StudioIcon,
+  DarkroomIcon,
+  ContrastIcon,
+  CheckmarkIcon,
+} from './NavIcons';
 
-export type ThemeProfile = 'daylight' | 'night' | 'contrast' | 'system';
+export type ThemeProfile = 'studio' | 'darkroom' | 'contrast' | 'system';
 export const THEME_STORAGE_KEY = 'focuslab:theme';
 
 interface ThemeOption {
   id: ThemeProfile;
   label: string;
-  icon: string;
+  Icon: React.FC<{ size?: number; className?: string }>;
 }
 
 const THEME_OPTIONS: ThemeOption[] = [
-  { id: 'system', label: 'System', icon: '◐' },
-  { id: 'night', label: 'Night', icon: '☾' },
-  { id: 'daylight', label: 'Daylight', icon: '☀' },
-  { id: 'contrast', label: 'Contrast', icon: '◧' },
+  { id: 'system', label: 'System', Icon: SystemIcon },
+  { id: 'studio', label: 'Studio', Icon: StudioIcon },
+  { id: 'darkroom', label: 'Darkroom', Icon: DarkroomIcon },
+  { id: 'contrast', label: 'Contrast', Icon: ContrastIcon },
 ];
 
-export function resolveSystemTheme(): 'night' | 'daylight' | 'contrast' {
-  if (typeof window === 'undefined') return 'daylight';
+export function resolveSystemTheme(): 'studio' | 'darkroom' | 'contrast' {
+  if (typeof window === 'undefined') return 'studio';
   if (window.matchMedia('(forced-colors: active)').matches) return 'contrast';
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'daylight';
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'darkroom' : 'studio';
 }
 
 export function updateThemeColorMeta(): void {
-  if (typeof document === 'undefined') return;
-  const bg = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
+  if (typeof document === 'undefined' || typeof window === 'undefined' || typeof window.getComputedStyle !== 'function') return;
+  const bg = window.getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
   let meta = document.querySelector('meta[name="theme-color"]');
   if (!meta) {
     meta = document.createElement('meta');
@@ -45,13 +52,21 @@ export function applyTheme(mode: ThemeProfile): void {
   const root = document.documentElement;
   const resolved = mode === 'system' ? resolveSystemTheme() : mode;
   root.setAttribute('data-theme', resolved);
-  if (resolved === 'night') {
-    root.classList.add('night', 'dark');
+  if (resolved === 'darkroom') {
+    root.classList.add('darkroom', 'dark');
   } else {
-    root.classList.remove('night', 'dark');
+    root.classList.remove('darkroom', 'dark');
   }
-  root.style.colorScheme = resolved === 'daylight' ? 'light' : 'dark';
+  root.style.colorScheme = resolved === 'studio' ? 'light' : 'dark';
   updateThemeColorMeta();
+}
+
+export function migrateSavedTheme(saved: string | null): ThemeProfile {
+  if (!saved) return 'system';
+  if (saved === 'light' || saved === 'daylight' || saved === 'studio') return 'studio';
+  if (saved === 'dark' || saved === 'night' || saved === 'darkroom') return 'darkroom';
+  if (saved === 'contrast') return 'contrast';
+  return 'system';
 }
 
 export const ThemeToggle: React.FC = () => {
@@ -73,46 +88,20 @@ export const ThemeToggle: React.FC = () => {
           gsap.fromTo(
             menuRef.current,
             { opacity: 0, scale: 0.96 },
-            {
-              opacity: 1,
-              scale: 1,
-              duration: durations.quick,
-              ease: easings.out,
-              overwrite: 'auto',
-            }
+            { opacity: 1, scale: 1, duration: durations.quick, ease: easings.out, overwrite: 'auto' }
           );
         } else {
           gsap.to(menuRef.current, {
-            opacity: 0,
-            scale: 0.96,
-            duration: 0.14,
-            ease: easings.out,
-            overwrite: 'auto',
-            onComplete: onExitComplete,
+            opacity: 0, scale: 0.96, duration: 0.14, ease: easings.out, overwrite: 'auto', onComplete: onExitComplete,
           });
         }
       });
 
       mm.add('(prefers-reduced-motion: reduce)', () => {
         if (menuOpen) {
-          gsap.fromTo(
-            menuRef.current,
-            { opacity: 0 },
-            {
-              opacity: 1,
-              duration: durations.instant,
-              ease: easings.out,
-              overwrite: 'auto',
-            }
-          );
+          gsap.fromTo(menuRef.current, { opacity: 0 }, { opacity: 1, duration: durations.instant, ease: easings.out, overwrite: 'auto' });
         } else {
-          gsap.to(menuRef.current, {
-            opacity: 0,
-            duration: durations.instant,
-            ease: easings.out,
-            overwrite: 'auto',
-            onComplete: onExitComplete,
-          });
+          gsap.to(menuRef.current, { opacity: 0, duration: durations.instant, ease: easings.out, overwrite: 'auto', onComplete: onExitComplete });
         }
       });
     },
@@ -121,10 +110,11 @@ export const ThemeToggle: React.FC = () => {
 
   useEffect(() => {
     try {
-      const saved = localStorage.getItem(THEME_STORAGE_KEY) as ThemeProfile | null;
-      const effective = (saved === 'daylight' || saved === 'night' || saved === 'contrast' || saved === 'system') ? saved : 'system';
-      setTheme(effective);
-      applyTheme(effective);
+      const raw = localStorage.getItem(THEME_STORAGE_KEY);
+      const migrated = migrateSavedTheme(raw);
+      if (raw !== migrated) localStorage.setItem(THEME_STORAGE_KEY, migrated);
+      setTheme(migrated);
+      applyTheme(migrated);
     } catch {
       applyTheme('system');
     }
@@ -153,16 +143,17 @@ export const ThemeToggle: React.FC = () => {
     triggerRef.current?.focus();
   };
 
-  const closeMenu = () => { setMenuOpen(false); triggerRef.current?.focus(); };
+  const closeMenu = useCallback(() => {
+    setMenuOpen(false);
+    triggerRef.current?.focus();
+  }, []);
 
   useEffect(() => {
     if (!menuOpen) return;
     const onDown = (e: MouseEvent) => {
       if (
-        menuRef.current &&
-        !menuRef.current.contains(e.target as Node) &&
-        triggerRef.current &&
-        !triggerRef.current.contains(e.target as Node)
+        menuRef.current && !menuRef.current.contains(e.target as Node) &&
+        triggerRef.current && !triggerRef.current.contains(e.target as Node)
       ) {
         setMenuOpen(false);
       }
@@ -193,15 +184,17 @@ export const ThemeToggle: React.FC = () => {
             e.preventDefault();
             setMenuOpen(true);
           }
+          if (e.key === 'Escape' && menuOpen) {
+            e.preventDefault();
+            closeMenu();
+          }
         }}
-        className="min-h-[44px] min-w-[44px] px-2.5 py-1.5 text-sm font-semibold rounded-sm border border-border-strong bg-surface-2 text-text hover:bg-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring inline-flex items-center justify-center transition-colors select-none active:scale-[0.98] motion-reduce:active:scale-100"
+        className="min-h-[44px] min-w-[44px] px-2.5 py-1.5 text-sm font-semibold rounded-full border border-border bg-surface-2 text-text hover:bg-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring inline-flex items-center justify-center transition-colors select-none active:scale-[0.98] motion-reduce:active:scale-100"
         aria-haspopup="menu"
         aria-expanded={menuOpen}
         aria-label={`Theme: ${currentOption.label}. Select to change theme.`}
       >
-        <span aria-hidden="true" className="font-mono text-base leading-none">
-          {currentOption.icon}
-        </span>
+        <currentOption.Icon size={18} className="shrink-0" />
       </button>
 
       {isRendered && (
@@ -210,7 +203,7 @@ export const ThemeToggle: React.FC = () => {
           role="menu"
           aria-label="Theme options"
           onKeyDown={(e) => handleFocusTrapKeyDown(e, menuRef.current, closeMenu)}
-          className="absolute right-0 top-full mt-1.5 z-50 min-w-[150px] rounded-sm border border-border-strong bg-surface-2 shadow-elevation p-1 space-y-0.5 origin-top-right"
+          className="absolute right-0 top-full mt-1.5 z-50 min-w-[150px] rounded-md border border-border bg-surface shadow-elevation p-1 space-y-0.5 origin-top-right"
         >
           {THEME_OPTIONS.map((opt) => {
             const isSelected = theme === opt.id;
@@ -223,19 +216,17 @@ export const ThemeToggle: React.FC = () => {
                 type="button"
                 onClick={() => handleSelect(opt.id)}
                 className={clsx(
-                  'min-h-[44px] w-full px-3 py-2 text-sm font-semibold rounded-xs text-left flex items-center justify-between transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
+                  'min-h-[44px] w-full px-3 py-2 text-sm font-semibold rounded-sm text-left flex items-center justify-between transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
                   isSelected
-                    ? 'bg-surface text-text font-bold border border-border'
-                    : 'text-muted hover:text-text hover:bg-surface'
+                    ? 'bg-surface-2 text-text font-bold border border-border'
+                    : 'border border-transparent text-muted hover:text-text hover:bg-surface-2'
                 )}
               >
                 <span className="flex items-center gap-2.5">
-                  <span aria-hidden="true" className="font-mono text-sm">
-                    {opt.icon}
-                  </span>
+                  <opt.Icon size={16} className="shrink-0" />
                   <span>{opt.label}</span>
                 </span>
-                {isSelected && <span aria-hidden="true">✓</span>}
+                {isSelected && <CheckmarkIcon size={14} className="shrink-0 text-text" />}
               </button>
             );
           })}

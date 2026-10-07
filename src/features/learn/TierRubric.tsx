@@ -1,5 +1,5 @@
 import React from 'react';
-import { EvidenceBadge, EvidenceTier } from '@/components/ui/EvidenceBadge';
+import { EvidenceMeter, EvidenceTier } from '@/components/ui/EvidenceMeter';
 
 interface TierDefinition {
   tier: EvidenceTier;
@@ -73,7 +73,7 @@ export const TierRubric: React.FC = () => {
           <div key={item.tier} className="py-5 space-y-2">
             <div className="flex items-start justify-between gap-2 flex-wrap">
               <h3 className="text-base font-bold text-text">{item.title}</h3>
-              <EvidenceBadge tier={item.tier} />
+              <EvidenceMeter tier={item.tier} />
             </div>
 
             <p className="text-sm text-text leading-relaxed">

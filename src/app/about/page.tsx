@@ -55,7 +55,7 @@ export default function AboutPage() {
               <strong>No commercial hype:</strong> Every claim comes directly from registered peer-reviewed literature with explicit effect sizes and limitations.
             </li>
             <li>
-              <strong>Clear evidence tiers:</strong> Every technique shows an EvidenceBadge ranging from Strong to Not Supported.
+              <strong>Clear evidence tiers:</strong> Every technique shows an EvidenceMeter ranging from Strong to Not Supported.
             </li>
             <li>
               <strong>Not a medical device:</strong> FocusLab is an educational self-experimentation tool, not an ADHD diagnostic or clinical screening instrument.

@@ -37,44 +37,44 @@ function parseTokensCss(): Record<string, Record<string, string>> {
   const content = fs.readFileSync(cssPath, 'utf8');
 
   const profiles: Record<string, Record<string, string>> = {
-    night: {},
-    daylight: {},
+    studio: {},
+    darkroom: {},
     contrast: {},
   };
 
   // Find blocks for each theme
-  const blockRegex = /\[data-theme=['"]?([a-z]+)['"]?\][^\{]*\{([^}]+)\}/gi;
+  const blockRegex = /(?::root|\[data-theme=['"]?([a-z0-9_-]+)['"]?\])[^{]*\{([^}]+)\}/gi;
   let match: RegExpExecArray | null;
 
   while ((match = blockRegex.exec(content)) !== null) {
-    const themeName = match[1].toLowerCase();
+    const rawTheme = (match[1] || 'studio').toLowerCase();
     const targetTheme =
-      themeName === 'light'
-        ? 'daylight'
-        : themeName === 'dark'
-          ? 'night'
-          : themeName;
+      rawTheme === 'studio' || rawTheme === 'light'
+        ? 'studio'
+        : rawTheme === 'darkroom' || rawTheme === 'dark' || rawTheme === 'night'
+          ? 'darkroom'
+          : rawTheme === 'contrast'
+            ? 'contrast'
+            : null;
 
-    if (!profiles[targetTheme]) continue;
+    if (!targetTheme || !profiles[targetTheme]) continue;
 
     const blockBody = match[2];
-    const varRegex = /--([a-z0-9-]+)\s*:\s*(#[0-9a-fA-F]{3,8}|transparent|[a-zA-Z0-9\(\)\s,-]+);/g;
+    const varRegex = /--([a-z0-9-]+)\s*:\s*(#[0-9a-fA-F]{3,8});/g;
     let varMatch: RegExpExecArray | null;
     while ((varMatch = varRegex.exec(blockBody)) !== null) {
       const varName = varMatch[1];
       const varVal = varMatch[2].trim();
-      if (varVal.startsWith('#')) {
-        profiles[targetTheme][varName] = varVal;
-      }
+      profiles[targetTheme][varName] = varVal;
     }
   }
 
   return profiles;
 }
 
-describe('Design Tokens Contrast Verification', () => {
+describe('Design Tokens Contrast Verification (v3 Rack Focus)', () => {
   const parsed = parseTokensCss();
-  const profiles = ['night', 'daylight', 'contrast'] as const;
+  const profiles = ['studio', 'darkroom', 'contrast'] as const;
   const tiers = [
     'tier-strong',
     'tier-moderate',
@@ -95,9 +95,8 @@ describe('Design Tokens Contrast Verification', () => {
           'border-strong',
           'text',
           'muted',
-          'accent',
-          'on-accent',
-          'link',
+          'primary-bg',
+          'primary-text',
           'ring',
           ...tiers,
         ];
@@ -121,17 +120,17 @@ describe('Design Tokens Contrast Verification', () => {
         expect(ratio).toBeGreaterThanOrEqual(4.5);
       });
 
-      it('asserts link / surface has contrast >= 4.5', () => {
-        const ratio = contrastRatio(tokens.link, tokens.surface);
-        expect(ratio).toBeGreaterThanOrEqual(4.5);
-      });
-
-      it('asserts on-accent / accent has contrast >= 4.5', () => {
-        const ratio = contrastRatio(tokens['on-accent'], tokens.accent);
+      it('asserts primary-text / primary-bg has contrast >= 4.5', () => {
+        const ratio = contrastRatio(tokens['primary-text'], tokens['primary-bg']);
         expect(ratio).toBeGreaterThanOrEqual(4.5);
       });
 
       tiers.forEach((tier) => {
+        it(`asserts ${tier} / bg has contrast >= 4.5`, () => {
+          const ratio = contrastRatio(tokens[tier], tokens.bg);
+          expect(ratio).toBeGreaterThanOrEqual(4.5);
+        });
+
         it(`asserts ${tier} / surface has contrast >= 4.5`, () => {
           const ratio = contrastRatio(tokens[tier], tokens.surface);
           expect(ratio).toBeGreaterThanOrEqual(4.5);
@@ -155,6 +154,11 @@ describe('Design Tokens Contrast Verification', () => {
 
       it('asserts border-strong / bg has contrast >= 3.0', () => {
         const ratio = contrastRatio(tokens['border-strong'], tokens.bg);
+        expect(ratio).toBeGreaterThanOrEqual(3.0);
+      });
+
+      it('asserts border-strong / surface has contrast >= 3.0', () => {
+        const ratio = contrastRatio(tokens['border-strong'], tokens.surface);
         expect(ratio).toBeGreaterThanOrEqual(3.0);
       });
     });

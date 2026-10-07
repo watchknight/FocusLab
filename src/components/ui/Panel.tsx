@@ -10,13 +10,13 @@ export const Panel: React.FC<PanelProps> = ({
   children,
   className,
   as: Component = 'div',
-  variant = 'surface-2',
+  variant = 'surface',
   ...props
 }) => {
   return (
     <Component
       className={clsx(
-        'rounded-md border border-border p-4 sm:p-5 text-text shadow-elevation',
+        'rounded-[16px] border border-border p-5 sm:p-6 text-text shadow-elevation',
         variant === 'surface' ? 'bg-surface' : 'bg-surface-2',
         className
       )}

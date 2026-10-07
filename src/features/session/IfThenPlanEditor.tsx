@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Card } from '@/components/ui/Card';
-import { EvidenceBadge } from '@/components/ui/EvidenceBadge';
+import { EvidenceMeter } from '@/components/ui/EvidenceMeter';
 import { getClaimById } from '@/content/evidence';
 
 interface IfThenPlanEditorProps {
@@ -53,7 +53,7 @@ export const IfThenPlanEditor: React.FC<IfThenPlanEditorProps> = ({
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <span className="text-sm font-semibold text-text">If-then plan (optional)</span>
-          {ifThenClaim && <EvidenceBadge tier={ifThenClaim.tier} />}
+          {ifThenClaim && <EvidenceMeter tier={ifThenClaim.tier} />}
         </div>
         <button
           type="button"
