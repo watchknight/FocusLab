@@ -9,8 +9,7 @@ import { DataIntegrityGuard } from '@/components/DataIntegrityGuard';
 import { ServiceWorkerRegister } from '@/components/ServiceWorkerRegister';
 import { CalmProvider } from '@/components/motion/CalmProvider';
 import { IrisProvider } from '@/components/IrisTransition';
-import { AfCursor } from '@/components/AfCursor';
-import { SmoothScroll } from '@/components/SmoothScroll';
+import { FxFullDecorations } from '@/components/fx/FxFullDecorations';
 import { GlobalEffects } from '@/components/GlobalEffects';
 
 export const metadata: Metadata = {
@@ -167,8 +166,7 @@ export default function RootLayout({
         <CalmProvider>
           <IrisProvider>
             <GlobalEffects />
-            <AfCursor />
-            <SmoothScroll />
+            <FxFullDecorations />
             <div className="grain" aria-hidden="true" />
             <Navbar />
             <DataIntegrityGuard>

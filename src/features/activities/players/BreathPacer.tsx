@@ -5,7 +5,7 @@ import { PlayerShell } from './PlayerShell';
 import { Activity, BreathPhase } from '@/content/types';
 import { playSoftChime } from '@/lib/audio';
 import { Lens } from '@/components/Lens';
-import { tweenAperture } from '@/lib/motion-hooks';
+import { tweenAperture } from '@/lib/motion/tween-aperture';
 import { getFx } from '@/lib/gsap';
 
 interface BreathPacerProps {
@@ -78,12 +78,10 @@ const PacerContent: React.FC<PacerContentProps> = ({
     if (phaseIndex !== lastPhaseIndexRef.current) {
       lastPhaseIndexRef.current = phaseIndex;
 
-      // Play soft chime on phase shift if audio is enabled
       if (!isPaused && audioEnabled) {
         playSoftChime();
       }
 
-      // Determine target aperture: inhale -> 0.9 (or 0.75 if followed by top-up), top-up -> 0.95, hold -> stays, exhale -> 0.15
       const label = currentPhase.label.toLowerCase();
       let targetAperture = currentApertureRef.current;
       if (label.includes('top-up')) {
@@ -93,12 +91,9 @@ const PacerContent: React.FC<PacerContentProps> = ({
         targetAperture = hasTopUp ? 0.75 : 0.9;
       } else if (label.includes('exhale')) {
         targetAperture = 0.15;
-      } // hold stays at currentApertureRef.current
-
-      // Kill previous tween
-      if (tweenRef.current) {
-        tweenRef.current.kill();
       }
+
+      if (tweenRef.current) tweenRef.current.kill();
 
       const fromAperture = currentApertureRef.current;
       currentApertureRef.current = targetAperture;
@@ -115,7 +110,6 @@ const PacerContent: React.FC<PacerContentProps> = ({
     }
   }, [phaseIndex, currentPhase, isPaused, audioEnabled, isFxOff, activePhases]);
 
-  // Pause / resume tween when isPaused toggles
   useEffect(() => {
     if (isPaused) {
       tweenRef.current?.pause();
@@ -124,7 +118,6 @@ const PacerContent: React.FC<PacerContentProps> = ({
     }
   }, [isPaused]);
 
-  // Clean up tween on unmount
   useEffect(() => {
     return () => {
       tweenRef.current?.kill();
@@ -134,35 +127,33 @@ const PacerContent: React.FC<PacerContentProps> = ({
   return (
     <div className="flex flex-col items-center justify-center space-y-3 sm:space-y-4 max-w-sm w-full text-center select-none">
       {hasOptionalHolds && (
-        <label className="flex items-center gap-2 text-xs text-[#9AA1AE] cursor-pointer min-h-[44px]">
+        <label className="flex items-center gap-2 text-xs text-stage-hud cursor-pointer min-h-[44px]">
           <input
             type="checkbox"
             checked={skipHolds}
             onChange={(e) => onToggleSkipHolds(e.target.checked)}
-            className="w-4 h-4 rounded-xs border border-[#2A2F3B] bg-[#14171E] text-[#F2F3F5] accent-white focus-visible:outline-2 focus-visible:outline-[#F2F3F5] cursor-pointer"
+            className="w-4 h-4 rounded-xs border border-border bg-surface-2 text-stage-counter accent-white focus-visible:outline-2 focus-visible:outline-ring cursor-pointer"
           />
           <span>Skip optional hold phases</span>
         </label>
       )}
 
       {isFxOff ? (
-        // fx off / reduced motion: text label and thin progress bar only
-        <div className="w-full space-y-3 p-6 rounded-[16px] border border-[#2A2F3B] bg-[#14171E]">
-          <span className="text-3xl sm:text-4xl landscape:text-2xl font-display font-bold tracking-tight text-[#F2F3F5] block">
+        <div className="w-full space-y-3 p-6 rounded-[16px] border border-border bg-surface-2">
+          <span className="text-3xl sm:text-4xl landscape:text-2xl font-display font-bold tracking-tight text-stage-counter block">
             {currentPhase.label}
           </span>
-          <span className="text-lg font-mono tabular-nums text-[#9AA1AE] block">
+          <span className="text-lg font-mono tabular-nums text-stage-hud block">
             {secondsRemainingInPhase}s
           </span>
-          <div className="w-full max-w-[200px] mx-auto bg-[#07080B] h-1 rounded-full overflow-hidden border border-[#2A2F3B]">
+          <div className="w-full max-w-[200px] mx-auto bg-stage-bg h-1 rounded-full overflow-hidden border border-border">
             <div
-              className="bg-[#F2F3F5] h-full"
+              className="bg-stage-counter h-full"
               style={{ width: `${Math.round(phaseProgress * 100)}%` }}
             />
           </div>
         </div>
       ) : (
-        // Standard: Lens pacer driven per phase with tweenAperture
         <div className="space-y-3 sm:space-y-4 flex flex-col items-center justify-center">
           <div className="relative w-36 h-36 sm:w-48 sm:h-48 landscape:w-28 landscape:h-28 flex items-center justify-center">
             <Lens
@@ -173,33 +164,30 @@ const PacerContent: React.FC<PacerContentProps> = ({
             />
           </div>
 
-          {/* Large phase label */}
           <div className="space-y-0.5">
-            <span className="text-3xl sm:text-4xl landscape:text-2xl font-display font-bold tracking-tight text-[#F2F3F5] block">
+            <span className="text-3xl sm:text-4xl landscape:text-2xl font-display font-bold tracking-tight text-stage-counter block">
               {currentPhase.label}
             </span>
-            <span className="text-sm font-mono tabular-nums text-[#9AA1AE] block">
+            <span className="text-sm font-mono tabular-nums text-stage-hud block">
               {secondsRemainingInPhase}s
             </span>
           </div>
 
-          {/* Thin progress bar */}
-          <div className="w-44 sm:w-56 landscape:w-36 bg-[#1B1F28] h-1 rounded-full overflow-hidden border border-[#2A2F3B]">
+          <div className="w-44 sm:w-56 landscape:w-36 bg-surface-2 h-1 rounded-full overflow-hidden border border-border">
             <div
-              className="bg-[#F2F3F5] h-full transition-all duration-200"
+              className="bg-stage-counter h-full transition-all duration-200"
               style={{ width: `${Math.round(phaseProgress * 100)}%` }}
             />
           </div>
         </div>
       )}
 
-      {/* Cycle phase pips */}
       <div className="flex gap-1.5 justify-center pt-1" aria-hidden="true">
-        {activePhases.map((p, idx) => (
+        {activePhases.map((_, idx) => (
           <div
             key={idx}
             className={`h-1 rounded-full transition-all ${
-              idx === phaseIndex ? 'w-5 bg-[#F2F3F5]' : 'w-1.5 bg-[#1B1F28] border border-[#2A2F3B]'
+              idx === phaseIndex ? 'w-5 bg-stage-counter' : 'w-1.5 bg-surface-2 border border-border'
             }`}
           />
         ))}
@@ -214,18 +202,11 @@ export const BreathPacer: React.FC<BreathPacerProps> = ({
   onClose,
 }) => {
   const [skipHolds, setSkipHolds] = useState(false);
-
   const rawPhases = activity.pattern?.phases || DEFAULT_PHASES;
-  const hasOptionalHolds = useMemo(
-    () => rawPhases.some((p) => p.optional),
-    [rawPhases]
-  );
+  const hasOptionalHolds = useMemo(() => rawPhases.some((p) => p.optional), [rawPhases]);
 
   const activePhases = useMemo(() => {
-    if (skipHolds) {
-      return rawPhases.filter((p) => !p.optional);
-    }
-    return rawPhases;
+    return skipHolds ? rawPhases.filter((p) => !p.optional) : rawPhases;
   }, [rawPhases, skipHolds]);
 
   const cycleDuration = useMemo(

@@ -20,17 +20,17 @@ export default function HowWeRatePage() {
       <div>
         <Link
           href="/learn"
-          className="text-xs font-semibold text-link hover:underline inline-flex items-center min-h-[44px]"
+          className="text-xs font-semibold text-muted hover:text-text inline-flex items-center min-h-[44px] transition-colors"
         >
           Back to Evidence Bank
         </Link>
       </div>
 
-      <div className="space-y-1">
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-text font-display">
+      <div className="space-y-2">
+        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-text font-display">
           How We Rate Evidence
         </h1>
-        <p className="text-sm text-muted">
+        <p className="text-base text-muted max-w-prose">
           Our editorial criteria for assessing scientific findings and assigning evidence tiers.
         </p>
       </div>

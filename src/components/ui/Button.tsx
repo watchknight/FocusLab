@@ -2,7 +2,7 @@
 
 import React, { forwardRef, useRef } from 'react';
 import clsx from 'clsx';
-import { useMagnetic } from '@/lib/motion-hooks';
+import { useMagnetic } from '@/lib/motion/use-magnetic';
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {

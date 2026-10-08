@@ -4,10 +4,21 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { Panel } from '@/components/ui/Panel';
-import { NoiseColor, NoiseSettings, DEFAULT_NOISE_SETTINGS, startNoise, updateNoiseSettings, stopNoise } from '@/lib/noise';
+import { SegmentedControl } from '@/components/ui/SegmentedControl';
+import {
+  NoiseColor,
+  NoiseSettings,
+  DEFAULT_NOISE_SETTINGS,
+  startNoise,
+  updateNoiseSettings,
+  stopNoise,
+} from '@/lib/noise';
 import { createExperimentSchedule } from '@/lib/experiments';
 import { useFocusLabStore } from '@/store';
 import { Experiment } from '@/store/types';
+import { VolumeKnob } from './VolumeKnob';
+import { LevelBars } from './LevelBars';
+import { SleepTimerControl } from './SleepTimerControl';
 
 const STORAGE_KEY = 'focuslab:noise_settings';
 
@@ -31,7 +42,9 @@ export const NoisePlayer: React.FC = () => {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ volume: settings.volume, softness: settings.softness })); } catch { /* Ignored */ }
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ volume: settings.volume, softness: settings.softness }));
+      } catch { /* Ignored */ }
     }
   }, [settings.volume, settings.softness]);
 
@@ -54,7 +67,9 @@ export const NoisePlayer: React.FC = () => {
     } else {
       setSleepRemainingSec(0);
     }
-    return () => { if (sleepTimerRef.current) clearInterval(sleepTimerRef.current); };
+    return () => {
+      if (sleepTimerRef.current) clearInterval(sleepTimerRef.current);
+    };
   }, [sleepTimerMinutes, settings.color]);
 
   useEffect(() => () => { stopNoise(); }, []);
@@ -99,97 +114,89 @@ export const NoisePlayer: React.FC = () => {
 
   return (
     <Panel variant="surface-2" className="space-y-6">
-      {/* 1. Noise type as a segmented control */}
+      {/* 1. Noise type as segmented control */}
       <div className="space-y-2">
-        <label className="text-xs font-semibold text-muted block">Noise Profile</label>
-        <div role="radiogroup" aria-label="Noise profile selection" className="grid grid-cols-4 p-1 rounded-sm border border-border bg-surface">
-          {(['off', 'white', 'pink', 'brown'] as const).map((color) => {
-            const isSelected = settings.color === color;
-            return (
-              <button
-                type="button"
-                key={color}
-                role="radio"
-                aria-checked={isSelected}
-                onClick={() => handleSelectColor(color)}
-                className={`min-h-[44px] px-2 py-2 text-xs sm:text-sm font-semibold rounded-xs transition-colors capitalize focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${
-                  isSelected ? 'bg-accent text-on-accent border border-accent-edge shadow-elevation' : 'text-muted hover:text-text'
-                }`}
-              >
-                {color === 'off' ? 'Off' : `${color}`}
-              </button>
-            );
-          })}
-        </div>
+        <label className="text-xs font-semibold text-muted block uppercase tracking-wider">
+          Noise Profile
+        </label>
+        <SegmentedControl<NoiseColor | 'off'>
+          name="Noise Profile Selection"
+          value={settings.color}
+          onChange={handleSelectColor}
+          options={[
+            { id: 'off', label: 'Off' },
+            { id: 'white', label: 'White' },
+            { id: 'pink', label: 'Pink' },
+            { id: 'brown', label: 'Brown' },
+          ]}
+          className="w-full justify-between"
+        />
       </div>
 
-      {/* 2. Honest output state indicator */}
-      <div className="p-4 rounded-md bg-surface border border-border flex items-center justify-between gap-3">
+      {/* 2. Output indicator & Real-time level bars */}
+      <div className="p-4 sm:p-5 rounded-md bg-surface border border-border flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <span
-            className={`w-3 h-3 rounded-full border ${
-              isPlaying
-                ? 'bg-accent border-accent-edge shadow-[0_0_8px_rgba(255,194,71,0.5)]'
-                : 'bg-surface-2 border-border-strong'
+            className={`w-3 h-3 rounded-full border transition-colors ${
+              isPlaying ? 'bg-primary-bg border-border-strong' : 'bg-surface-2 border-border'
             }`}
             aria-hidden="true"
           />
           <div>
-            <span className="text-sm font-semibold text-text block">
-              {isPlaying ? `${settings.color.charAt(0).toUpperCase() + settings.color.slice(1)} noise playing` : 'Sound stopped'}
+            <span className="text-sm font-bold text-text font-display block">
+              {isPlaying
+                ? `${settings.color.charAt(0).toUpperCase() + settings.color.slice(1)} noise active`
+                : 'Sound stopped'}
             </span>
             <span className="text-xs text-muted">
-              {isPlaying ? `Volume ${Math.round((settings.volume / 0.6) * 100)}%, softness ${Math.round(settings.softness * 100)}%` : 'Select a noise profile above'}
+              {isPlaying
+                ? `Volume ${Math.round((settings.volume / 0.6) * 100)}%, softness ${Math.round(settings.softness * 100)}%`
+                : 'Select a noise profile above to play'}
             </span>
           </div>
         </div>
-        <span
-          className={`px-2.5 py-1 text-xs font-semibold rounded-xs border ${
-            isPlaying
-              ? 'bg-tier-strong/10 text-tier-strong border-tier-strong/30'
-              : 'bg-surface-2 text-muted border-border'
-          }`}
-        >
-          {isPlaying ? 'Active' : 'Off'}
-        </span>
+
+        {/* Level bars that move only while sound plays and no Check is running */}
+        <div className="shrink-0 flex items-center gap-3">
+          <LevelBars isPlaying={isPlaying} />
+          <span
+            className={`px-3 py-1 text-xs font-semibold rounded-full border ${
+              isPlaying
+                ? 'bg-tier-strong/10 text-tier-strong border-tier-strong/30'
+                : 'bg-surface-2 text-muted border-border'
+            }`}
+          >
+            {isPlaying ? 'Active' : 'Muted'}
+          </span>
+        </div>
       </div>
 
-      {/* Empty State Banner when audio is inactive */}
+      {/* Empty state when sound is stopped: one sentence and a primary button */}
       {!isPlaying && (
-        <div className="p-3.5 rounded-sm bg-surface border border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-          <span className="text-text font-medium">Select a noise profile above to play background sound and mask auditory distractions.</span>
-          <Button variant="primary" onClick={() => handleSelectColor('brown')} className="text-xs min-h-[44px] shrink-0">
+        <div className="p-4 rounded-sm bg-surface border border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+          <span className="text-text font-medium leading-relaxed">
+            Select a noise profile above to play background sound and mask auditory distractions.
+          </span>
+          <Button variant="primary" onClick={() => handleSelectColor('brown')} className="text-xs shrink-0">
             Play Brown Noise
           </Button>
         </div>
       )}
 
-      {/* Volume & Softness Sliders */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
-        <div className="space-y-1.5">
-          <div className="flex justify-between text-xs">
-            <label htmlFor="volume-slider" className="font-semibold text-text">Volume (Max 60%)</label>
-            <span className="font-mono tabular-nums text-muted">{Math.round((settings.volume / 0.6) * 100)}%</span>
-          </div>
-          <div className="min-h-[44px] flex items-center">
-            <input
-              id="volume-slider"
-              type="range"
-              min={0}
-              max={0.6}
-              step={0.01}
-              value={settings.volume}
-              onChange={(e) => handleVolumeChange(Number(e.target.value))}
-              aria-label="Volume slider, maximum 60 percent"
-              className="w-full accent-accent h-2 bg-surface rounded-xs cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-            />
-          </div>
+      {/* Volume Knob & Softness control */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2 items-center">
+        <div className="p-4 rounded-sm bg-surface border border-border">
+          <VolumeKnob volume={settings.volume} maxVolume={0.6} onChange={handleVolumeChange} />
         </div>
 
-        <div className="space-y-1.5">
+        <div className="p-4 rounded-sm bg-surface border border-border space-y-4">
           <div className="flex justify-between text-xs">
-            <label htmlFor="softness-slider" className="font-semibold text-text">Tone Softness (Low-pass)</label>
-            <span className="font-mono tabular-nums text-muted">{Math.round((1 - settings.softness) * 100)}% soft</span>
+            <label htmlFor="softness-slider" className="font-semibold text-text uppercase tracking-wider">
+              Tone Softness (Low-pass)
+            </label>
+            <span className="font-mono tabular-nums text-text font-bold">
+              {Math.round((1 - settings.softness) * 100)}% soft
+            </span>
           </div>
           <div className="min-h-[44px] flex items-center">
             <input
@@ -201,42 +208,30 @@ export const NoisePlayer: React.FC = () => {
               value={settings.softness}
               onChange={(e) => handleSoftnessChange(Number(e.target.value))}
               aria-label="Tone softness low-pass filter slider"
-              className="w-full accent-accent h-2 bg-surface rounded-xs cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+              className="w-full h-2 bg-surface-2 border border-border rounded-full accent-primary-bg cursor-pointer focus-visible:outline-2 focus-visible:outline-ring"
             />
           </div>
+          <p className="text-[11px] text-muted leading-relaxed">
+            Lowers high-frequency hiss for gentler, less fatiguing acoustic masking.
+          </p>
         </div>
       </div>
 
       {/* Sleep Timer */}
-      <div className="space-y-2 pt-1 border-t border-border">
-        <div className="flex items-center justify-between text-xs">
-          <span className="font-semibold text-text">Sleep Timer</span>
-          {sleepRemainingSec > 0 && (
-            <span className="font-mono text-accent tabular-nums">{Math.floor(sleepRemainingSec / 60)}m {sleepRemainingSec % 60}s left</span>
-          )}
-        </div>
-        <div className="grid grid-cols-4 gap-1.5 p-1 rounded-sm border border-border bg-surface">
-          {[{ label: 'Off', val: 0 }, { label: '15m', val: 15 }, { label: '30m', val: 30 }, { label: '60m', val: 60 }].map((t) => (
-            <button
-              type="button"
-              key={t.label}
-              onClick={() => setSleepTimerMinutes(t.val)}
-              className={`min-h-[44px] py-1 text-xs font-semibold rounded-xs transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${
-                sleepTimerMinutes === t.val ? 'bg-accent text-on-accent border border-accent-edge shadow-elevation' : 'text-muted hover:text-text'
-              }`}
-            >
-              {t.label}
-            </button>
-          ))}
-        </div>
-      </div>
+      <SleepTimerControl
+        sleepTimerMinutes={sleepTimerMinutes}
+        sleepRemainingSec={sleepRemainingSec}
+        onSelectDuration={(val) => setSleepTimerMinutes(val)}
+      />
 
-      {/* Secondary Test Button */}
+      {/* Test this sound button */}
       <div className="pt-2 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-3">
         <Button variant="secondary" disabled={!isPlaying} onClick={handleTestSound} className="w-full sm:w-auto">
           Test this sound
         </Button>
-        <span className="text-xs text-muted">Compare {settings.color === 'off' ? 'noise' : `${settings.color} noise`} against silence</span>
+        <span className="text-xs text-muted">
+          Compare {settings.color === 'off' ? 'noise' : `${settings.color} noise`} against silence in a 10-run self-experiment.
+        </span>
       </div>
     </Panel>
   );

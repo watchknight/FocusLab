@@ -2,8 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import { Plate } from '@/components/ui/Plate';
+import { Chip } from '@/components/ui/Chip';
 import { EvidenceMeter } from '@/components/ui/EvidenceMeter';
 import { Activity } from '@/content/types';
 import { getClaimById, getReferenceById } from '@/content/evidence';
@@ -14,6 +17,7 @@ interface ActivityDetailProps {
 }
 
 export const ActivityDetail: React.FC<ActivityDetailProps> = ({ activity }) => {
+  const router = useRouter();
   const [selectedDuration, setSelectedDuration] = useState<number>(
     activity.durationOptionsSec[0] || 180
   );
@@ -45,28 +49,42 @@ export const ActivityDetail: React.FC<ActivityDetailProps> = ({ activity }) => {
   }
 
   return (
-    <div className="space-y-8 max-w-prose mx-auto">
-      {/* Header */}
-      <div className="space-y-3">
+    <article className="space-y-8 max-w-[720px] mx-auto">
+      {/* Back button */}
+      <div>
         <Link
           href="/activities"
-          className="text-xs text-muted hover:text-text inline-flex items-center gap-1 min-h-[44px]"
+          className="text-xs font-semibold text-muted hover:text-text inline-flex items-center min-h-[44px] transition-colors"
         >
           Back to activities
         </Link>
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-text">
-            {activity.name}
-          </h1>
-          {claim && <EvidenceMeter tier={claim.tier} />}
-        </div>
-        <p className="text-sm text-muted">{activity.whenToUse}</p>
       </div>
 
-      {/* How to do it */}
-      <Card className="p-4 sm:p-5 space-y-3">
-        <h2 className="text-base font-bold text-text">How to do it</h2>
-        <ol className="space-y-2 text-sm text-muted list-decimal list-inside">
+      {/* 1. Display-size title */}
+      <div className="space-y-3">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-text font-display leading-[0.95]">
+          {activity.name}
+        </h1>
+
+        {/* 2. Meter and outcome first */}
+        <div className="flex flex-wrap items-center gap-3 pt-1">
+          {claim && <EvidenceMeter tier={claim.tier} />}
+          <span className="text-sm font-medium text-text">
+            {claim?.outcome ? `Outcome: ${claim.outcome}` : activity.whenToUse}
+          </span>
+        </div>
+
+        <p className="text-sm text-muted pt-1 leading-relaxed">
+          {activity.whenToUse}
+        </p>
+      </div>
+
+      {/* 3. Steps */}
+      <Card className="p-5 sm:p-6 space-y-4 bg-surface border-border">
+        <h2 className="text-base font-bold text-text font-display">
+          How to do it
+        </h2>
+        <ol className="space-y-3 text-sm text-text list-decimal list-inside">
           {activity.steps.map((step, idx) => (
             <li key={idx} className="leading-relaxed">
               <span className="text-text">{step}</span>
@@ -75,23 +93,26 @@ export const ActivityDetail: React.FC<ActivityDetailProps> = ({ activity }) => {
         </ol>
       </Card>
 
-      {/* What the science says */}
+      {/* 4. The science Plate */}
       {claim && (
-        <Card className="p-4 sm:p-5 space-y-3 bg-surface-2 border-border">
-          <div className="flex items-center justify-between gap-2">
-            <h2 className="text-base font-bold text-text">What the science says</h2>
-            <EvidenceMeter tier={claim.tier} />
-          </div>
-
-          <div className="text-xs space-y-2">
-            <p>
-              <strong className="text-text">Measured Outcome:</strong>{' '}
-              <span className="text-muted">{claim.outcome}</span>
+        <Plate
+          as="section"
+          tier={claim.tier}
+          meter={<EvidenceMeter tier={claim.tier} />}
+          caption={claim.outcome}
+          className="space-y-4"
+        >
+          <div className="space-y-3">
+            <h2 className="text-base font-bold text-text font-display">
+              What the science says
+            </h2>
+            <p className="text-sm text-text leading-relaxed">
+              {claim.summary}
             </p>
-            <p className="text-muted leading-relaxed">{claim.summary}</p>
-            <p className="text-muted italic border-l-2 border-border pl-2.5">
-              <strong className="not-italic text-text">Caveat:</strong> {claim.caveat}
-            </p>
+            <div className="p-3.5 rounded-sm bg-surface-2 border border-border text-xs text-muted space-y-1">
+              <strong className="text-text block font-semibold">Caveat & limitations:</strong>
+              <p className="italic leading-relaxed">{claim.caveat}</p>
+            </div>
           </div>
 
           {references.length > 0 && (
@@ -99,12 +120,12 @@ export const ActivityDetail: React.FC<ActivityDetailProps> = ({ activity }) => {
               <button
                 type="button"
                 onClick={() => setShowRefs(!showRefs)}
-                className="text-xs font-semibold text-link hover:underline min-h-[44px] inline-flex items-center"
+                className="text-xs font-semibold text-text hover:underline min-h-[44px] inline-flex items-center"
               >
                 {showRefs ? 'Hide citations' : `View citations (${references.length})`}
               </button>
               {showRefs && (
-                <ul className="mt-2 space-y-2 text-xs text-muted bg-surface p-3 rounded-xs border border-border">
+                <ul className="mt-2 space-y-2 text-xs text-muted bg-surface-2 p-3 rounded-sm border border-border">
                   {references.map((r) =>
                     r ? (
                       <li key={r.id} className="leading-relaxed">
@@ -114,7 +135,7 @@ export const ActivityDetail: React.FC<ActivityDetailProps> = ({ activity }) => {
                             href={r.link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="ml-1 text-link underline"
+                            className="ml-1 text-text underline"
                           >
                             [Link]
                           </a>
@@ -126,41 +147,40 @@ export const ActivityDetail: React.FC<ActivityDetailProps> = ({ activity }) => {
               )}
             </div>
           )}
-        </Card>
+        </Plate>
       )}
 
-      {/* Cautions */}
+      {/* 5. Cautions */}
       {activity.cautions && activity.cautions.length > 0 && (
-        <Card className="p-4 space-y-2 border-tier-not-supported/40 bg-surface-2">
-          <h2 className="text-sm font-bold text-tier-not-supported">Cautions</h2>
-          <ul className="space-y-1 text-xs text-muted list-disc list-inside">
+        <Card className="p-4 sm:p-5 space-y-2 border-tier-not-supported/40 bg-surface-2">
+          <h2 className="text-sm font-bold text-tier-not-supported uppercase tracking-wider">
+            Cautions
+          </h2>
+          <ul className="space-y-1.5 text-xs text-muted list-disc list-inside">
             {activity.cautions.map((caution, idx) => (
-              <li key={idx}>{caution}</li>
+              <li key={idx} className="leading-relaxed">{caution}</li>
             ))}
           </ul>
         </Card>
       )}
 
-      {/* Duration Picker and Launch Action */}
-      <Card className="p-4 sm:p-5 space-y-4">
-        <span className="text-xs font-semibold text-text block">
-          Select duration
-        </span>
-        <div className="flex flex-wrap gap-2">
-          {activity.durationOptionsSec.map((sec) => (
-            <button
-              type="button"
-              key={sec}
-              onClick={() => setSelectedDuration(sec)}
-              className={`min-h-[44px] px-4 py-2 text-sm font-semibold rounded-sm border transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-[0.98] motion-reduce:active:scale-100 ${
-                selectedDuration === sec
-                  ? 'bg-accent border-2 border-accent-edge text-on-accent shadow-elevation'
-                  : 'bg-surface-2 border-border text-text hover:bg-surface'
-              }`}
-            >
-              {sec < 60 ? `${sec} seconds` : `${Math.round(sec / 60)} minutes`}
-            </button>
-          ))}
+      {/* 6. Start & 7. "Test this activity" */}
+      <Card className="p-5 sm:p-6 space-y-5 bg-surface border-border">
+        <div className="space-y-2">
+          <span className="text-xs font-semibold text-muted block uppercase tracking-wider">
+            Select duration
+          </span>
+          <div className="flex flex-wrap gap-2" role="group" aria-label="Duration selection">
+            {activity.durationOptionsSec.map((sec) => (
+              <Chip
+                key={sec}
+                selected={selectedDuration === sec}
+                onClick={() => setSelectedDuration(sec)}
+              >
+                {sec < 60 ? `${sec} seconds` : `${Math.round(sec / 60)} minutes`}
+              </Chip>
+            ))}
+          </div>
         </div>
 
         <div className="pt-2 flex flex-col sm:flex-row items-center gap-3">
@@ -172,14 +192,17 @@ export const ActivityDetail: React.FC<ActivityDetailProps> = ({ activity }) => {
             Start activity
           </Button>
 
-          <Link
-            href={`/experiments?activity=${activity.id}`}
-            className="text-xs font-semibold text-link hover:underline min-h-[44px] inline-flex items-center"
+          <Button
+            variant="secondary"
+            onClick={() => router.push(`/experiments?activity=${activity.id}`)}
+            className="w-full sm:w-auto text-xs"
           >
-            Test this activity in an experiment
-          </Link>
+            Test this activity
+          </Button>
         </div>
       </Card>
-    </div>
+    </article>
   );
 };
+
+export default ActivityDetail;

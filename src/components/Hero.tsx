@@ -8,7 +8,9 @@ import { HeroGlassChip } from '@/components/HeroGlassChip';
 import { Button } from '@/components/ui/Button';
 import { getFx } from '@/lib/gsap';
 import { applyAperture } from '@/lib/aperture';
-import { useHeadlineReveal, tweenAperture, scrambleTo } from '@/lib/motion-hooks';
+import { useHeadlineReveal } from '@/lib/motion/use-headline-reveal';
+import { tweenAperture } from '@/lib/motion/tween-aperture';
+import { scrambleTo } from '@/lib/motion/scramble-to';
 import { useHeroMotion } from '@/lib/hero-motion';
 import {
   DemoState, transitionDemoState, getRandomStimulusDelay,

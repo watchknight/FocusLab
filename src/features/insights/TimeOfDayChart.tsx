@@ -26,7 +26,7 @@ export const TimeOfDayChart: React.FC<TimeOfDayChartProps> = ({ data }) => {
   const motionAllowed = useMotionAllowed();
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <div className="w-full h-48 sm:h-56">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
@@ -47,7 +47,7 @@ export const TimeOfDayChart: React.FC<TimeOfDayChartProps> = ({ data }) => {
               contentStyle={{
                 backgroundColor: 'var(--surface-2)',
                 borderColor: 'var(--border)',
-                borderRadius: '6px',
+                borderRadius: '8px',
                 fontSize: '12px',
                 color: 'var(--text)',
               }}
@@ -59,7 +59,7 @@ export const TimeOfDayChart: React.FC<TimeOfDayChartProps> = ({ data }) => {
             />
             <Bar
               dataKey="count"
-              fill="var(--accent)"
+              fill="var(--primary-bg)"
               radius={[4, 4, 0, 0]}
               isAnimationActive={motionAllowed}
               animationDuration={500}
@@ -73,7 +73,7 @@ export const TimeOfDayChart: React.FC<TimeOfDayChartProps> = ({ data }) => {
         {data.map((item) => (
           <div
             key={item.period}
-            className="p-2 rounded-xs border border-border bg-surface text-center"
+            className="p-2.5 rounded-sm border border-border bg-surface text-center"
           >
             <span className="text-[11px] text-muted block truncate">{item.label}</span>
             <span className="text-base font-bold font-display tabular-nums text-text">

@@ -2,7 +2,7 @@
 
 import React, { useRef } from 'react';
 import { Container } from '@/components/ui/Container';
-import { useFocusScrub } from '@/lib/motion-hooks';
+import { useFocusScrub } from '@/lib/motion/use-focus-scrub';
 
 export const ManifestoSection: React.FC = () => {
   const sectionRef = useRef<HTMLElement | null>(null);

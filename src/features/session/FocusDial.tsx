@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useRef, useEffect, useCallback } from 'react';
-import { useDial } from '@/lib/motion-hooks';
-import { gsap, Draggable } from '@/lib/gsap';
+import { useDial } from '@/lib/motion/use-dial';
+import { gsap } from '@/lib/gsap';
 
 interface FocusDialProps {
   value: number; // 15 to 90
@@ -47,8 +47,12 @@ export const FocusDial: React.FC<FocusDialProps> = ({ value, onChange, className
     if (dialRef.current) {
       const targetDeg = -135 + ((value - 15) / 5) * 18;
       gsap.set(dialRef.current, { rotation: targetDeg });
-      const dragger = Draggable.get(dialRef.current);
-      if (dragger) dragger.update();
+      import('@/lib/gsap-drag').then(({ Draggable }) => {
+        if (dialRef.current) {
+          const dragger = Draggable.get(dialRef.current);
+          if (dragger) dragger.update();
+        }
+      });
     }
   }, [value]);
 

@@ -11,11 +11,12 @@ import { Panel } from '@/components/ui/Panel';
 import { Plate } from '@/components/ui/Plate';
 import { FeatureErrorBoundary } from '@/components/ui/FeatureErrorBoundary';
 import { ExperimentRunner } from './ExperimentRunner';
+import { ExperimentFilmStrip } from './ExperimentFilmStrip';
 
 const ExperimentDotPlot = dynamic(() => import('./ExperimentDotPlot'), {
   ssr: false,
   loading: () => (
-    <div className="min-h-[280px] sm:min-h-[320px] flex items-center justify-center text-xs text-muted" aria-hidden="true">
+    <div className="min-h-[220px] flex items-center justify-center text-xs text-muted" aria-hidden="true">
       Loading chart...
     </div>
   ),
@@ -41,6 +42,7 @@ export const ExperimentDetail: React.FC<ExperimentDetailProps> = ({
   const analysis = analyzeExperiment(experiment, allChecks);
   const activeCondition = getConditionById(analysis.activeConditionId);
   const controlCondition = getConditionById(analysis.controlConditionId);
+  const isConcurrent = analysis.design === 'concurrent';
 
   if (isRunning && nextItem) {
     return (
@@ -62,19 +64,18 @@ export const ExperimentDetail: React.FC<ExperimentDetailProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* Back button if available */}
       {onBack && (
         <button
           type="button"
           onClick={onBack}
-          className="text-xs font-semibold text-link hover:underline min-h-[44px] inline-flex items-center"
+          className="text-xs font-semibold text-muted hover:text-text transition-colors min-h-[44px] inline-flex items-center"
         >
           Back to all experiments
         </button>
       )}
 
-      {/* 1. Progress rail at the top (run N of 10, next condition named) */}
-      <div className="space-y-2.5 p-4 rounded-md border border-border bg-surface">
+      {/* 1. Progress rail */}
+      <div className="space-y-2.5 p-4 sm:p-5 rounded-[16px] border border-border bg-surface">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs">
           <span className="font-bold text-text font-display tabular-nums">
             {isFinished ? 'Completed 10 of 10 runs' : `Run ${completedCount + 1} of 10`}
@@ -86,7 +87,6 @@ export const ExperimentDetail: React.FC<ExperimentDetailProps> = ({
           </span>
         </div>
 
-        {/* 10-segment visual progress rail */}
         <div
           className="grid grid-cols-10 gap-1.5 w-full"
           role="progressbar"
@@ -95,17 +95,15 @@ export const ExperimentDetail: React.FC<ExperimentDetailProps> = ({
           aria-valuemax={10}
           aria-label="Experiment 10-run progress rail"
         >
-          {experiment.schedule.map((item, idx) => {
+          {experiment.schedule.map((_, idx) => {
             const isDone = idx < completedCount;
             const isCurrent = idx === completedCount;
-            const cond = getConditionById(item.conditionId);
             return (
               <div
                 key={idx}
-                title={`Run ${idx + 1}: ${cond.name}${isDone ? ' (Completed)' : isCurrent ? ' (Next)' : ''}`}
-                className={`h-2.5 rounded-xs transition-colors ${
+                className={`h-2.5 rounded-full transition-colors ${
                   isDone
-                    ? 'bg-accent'
+                    ? 'bg-primary-bg'
                     : isCurrent
                     ? 'bg-surface-2 border-2 border-border-strong ring-1 ring-ring'
                     : 'bg-surface-2 border border-border'
@@ -116,13 +114,22 @@ export const ExperimentDetail: React.FC<ExperimentDetailProps> = ({
         </div>
       </div>
 
-      {/* 2. Current run as a Panel with a single primary action */}
+      {/* 2. Film-strip of run frames (activity or rest, change in ms) */}
+      <ExperimentFilmStrip
+        schedule={experiment.schedule}
+        runs={experiment.runs}
+        completedCount={completedCount}
+        allChecks={allChecks}
+        isConcurrent={isConcurrent}
+      />
+
+      {/* 3. Current run panel */}
       <Panel variant="surface-2" className="space-y-4">
         <div className="space-y-1">
-          <span className="text-xs font-semibold text-muted block">
+          <span className="text-xs font-semibold text-muted block uppercase tracking-wider">
             {isFinished ? 'Protocol Completed' : 'Current Run'}
           </span>
-          <h2 className="text-lg font-bold text-text font-display">
+          <h2 className="text-xl font-bold text-text font-display">
             {isFinished
               ? `${activeCondition.name} vs. ${controlCondition.name}`
               : `Run ${completedCount + 1} of 10: ${nextCondition?.name}`}
@@ -157,24 +164,23 @@ export const ExperimentDetail: React.FC<ExperimentDetailProps> = ({
         </div>
       </Panel>
 
-      {/* 3. Results as a Plate: dot plot, per-condition mean change, verdict, caution */}
+      {/* 4. Results as a Plate with verdict in display type and caution line directly beneath */}
       <Plate as="section" className="space-y-6">
-        {/* Verdict in large text and caution sentence directly under it */}
         <div className="space-y-2">
-          <span className="text-xs font-semibold text-muted block">
+          <span className="text-xs font-semibold text-muted block uppercase tracking-wider">
             Experiment verdict
           </span>
-          <h3 className="text-xl sm:text-2xl font-bold font-display text-text">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold font-display tracking-tight text-text leading-tight">
             {analysis.verdict}
-          </h3>
-          <p className="text-xs text-muted italic border-l-2 border-border pl-3 py-0.5">
+          </h2>
+          <p className="text-xs sm:text-sm text-muted italic border-l-2 border-border pl-3 py-1 leading-relaxed">
             {analysis.caveat}
           </p>
         </div>
 
         {/* Per-condition mean change in plain words */}
-        <div className="p-3.5 rounded-md bg-surface border border-border space-y-2 text-xs">
-          <span className="font-semibold text-text block">
+        <div className="p-4 rounded-sm bg-surface-2 border border-border space-y-2 text-xs">
+          <span className="font-bold text-text block uppercase tracking-wider text-[11px]">
             Per-condition mean change
           </span>
           <p className="text-text leading-relaxed">
@@ -206,11 +212,11 @@ export const ExperimentDetail: React.FC<ExperimentDetailProps> = ({
           )}
         </div>
 
-        {/* Dot plot */}
+        {/* Dot plot with DrawSVG */}
         <div className="space-y-3">
-          <h4 className="text-sm font-semibold text-text">
+          <h3 className="text-sm font-semibold text-text">
             Per-Run Reaction Time Deltas
-          </h4>
+          </h3>
           <ExperimentDotPlot analysis={analysis} />
         </div>
       </Plate>

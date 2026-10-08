@@ -3,7 +3,7 @@
 import React, { useRef } from 'react';
 import { Lens } from '@/components/Lens';
 import { gsap, useGSAP, getFx } from '@/lib/gsap';
-import { tweenAperture } from '@/lib/motion-hooks';
+import { tweenAperture } from '@/lib/motion/tween-aperture';
 import { applyAperture } from '@/lib/aperture';
 
 const INTRO_STORAGE_KEY = 'focuslab:intro';

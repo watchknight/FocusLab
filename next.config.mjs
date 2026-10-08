@@ -2,12 +2,21 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { execSync } from 'node:child_process';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Ensure SW has proper cache version before build copies public/
 try {
-  const commitHash = process.env.RENDER_GIT_COMMIT || Date.now().toString();
+  let commitHash = process.env.RENDER_GIT_COMMIT;
+  if (!commitHash) {
+    try {
+      commitHash = execSync('git rev-parse HEAD', { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim();
+    } catch {
+      commitHash = Date.now().toString();
+    }
+  }
   const cacheName = `focuslab-cache-${commitHash}`;
   const swPath = path.join(__dirname, 'public', 'sw.js');
   if (fs.existsSync(swPath)) {

@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
 import { Plate } from '@/components/ui/Plate';
@@ -14,32 +16,28 @@ export const ClaimCard: React.FC<ClaimCardProps> = ({ claim }) => {
       as="article"
       tier={claim.tier}
       meter={<EvidenceMeter tier={claim.tier} />}
-      caption={claim.outcome}
-      className="h-full flex flex-col justify-between hover:border-accent transition-colors"
+      caption={`Target outcome: ${claim.outcome}`}
+      className="claim-card-item h-full flex flex-col justify-between hover:border-border-strong transition-colors duration-150"
     >
-      <div className="space-y-2.5">
-        <div className="flex items-start justify-between gap-2 flex-wrap">
-          <h2 className="text-base font-bold text-text font-display leading-snug">
-            {claim.title}
-          </h2>
-          <EvidenceMeter tier={claim.tier} showLabel={false} />
-        </div>
+      <div className="space-y-3">
+        <h2 className="text-lg font-bold text-text font-display leading-snug">
+          {claim.title}
+        </h2>
 
-        {/* One-sentence outcome */}
         <div className="text-sm text-text">
           <span className="font-semibold text-muted">Target outcome: </span>
           <span className="font-medium text-text">{claim.outcome}</span>
         </div>
 
-        <p className="text-base text-muted line-clamp-2 leading-relaxed">
+        <p className="text-sm sm:text-base text-muted line-clamp-2 leading-relaxed">
           {claim.summary}
         </p>
       </div>
 
-      <div className="pt-3">
+      <div className="pt-3 border-t border-border mt-3">
         <Link
           href={`/learn/${claim.id}`}
-          className="text-sm font-semibold text-link hover:underline inline-flex items-center min-h-[44px]"
+          className="text-xs font-semibold text-text hover:underline inline-flex items-center min-h-[44px] transition-colors"
         >
           View study details and citations ({claim.refIds.length})
         </Link>

@@ -8,7 +8,7 @@ import { Panel } from '@/components/ui/Panel';
 import { CheckResult } from '@/store/types';
 import { useFocusLabStore } from '@/store';
 import { useT } from '@/i18n';
-import { scrambleTo } from '@/lib/motion-hooks';
+import { scrambleTo } from '@/lib/motion/scramble-to';
 import HistoryChart from './HistoryChart';
 
 interface ResultsViewProps {

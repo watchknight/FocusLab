@@ -4,13 +4,15 @@ import React, {
   createContext,
   useContext,
   useEffect,
+  useState,
   useRef,
+  useCallback,
   type ReactNode,
   type ComponentPropsWithoutRef,
 } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { gsap, getFx } from "@/lib/gsap";
+import { getFx } from "@/lib/gsap";
 
 export function isCalmRoute(path?: string | null): boolean {
   if (typeof document !== "undefined" && document.documentElement.getAttribute("data-calm") === "on") {
@@ -32,73 +34,49 @@ export function isCalmRoute(path?: string | null): boolean {
   );
 }
 
-type Nav = (href: string, origin?: { x: number; y: number }) => void;
-const Ctx = createContext<Nav>(() => {});
+export type Nav = (href: string, origin?: { x: number; y: number }) => void;
+export const Ctx = createContext<Nav>(() => {});
 export const useIrisNavigate = () => useContext(Ctx);
 
-/** Recipe 8: iris-wipe page transition. Skip on calm routes, back/forward, and when fx is not "full". */
+/**
+ * Recipe 8: iris-wipe page transition.
+ * Keeps React tree stable: children never remount.
+ * Dynamically loads IrisOverlayFull only in fx full.
+ */
 export function IrisProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
-  const pathname = usePathname();
-  const overlay = useRef<HTMLDivElement>(null);
-  const origin = useRef({ x: 0.5, y: 0.5 });
-  const busy = useRef(false);
+  const customNavRef = useRef<Nav | null>(null);
+  const [OverlayComp, setOverlayComp] = useState<React.ComponentType<{
+    onRegister: (nav: Nav | null) => void;
+  }> | null>(null);
 
   useEffect(() => {
-    if (!busy.current || !overlay.current) return;
-    const { x, y } = origin.current;
-    gsap.to(overlay.current, {
-      clipPath: `circle(0vmax at ${x * 100}% ${y * 100}%)`,
-      duration: 0.7,
-      ease: "power3.inOut",
-      onComplete: () => {
-        busy.current = false;
-        if (overlay.current) gsap.set(overlay.current, { visibility: "hidden" });
-      },
-    });
-  }, [pathname]);
-
-  const navigate: Nav = (href, o) => {
-    const el = overlay.current;
-    if (!el || getFx() !== "full" || busy.current || isCalmRoute(pathname) || isCalmRoute(href)) {
-      router.push(href);
-      return;
+    if (getFx() === "full") {
+      import("./IrisProviderFull").then((mod) => {
+        setOverlayComp(() => mod.IrisOverlayFull);
+      });
     }
-    busy.current = true;
-    origin.current = o
-      ? { x: o.x / window.innerWidth, y: o.y / window.innerHeight }
-      : { x: 0.5, y: 0.5 };
-    const { x, y } = origin.current;
-    gsap.set(el, {
-      visibility: "visible",
-      clipPath: `circle(0vmax at ${x * 100}% ${y * 100}%)`,
-    });
-    gsap.to(el, {
-      clipPath: `circle(150vmax at ${x * 100}% ${y * 100}%)`,
-      duration: 0.7,
-      ease: "power3.inOut",
-      onComplete: () => {
+  }, []);
+
+  const navigate: Nav = useCallback(
+    (href, origin) => {
+      if (customNavRef.current) {
+        customNavRef.current(href, origin);
+      } else {
         router.push(href);
-        // Safety timeout in case navigation is cancelled or identical route
-        setTimeout(() => {
-          if (busy.current && overlay.current) {
-            busy.current = false;
-            gsap.set(overlay.current, { visibility: "hidden" });
-          }
-        }, 2500);
-      },
-    });
-  };
+      }
+    },
+    [router]
+  );
+
+  const handleRegister = useCallback((nav: Nav | null) => {
+    customNavRef.current = nav;
+  }, []);
 
   return (
     <Ctx.Provider value={navigate}>
       {children}
-      <div
-        ref={overlay}
-        aria-hidden="true"
-        className="iris"
-        style={{ visibility: "hidden" }}
-      />
+      {OverlayComp ? <OverlayComp onRegister={handleRegister} /> : null}
     </Ctx.Provider>
   );
 }

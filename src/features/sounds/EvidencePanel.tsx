@@ -16,7 +16,7 @@ export const EvidencePanel: React.FC = () => {
       as="section"
       tier={claim?.tier}
       meter={claim ? <EvidenceMeter tier={claim.tier} /> : null}
-      caption={claim ? claim.outcome : 'Auditory masking'}
+      caption={claim ? `Measured outcome: ${claim.outcome}` : 'Auditory masking'}
       className="text-sm space-y-4"
     >
       <div className="flex items-center justify-between gap-2 flex-wrap">
@@ -26,7 +26,7 @@ export const EvidencePanel: React.FC = () => {
         {claim && (
           <Link
             href={`/learn/${claim.id}`}
-            className="text-sm font-semibold text-link hover:underline min-h-[44px] inline-flex items-center"
+            className="text-sm font-semibold text-text hover:underline min-h-[44px] inline-flex items-center transition-colors"
           >
             {t('sounds.evidenceReadFull')}
           </Link>
@@ -35,10 +35,10 @@ export const EvidencePanel: React.FC = () => {
 
       {claim && (
         <div className="space-y-2">
-          <p className="text-sm text-muted leading-relaxed">
+          <p className="text-sm text-text leading-relaxed">
             <strong className="text-text">{t('sounds.findingLabel')}</strong> {claim.summary}
           </p>
-          <p className="text-sm text-muted italic border-l-2 border-border pl-3 py-0.5">
+          <p className="text-sm text-muted italic border-l-2 border-border pl-3 py-1">
             <strong className="not-italic text-text">{t('sounds.caveatLabel')}</strong> {claim.caveat}
           </p>
         </div>

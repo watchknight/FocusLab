@@ -4,7 +4,7 @@ import React, { useRef } from 'react';
 import { Lens } from '@/components/Lens';
 import { TransitionLink } from '@/components/IrisTransition';
 import { gsap, useGSAP, getFx } from '@/lib/gsap';
-import { tweenAperture } from '@/lib/motion-hooks';
+import { tweenAperture } from '@/lib/motion/tween-aperture';
 
 export default function NotFound() {
   const containerRef = useRef<HTMLDivElement | null>(null);
