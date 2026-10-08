@@ -25,7 +25,10 @@ export function isCalmRoute(path?: string | null): boolean {
     clean.startsWith("/focus/") ||
     clean.startsWith("/activities/cyclic-sighing") ||
     clean.startsWith("/activities/box-breathing") ||
-    clean.startsWith("/activities/breath-counting")
+    clean.startsWith("/activities/breath-counting") ||
+    clean.startsWith("/activities/nature-microbreak") ||
+    clean.startsWith("/activities/movement-snack") ||
+    clean.startsWith("/activities/quiet-rest")
   );
 }
 

@@ -6,7 +6,7 @@ import { Card } from '@/components/ui/Card';
 import { EvidenceMeter } from '@/components/ui/EvidenceMeter';
 import { Activity } from '@/content/types';
 import { getClaimById } from '@/content/evidence';
-import { computeTimerSnapshot, calculateElapsedMs, PauseInterval } from '@/lib/timer';
+import { computeTimerSnapshot, PauseInterval } from '@/lib/timer';
 import { useFocusLabStore } from '@/store';
 import { setCalm } from '@/lib/motion';
 
@@ -121,32 +121,36 @@ export const PlayerShell: React.FC<PlayerShellProps> = ({
 
   if (isCompleted) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-surface p-4">
-        <Card className="max-w-md w-full p-6 text-center space-y-4 bg-surface-2 border-border">
-          <div className="w-12 h-12 rounded-full border-2 border-accent bg-surface text-accent flex items-center justify-center mx-auto text-2xl font-bold">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#07080B] text-[#F2F3F5] select-none">
+        <Card className="max-w-md w-full p-6 text-center space-y-4 bg-[#14171E] border-[#2A2F3B] text-[#F2F3F5]">
+          <div className="w-12 h-12 rounded-full border-2 border-[#5FE3A1] bg-[#14171E] text-[#5FE3A1] flex items-center justify-center mx-auto text-2xl font-bold">
             ✓
           </div>
           <div className="space-y-1">
-            <h2 className="text-xl font-bold text-text">{activity.name} Completed</h2>
-            <p className="text-xs text-muted">
+            <h2 className="text-xl font-bold text-[#F2F3F5]">{activity.name} Completed</h2>
+            <p className="text-xs text-[#9AA1AE]">
               {durationSec} seconds logged to your browser history.
             </p>
           </div>
 
           {claim && (
-            <div className="pt-2 flex flex-col items-center gap-2 border-t border-border">
+            <div className="pt-2 flex flex-col items-center gap-2 border-t border-[#2A2F3B]">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold text-text">{claim.title}</span>
+                <span className="text-xs font-semibold text-[#F2F3F5]">{claim.title}</span>
                 <EvidenceMeter tier={claim.tier} />
               </div>
-              <p className="text-xs text-muted max-w-sm">{claim.summary}</p>
+              <p className="text-xs text-[#9AA1AE] max-w-sm">{claim.summary}</p>
             </div>
           )}
 
           <div className="pt-3 flex gap-2 justify-center">
-            <Button variant="primary" onClick={handleClose} className="w-full sm:w-auto">
+            <button
+              type="button"
+              onClick={handleClose}
+              className="w-full sm:w-auto min-h-[44px] px-6 rounded-full bg-[#F2F3F5] text-[#07080B] font-semibold text-sm hover:bg-white"
+            >
               Return to Activities
-            </Button>
+            </button>
           </div>
         </Card>
       </div>
@@ -154,37 +158,54 @@ export const PlayerShell: React.FC<PlayerShellProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-surface select-none">
-      {/* Top Bar */}
-      <div className="flex items-center justify-between p-2.5 sm:p-4 border-b border-border bg-surface-2 pt-[env(safe-area-inset-top,0px)]">
+    <div
+      className="fixed inset-0 z-50 flex flex-col bg-[#07080B] text-[#F2F3F5] select-none"
+      style={{
+        backgroundColor: 'var(--stage-bg, #07080B)',
+        color: 'var(--stage-counter, #F2F3F5)',
+        animation: 'none',
+      }}
+    >
+      {/* Top Bar with fixed stage tokens */}
+      <div className="flex items-center justify-between p-2.5 sm:p-4 landscape:py-1.5 border-b border-[#2A2F3B] bg-[#07080B] pt-[env(safe-area-inset-top,0px)]">
         <div className="flex items-center gap-2 min-w-0 pr-2">
-          <span className="text-sm font-semibold text-text truncate">{activity.name}</span>
-          {claim && <EvidenceMeter tier={claim.tier} />}
+          <span className="text-sm font-semibold text-[#F2F3F5] truncate">{activity.name}</span>
+          {claim && (
+            <>
+              <EvidenceMeter tier={claim.tier} showLabel={false} className="sm:hidden" />
+              <EvidenceMeter tier={claim.tier} className="hidden sm:inline-flex" />
+            </>
+          )}
         </div>
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           <button
             type="button"
             onClick={() => setAudioEnabled(!audioEnabled)}
-            className="text-xs text-muted hover:text-text min-h-[44px] px-2 rounded"
+            className="text-xs text-[#9AA1AE] hover:text-[#F2F3F5] min-h-[44px] px-2 rounded font-mono"
           >
             Sound: {audioEnabled ? 'On' : 'Off'}
           </button>
-          <Button variant="subtle" onClick={handleClose} className="text-xs min-h-[44px] px-3">
+          <button
+            type="button"
+            onClick={handleClose}
+            className="min-h-[44px] min-w-[44px] px-3 py-1 text-xs font-mono rounded-sm border border-[#9AA1AE]/30 text-[#9AA1AE] hover:text-[#F2F3F5] hover:border-[#9AA1AE]/60"
+            aria-label="Exit activity (Escape)"
+          >
             Exit (Esc)
-          </Button>
+          </button>
         </div>
       </div>
 
-      {/* Progress Bar */}
-      <div className="w-full bg-surface-2 h-1.5 overflow-hidden">
+      {/* Thin overall progress bar */}
+      <div className="w-full bg-[#1B1F28] h-1 overflow-hidden" aria-hidden="true">
         <div
-          className="bg-accent h-full transition-all duration-200"
+          className="bg-[#F2F3F5] h-full transition-all duration-200"
           style={{ width: `${progressPercent}%` }}
         />
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col items-center justify-center p-4 relative overflow-y-auto">
+      <div className="flex-1 flex flex-col items-center justify-center p-3 sm:p-4 landscape:py-1 relative overflow-y-auto">
         {children({
           elapsedSec,
           remainingSec,
@@ -194,13 +215,19 @@ export const PlayerShell: React.FC<PlayerShellProps> = ({
         })}
       </div>
 
-      {/* Bottom Controls */}
-      <div className="p-2.5 sm:p-4 border-t border-border bg-surface flex items-center justify-between text-xs text-muted pb-[env(safe-area-inset-bottom,0px)]">
-        <span className="tabular-nums font-mono">{remainingSec}s remaining</span>
-        <Button variant="secondary" onClick={togglePause} className="min-w-[100px] min-h-[44px]">
+      {/* Bottom Bar Controls */}
+      <div className="p-2 sm:p-4 landscape:py-1.5 border-t border-[#2A2F3B] bg-[#07080B] flex items-center justify-between text-xs text-[#9AA1AE] pb-[env(safe-area-inset-bottom,0px)]">
+        <span className="tabular-nums font-mono text-sm text-[#F2F3F5]">{remainingSec}s remaining</span>
+        <button
+          type="button"
+          onClick={togglePause}
+          className="min-w-[100px] min-h-[44px] px-4 rounded-full border border-[#9AA1AE]/40 bg-[#14171E] text-[#F2F3F5] font-semibold text-xs sm:text-sm hover:bg-[#1B1F28]"
+        >
           {isPaused ? 'Resume' : 'Pause'}
-        </Button>
+        </button>
       </div>
     </div>
   );
 };
+
+export default PlayerShell;

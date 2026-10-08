@@ -73,7 +73,7 @@ export const BreakStep: React.FC<BreakStepProps> = ({
       </div>
 
       <div className="py-4 flex flex-col items-center justify-center space-y-2">
-        <span className="text-5xl sm:text-6xl font-display font-bold tracking-tight text-text tabular-nums">
+        <span className="text-5xl sm:text-6xl font-mono font-bold tracking-tight text-text tabular-nums">
           {remainingTime}
         </span>
         <span className="text-xs text-muted font-mono">
@@ -98,7 +98,7 @@ export const BreakStep: React.FC<BreakStepProps> = ({
 
             <div className="pt-2 flex items-center gap-4">
               <Link
-                href={`/activities/${activity.id}`}
+                href={`/activities/${activity.id}?play=1`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center min-h-[44px] px-4 rounded-xs bg-accent text-on-accent font-semibold text-xs sm:text-sm hover:brightness-105 focus-visible:outline-2 focus-visible:outline-ring"

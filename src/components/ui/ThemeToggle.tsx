@@ -110,6 +110,13 @@ export const ThemeToggle: React.FC = () => {
 
   useEffect(() => {
     try {
+      const sp = new URLSearchParams(window.location.search);
+      const themeParam = sp.get('theme') as ThemeProfile | null;
+      if (themeParam === 'studio' || themeParam === 'darkroom' || themeParam === 'contrast') {
+        setTheme(themeParam);
+        applyTheme(themeParam);
+        return;
+      }
       const raw = localStorage.getItem(THEME_STORAGE_KEY);
       const migrated = migrateSavedTheme(raw);
       if (raw !== migrated) localStorage.setItem(THEME_STORAGE_KEY, migrated);

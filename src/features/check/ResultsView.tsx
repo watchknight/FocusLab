@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -8,16 +8,8 @@ import { Panel } from '@/components/ui/Panel';
 import { CheckResult } from '@/store/types';
 import { useFocusLabStore } from '@/store';
 import { useT } from '@/i18n';
-import { useMotionAllowed } from '@/lib/motion';
-
-const HistoryChart = dynamic(() => import('./HistoryChart'), {
-  ssr: false,
-  loading: () => (
-    <div className="h-48 sm:h-56 flex items-center justify-center text-xs text-muted" aria-hidden="true">
-      Loading chart...
-    </div>
-  ),
-});
+import { scrambleTo } from '@/lib/motion-hooks';
+import HistoryChart from './HistoryChart';
 
 interface ResultsViewProps {
   result: CheckResult;
@@ -26,58 +18,32 @@ interface ResultsViewProps {
 
 export const ResultsView: React.FC<ResultsViewProps> = ({ result, onReset }) => {
   const { t } = useT();
-  const motionOk = useMotionAllowed();
   const allChecks = useFocusLabStore((state) => state.checks);
   const { medianRt, lapses, falseStarts } = result.metrics;
-
-  const [displayRt, setDisplayRt] = useState<number>(() => (motionOk ? 0 : medianRt));
-  const [trendAnimateReady, setTrendAnimateReady] = useState<boolean>(!motionOk);
-  const animRef = useRef<number | null>(null);
+  const medianRtRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    if (!motionOk) {
-      setDisplayRt(medianRt);
-      setTrendAnimateReady(false);
-      return;
+    if (medianRtRef.current) {
+      scrambleTo(medianRtRef.current, `${medianRt}`);
     }
+  }, [medianRt]);
 
-    const startTime = performance.now();
-    const duration = 600;
-
-    const tick = (now: number) => {
-      const elapsed = now - startTime;
-      const progress = Math.min(1, elapsed / duration);
-      // Linear or subtle ease out
-      const current = Math.round(progress * medianRt);
-      setDisplayRt(current);
-
-      if (progress < 1) {
-        animRef.current = requestAnimationFrame(tick);
-      } else {
-        setDisplayRt(medianRt);
-        setTrendAnimateReady(true);
-      }
-    };
-
-    animRef.current = requestAnimationFrame(tick);
-
-    return () => {
-      if (animRef.current) cancelAnimationFrame(animRef.current);
-    };
-  }, [medianRt, motionOk]);
-
-  const baselineHistory = allChecks
-    .filter((c) => c.context === 'baseline')
-    .sort((a, b) => a.ts - b.ts)
-    .slice(-10)
-    .map((c, i) => ({
-      index: i + 1,
-      medianRt: c.metrics.medianRt,
-      dateStr: new Date(c.ts).toLocaleDateString(undefined, {
-        month: 'short',
-        day: 'numeric',
-      }),
-    }));
+  const baselineHistory = useMemo(
+    () =>
+      allChecks
+        .filter((c) => c.context === 'baseline')
+        .sort((a, b) => a.ts - b.ts)
+        .slice(-10)
+        .map((c, i) => ({
+          index: i + 1,
+          medianRt: c.metrics.medianRt,
+          dateStr: new Date(c.ts).toLocaleDateString(undefined, {
+            month: 'short',
+            day: 'numeric',
+          }),
+        })),
+    [allChecks]
+  );
 
   return (
     <div className="w-full flex justify-center py-2 sm:py-4">
@@ -85,7 +51,7 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ result, onReset }) => 
         <div className="space-y-2">
           <div className="flex flex-wrap items-center gap-2.5">
             <h1 className="text-2xl font-bold tracking-tight text-text">{t('check.resultsTitle')}</h1>
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border border-border bg-surface text-muted">
+            <span className="inline-flex items-center px-2.5 py-1 rounded-sm text-xs font-medium border border-border bg-surface text-muted leading-snug">
               <strong className="text-text mr-1">Measurement:</strong> Lab version validated; this browser version is informal.
             </span>
           </div>
@@ -98,9 +64,15 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ result, onReset }) => 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-1">
           <div className="p-3 rounded-md bg-surface border border-border">
             <span className="text-xs text-muted block">{t('check.medianRt')}</span>
-            <span className="text-3xl sm:text-4xl font-bold font-display tabular-nums text-text block mt-1">
-              {displayRt} <span className="text-base font-normal text-muted">ms</span>
-            </span>
+            <div className="flex items-baseline gap-1 mt-1">
+              <span
+                ref={medianRtRef}
+                className="text-3xl sm:text-4xl font-bold font-display tabular-nums text-text block"
+              >
+                {medianRt}
+              </span>
+              <span className="text-base font-normal text-muted">ms</span>
+            </div>
           </div>
 
           <div className="p-3 rounded-md bg-surface border border-border">
@@ -129,11 +101,7 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ result, onReset }) => 
             <h2 className="text-sm font-semibold text-text">{t('check.historyTitle')}</h2>
             <span className="text-xs text-muted font-mono">{baselineHistory.length} total</span>
           </div>
-          <HistoryChart
-            key={trendAnimateReady ? 'trend-draw' : 'trend-wait'}
-            data={baselineHistory}
-            animate={trendAnimateReady && motionOk}
-          />
+          <HistoryChart data={baselineHistory} />
         </Card>
 
         <div className="pt-2">

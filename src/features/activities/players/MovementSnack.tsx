@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { PlayerShell } from './PlayerShell';
-import { Card } from '@/components/ui/Card';
 import { Activity } from '@/content/types';
 
 interface MovementSnackProps {
@@ -24,36 +23,36 @@ export const MovementSnack: React.FC<MovementSnackProps> = ({
         const timeDisplay = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 
         return (
-          <div className="flex flex-col items-center justify-center space-y-6 max-w-sm w-full text-center">
+          <div className="flex flex-col items-center justify-center space-y-4 max-w-sm w-full text-center select-none">
             <div className="space-y-1">
-              <span className="text-xs font-semibold text-muted">
+              <span className="text-xs font-mono text-[#9AA1AE] uppercase tracking-wider block">
                 Physical movement bout
               </span>
-              <span className="text-6xl sm:text-7xl font-mono font-bold tracking-tight text-accent block tabular-nums">
+              <span className="text-5xl sm:text-6xl font-mono font-bold tracking-tight text-[#F2F3F5] block tabular-nums">
                 {timeDisplay}
               </span>
-              <span className="text-sm text-muted block">
+              <span className="text-xs text-[#9AA1AE] block">
                 Move continuously at a comfortable pace
               </span>
             </div>
 
-            <Card className="p-4 space-y-2 bg-surface-2 border-border text-left">
-              <span className="text-sm font-semibold text-text block">
+            <div className="p-4 space-y-2 rounded-[16px] bg-[#14171E] border border-[#2A2F3B] text-left">
+              <span className="text-sm font-semibold text-[#F2F3F5] block">
                 Effort guide: somewhat hard but safe
               </span>
-              <p className="text-sm text-muted leading-relaxed">
+              <p className="text-xs text-[#9AA1AE] leading-relaxed">
                 Aim for an effort where your heart rate rises and breathing deepens, but you can still speak in full sentences.
               </p>
-              <div className="pt-1 flex flex-wrap gap-1.5 text-sm text-muted">
-                <span className="px-2 py-0.5 rounded bg-surface border border-border">Brisk walking</span>
-                <span className="px-2 py-0.5 rounded bg-surface border border-border">Stairs</span>
-                <span className="px-2 py-0.5 rounded bg-surface border border-border">Bodyweight movement</span>
+              <div className="pt-1 flex flex-wrap gap-1.5 text-xs text-[#9AA1AE]">
+                <span className="px-2 py-0.5 rounded-sm bg-[#07080B] border border-[#2A2F3B]">Brisk walking</span>
+                <span className="px-2 py-0.5 rounded-sm bg-[#07080B] border border-[#2A2F3B]">Stairs</span>
+                <span className="px-2 py-0.5 rounded-sm bg-[#07080B] border border-[#2A2F3B]">Bodyweight movement</span>
               </div>
-            </Card>
+            </div>
 
             {activity.cautions && activity.cautions.length > 0 && (
-              <div className="text-sm text-muted space-y-0.5 text-left bg-surface-2/40 p-2.5 rounded border border-border/50 w-full">
-                <span className="font-semibold text-text block">Safety Notice</span>
+              <div className="text-xs text-[#9AA1AE] space-y-0.5 text-left bg-[#14171E]/60 p-2.5 rounded-[12px] border border-[#2A2F3B] w-full">
+                <span className="font-semibold text-[#F2F3F5] block">Safety Notice</span>
                 {activity.cautions.map((c, i) => (
                   <p key={i}>• {c}</p>
                 ))}
@@ -65,3 +64,5 @@ export const MovementSnack: React.FC<MovementSnackProps> = ({
     </PlayerShell>
   );
 };
+
+export default MovementSnack;

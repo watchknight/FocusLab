@@ -9,6 +9,7 @@ export interface Reference {
   id: string;
   citation: string;
   link?: string;
+  label?: string;
 }
 
 export interface EvidenceClaim {

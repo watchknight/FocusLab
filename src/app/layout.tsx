@@ -109,6 +109,26 @@ const HEAD_INIT_SCRIPT = `
     var nav = navigator;
     var low = (nav.hardwareConcurrency || 8) <= 4 || (nav.deviceMemory || 8) <= 4 || !!(nav.connection && nav.connection.saveData);
     root.dataset.fx = reduced ? 'off' : (low ? 'lite' : 'full');
+
+    var sp = new URLSearchParams(window.location.search);
+    if (sp.get('theme')) {
+      resolved = sp.get('theme');
+      root.setAttribute('data-theme', resolved);
+      if (resolved === 'darkroom') root.classList.add('darkroom', 'dark');
+      else root.classList.remove('darkroom', 'dark');
+      root.style.colorScheme = resolved === 'studio' ? 'light' : 'dark';
+    }
+    if (sp.get('fx')) {
+      root.dataset.fx = sp.get('fx');
+    }
+    if (sp.get('skipIntro')) {
+      try {
+        localStorage.setItem('focuslab:onboarded', 'true');
+        sessionStorage.setItem('focuslab:intro', '1');
+      } catch (e) {}
+      root.dataset.heroSeen = '1';
+    }
+
     if (sessionStorage.getItem('focuslab:intro')) {
       root.dataset.heroSeen = '1';
     }
@@ -157,7 +177,7 @@ export default function RootLayout({
                 tabIndex={-1}
                 className="flex-1 w-full focus:outline-none min-w-0 pb-[calc(56px+env(safe-area-inset-bottom,0px)+1.5rem)] lg:pb-8"
               >
-                <Container className="py-6 min-w-0">{children}</Container>
+                {children}
               </main>
             </DataIntegrityGuard>
             <Footer />

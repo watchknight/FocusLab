@@ -170,41 +170,68 @@ export const TestView: React.FC<TestViewProps> = ({
     <div
       role="button"
       tabIndex={0}
-      aria-label="Reaction test area. Press Space or tap anywhere to respond. Press Escape or End to exit."
+      aria-label="Reaction test area. Press Space or tap anywhere to respond. Press Escape to exit."
       onClick={handleResponse}
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center select-none cursor-pointer focus:outline-none"
-      style={{ backgroundColor: 'var(--bg-deep)' }}
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center select-none cursor-pointer focus:outline-none bg-[#07080B] text-[#F2F3F5]"
+      style={{
+        backgroundColor: 'var(--stage-bg, #07080B)',
+        color: 'var(--stage-counter, #F2F3F5)',
+        animation: 'none',
+      }}
     >
-      {/* Visible exit control */}
-      <div className="absolute top-[max(0.75rem,env(safe-area-inset-top))] right-[max(0.75rem,env(safe-area-inset-right))] sm:top-6 sm:right-6 z-10">
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            handleAbort();
-          }}
-          className="min-h-[44px] min-w-[44px] px-3.5 py-1.5 rounded-md border border-border bg-surface text-text text-xs sm:text-sm font-medium hover:bg-surface-2 focus-visible:outline-2 focus-visible:outline-ring"
-        >
-          End (Esc)
-        </button>
-      </div>
+      {/* 4 Viewfinder corner brackets (28px = w-7 h-7, 2px, 55% opacity) */}
+      <span aria-hidden="true" className="absolute top-4 left-4 sm:top-6 sm:left-6 w-7 h-7 border-t-2 border-l-2 border-[#9AA1AE]/55 pointer-events-none" />
+      <span aria-hidden="true" className="absolute top-4 right-4 sm:top-6 sm:right-6 w-7 h-7 border-t-2 border-r-2 border-[#9AA1AE]/55 pointer-events-none" />
+      <span aria-hidden="true" className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 w-7 h-7 border-b-2 border-l-2 border-[#9AA1AE]/55 pointer-events-none" />
+      <span aria-hidden="true" className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 w-7 h-7 border-b-2 border-r-2 border-[#9AA1AE]/55 pointer-events-none" />
 
-      {/* Centred lamp circle and millisecond counter below it */}
-      <div className="flex flex-col items-center justify-center">
+      {/* Accessible exit control for assistive technology / tab navigation without visual distraction */}
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          handleAbort();
+        }}
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:right-4 focus:z-50 focus:px-3 focus:py-1.5 focus:rounded-sm focus:border focus:border-[#F2F3F5] focus:bg-[#07080B] focus:text-[#F2F3F5] focus:text-xs focus:font-mono focus:outline-none"
+        aria-label="Exit test (or press Escape)"
+      >
+        Exit test (Esc)
+      </button>
+
+      {/* Centred 80px AF square, stimulus disc, and Martian Mono counter below */}
+      <div className="flex flex-col items-center justify-center pointer-events-none">
+        {/* Central 80px AF square */}
         <div
-          className={`w-24 h-24 sm:w-36 sm:h-36 rounded-full transition-colors duration-75 flex items-center justify-center ${
-            isLit
-              ? 'bg-accent border-4 border-accent-edge shadow-elevation'
-              : 'bg-surface-2 border-2 border-border'
-          }`}
+          className="relative w-[80px] h-[80px] border border-[#9AA1AE]/40 flex items-center justify-center"
           aria-hidden="true"
-        />
+        >
+          {/* AF corner tick marks */}
+          <span className="absolute -top-[1px] -left-[1px] w-2 h-2 border-t-2 border-l-2 border-[#9AA1AE]" />
+          <span className="absolute -top-[1px] -right-[1px] w-2 h-2 border-t-2 border-r-2 border-[#9AA1AE]" />
+          <span className="absolute -bottom-[1px] -left-[1px] w-2 h-2 border-b-2 border-l-2 border-[#9AA1AE]" />
+          <span className="absolute -bottom-[1px] -right-[1px] w-2 h-2 border-b-2 border-r-2 border-[#9AA1AE]" />
 
-        <div className="mt-4 sm:mt-6 h-10 flex items-center justify-center font-mono text-2xl sm:text-3xl font-bold tabular-nums text-text">
-          {phase === 'feedback' && (
-            <span className={feedbackText.includes('early') || feedbackText.includes('দ্রুত') ? 'text-warn' : 'text-text'}>
+          {/* The stimulus disc appearing in ONE FRAME (no tween, no CSS transition) */}
+          {isLit && (
+            <div
+              className="w-[72px] h-[72px] rounded-full bg-[#FFFFFF]"
+              style={{
+                backgroundColor: 'var(--stage-stimulus, #FFFFFF)',
+                animation: 'none',
+                transition: 'none',
+              }}
+            />
+          )}
+        </div>
+
+        {/* Counter in Martian Mono below */}
+        <div className="mt-6 h-10 flex items-center justify-center font-mono text-2xl sm:text-3xl font-bold tabular-nums text-[#F2F3F5]">
+          {phase === 'feedback' ? (
+            <span className={feedbackText.includes('early') || feedbackText.includes('দ্রুত') ? 'text-[#FF8A8A]' : 'text-[#F2F3F5]'}>
               {feedbackText}
             </span>
+          ) : (
+            <span className="text-[#9AA1AE]/70 font-mono text-xl">— ms</span>
           )}
         </div>
       </div>

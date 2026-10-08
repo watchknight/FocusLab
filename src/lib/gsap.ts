@@ -14,6 +14,7 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(useGSAP, ScrollTrigger, SplitText, Flip, Draggable, InertiaPlugin, ScrambleTextPlugin, DrawSVGPlugin, CustomEase);
   ScrollTrigger.config({ ignoreMobileResize: true });
   CustomEase.create("focus", "0.16, 1, 0.3, 1");
+  (window as unknown as { gsap: typeof gsap }).gsap = gsap;
 }
 
 export { gsap, useGSAP, ScrollTrigger, SplitText, Flip, Draggable };

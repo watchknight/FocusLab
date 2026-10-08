@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useRef, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
+import { Container } from '@/components/ui/Container';
 import { useGSAP } from '@gsap/react';
 import { gsap } from '@/lib/gsap';
 import { durations, easings, setCalm, useMotionAllowed } from '@/lib/motion';
@@ -8,6 +10,8 @@ import { durations, easings, setCalm, useMotionAllowed } from '@/lib/motion';
 let isFirstRender = true;
 
 export default function Template({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const isHome = pathname === '/';
   const containerRef = useRef<HTMLDivElement | null>(null);
   const motionOk = useMotionAllowed();
 
@@ -54,7 +58,11 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
   return (
     <div ref={containerRef} className="w-full min-w-0">
-      {children}
+      {isHome ? (
+        children
+      ) : (
+        <Container className="py-6 min-w-0">{children}</Container>
+      )}
     </div>
   );
 }

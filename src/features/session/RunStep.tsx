@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Button } from '@/components/ui/Button';
 import { ParkingLot } from './ParkingLot';
 import { RingTimer, CIRCUMFERENCE } from './RingTimer';
 import {
@@ -98,6 +97,7 @@ export const RunStep: React.FC<RunStepProps> = ({
         setDisplayTime(snap.formattedMinutesSeconds);
         document.title = `(${snap.formattedMinutesSeconds}) FocusLab`;
 
+        // Ring progress updated once per second
         const sec = Math.floor(snap.elapsedMs / 1000);
         if (sec !== lastSecRef.current && circleRef.current) {
           lastSecRef.current = sec;
@@ -143,76 +143,99 @@ export const RunStep: React.FC<RunStepProps> = ({
   };
 
   return (
-    <div className="w-full space-y-4">
-      {/* Top Bar with visible Exit Control */}
-      <div className="flex items-center justify-between pb-1 border-b border-border">
+    <div
+      className="fixed inset-0 z-50 overflow-y-auto flex flex-col justify-between p-3 sm:p-6 landscape:p-2 bg-[#07080B] text-[#F2F3F5] select-none"
+      style={{
+        backgroundColor: 'var(--stage-bg, #07080B)',
+        color: 'var(--stage-counter, #F2F3F5)',
+        animation: 'none',
+      }}
+    >
+      {/* Top HUD Bar */}
+      <div className="flex items-center justify-between pb-2 border-b border-[#2A2F3B] w-full max-w-4xl mx-auto pt-[env(safe-area-inset-top,0px)]">
         <div className="min-w-0 pr-2">
-          <span className="text-xs text-muted block">Intention</span>
-          <p className="text-sm font-semibold text-text truncate max-w-sm">{intention}</p>
+          <span className="text-[11px] font-mono text-[#9AA1AE] block uppercase tracking-wider">
+            Intention
+          </span>
+          <p className="text-sm font-semibold text-[#F2F3F5] truncate max-w-sm sm:max-w-md">
+            {intention}
+          </p>
         </div>
         <button
           type="button"
           onClick={handleAbort}
-          className="min-h-[44px] min-w-[44px] px-3 py-1.5 rounded-md border border-border bg-surface text-text text-xs sm:text-sm font-medium hover:bg-surface-2 focus-visible:outline-2 focus-visible:outline-ring shrink-0"
+          className="min-h-[44px] min-w-[44px] px-3 py-1 rounded-sm border border-[#9AA1AE]/30 bg-transparent text-[#9AA1AE] text-xs font-mono hover:text-[#F2F3F5] hover:border-[#9AA1AE]/60 focus-visible:outline-2 focus-visible:outline-[#F2F3F5] shrink-0"
+          aria-label="End session (Escape)"
         >
           End (Esc)
         </button>
       </div>
 
+      {/* Optional If-Then Plan reminder badge */}
       {ifThen && ifThen.when && (
-        <div className="text-xs px-3 py-1.5 rounded bg-surface-2 border border-border text-text">
-          <span className="text-muted">Plan: </span>
+        <div className="text-xs px-3 py-1 rounded-full bg-[#14171E] border border-[#2A2F3B] text-[#9AA1AE] max-w-md mx-auto my-1 truncate text-center">
+          <span className="text-[#F2F3F5] font-medium">Plan: </span>
           If {ifThen.when}, then I will {ifThen.then}
         </div>
       )}
 
-      {/* Main Focus Stage: adapts in landscape phones */}
-      <div className="landscape-compact-grid grid grid-cols-1 lg:grid-cols-12 gap-6 items-center pt-2">
-        {/* Left Column: Ring Timer + 3 Controls */}
-        <div className="lg:col-span-7 flex flex-col items-center justify-center space-y-4">
-          <RingTimer
-            circleRef={circleRef}
-            displayTime={displayTime}
-            isPaused={isPaused}
-            isFlexible={rhythm.isFlexible}
-          />
+      {/* Main Focus Stage: Responsive and compact on landscape phones */}
+      <div className="my-auto w-full max-w-4xl mx-auto py-2">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-8 items-center landscape-compact-grid">
+          {/* Ring Timer + Controls */}
+          <div className="lg:col-span-7 flex flex-col items-center justify-center space-y-3 sm:space-y-4">
+            <RingTimer
+              circleRef={circleRef}
+              displayTime={displayTime}
+              isPaused={isPaused}
+              isFlexible={rhythm.isFlexible}
+            />
 
-          <div aria-live="polite" className="sr-only">{minuteAria}</div>
+            <div aria-live="polite" className="sr-only">
+              {minuteAria}
+            </div>
 
-          {/* Three controls: Pause, End, Distracted */}
-          <div className="flex flex-wrap items-center justify-center gap-2.5 w-full max-w-md">
-            <Button
-              variant="primary"
-              onClick={handleTogglePause}
-              className="flex-1 min-h-[44px] min-w-[100px] text-sm font-semibold"
-            >
-              {isPaused ? 'Resume' : 'Pause'}
-            </Button>
-            <Button
-              variant="secondary"
-              onClick={completeBlock}
-              className="flex-1 min-h-[44px] min-w-[100px] text-sm font-semibold"
-            >
-              End block
-            </Button>
-            <Button
-              variant="subtle"
-              onClick={() => setDistractions((c) => c + 1)}
-              className="flex-1 min-h-[44px] min-w-[140px] text-xs font-semibold border border-border tabular-nums"
-            >
-              I got distracted ({distractions})
-            </Button>
+            {/* Three Controls: Pause / Resume, End Block, I got distracted */}
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 w-full max-w-md px-1">
+              <button
+                type="button"
+                onClick={handleTogglePause}
+                className="flex-1 min-h-[44px] min-w-[90px] px-4 rounded-full bg-[#F2F3F5] text-[#07080B] text-xs sm:text-sm font-semibold hover:bg-white active:scale-95 transition-transform focus-visible:outline-2 focus-visible:outline-[#F2F3F5]"
+              >
+                {isPaused ? 'Resume' : 'Pause'}
+              </button>
+              <button
+                type="button"
+                onClick={completeBlock}
+                className="flex-1 min-h-[44px] min-w-[90px] px-4 rounded-full border border-[#9AA1AE]/40 bg-[#14171E] text-[#F2F3F5] text-xs sm:text-sm font-semibold hover:bg-[#1B1F28] active:scale-95 transition-transform focus-visible:outline-2 focus-visible:outline-[#F2F3F5]"
+              >
+                End block
+              </button>
+              <button
+                type="button"
+                onClick={() => setDistractions((c) => c + 1)}
+                className="flex-1 min-h-[44px] min-w-[130px] px-3 rounded-full border border-[#9AA1AE]/30 bg-transparent text-[#9AA1AE] text-xs font-semibold hover:text-[#F2F3F5] hover:border-[#9AA1AE]/60 tabular-nums active:scale-95 transition-transform focus-visible:outline-2 focus-visible:outline-[#F2F3F5]"
+              >
+                I got distracted ({distractions})
+              </button>
+            </div>
+          </div>
+
+          {/* Right Column: Parking Lot */}
+          <div className="lg:col-span-5 w-full">
+            <ParkingLot
+              stageMode={true}
+              thoughts={parkedThoughts}
+              onAddThought={(thought) => setParkedThoughts((prev) => [...prev, thought])}
+            />
           </div>
         </div>
-
-        {/* Right Column: Parking-lot field */}
-        <div className="lg:col-span-5 w-full">
-          <ParkingLot
-            thoughts={parkedThoughts}
-            onAddThought={(thought) => setParkedThoughts((prev) => [...prev, thought])}
-          />
-        </div>
       </div>
+
+      {/* Bottom spacer for safe area */}
+      <div className="h-[env(safe-area-inset-bottom,0px)]" />
     </div>
   );
 };
+
+export default RunStep;

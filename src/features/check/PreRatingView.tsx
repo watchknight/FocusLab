@@ -45,7 +45,7 @@ export const PreRatingView: React.FC<PreRatingViewProps> = ({ onRatingsComplete,
           <div
             role="radiogroup"
             aria-labelledby="alertness-label"
-            className="grid grid-cols-5 p-1 rounded-md bg-surface border border-border"
+            className="grid grid-cols-5 p-1 rounded-md bg-surface-2 border border-border"
           >
             {RATING_VALUES.map((val) => {
               const isSelected = alertness === val;
@@ -55,11 +55,21 @@ export const PreRatingView: React.FC<PreRatingViewProps> = ({ onRatingsComplete,
                   key={val}
                   role="radio"
                   aria-checked={isSelected}
+                  tabIndex={isSelected || (alertness === null && val === 1) ? 0 : -1}
                   onClick={() => setAlertness(val)}
-                  className={`min-h-[44px] min-w-[44px] rounded-xs text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-accent tabular-nums flex items-center justify-center ${
+                  onKeyDown={(e) => {
+                    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                      e.preventDefault();
+                      setAlertness((prev) => (prev ? (Math.min(5, prev + 1) as Rating1To5) : 2));
+                    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                      e.preventDefault();
+                      setAlertness((prev) => (prev ? (Math.max(1, prev - 1) as Rating1To5) : 1));
+                    }
+                  }}
+                  className={`min-h-[44px] min-w-[44px] rounded-xs text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-ring tabular-nums flex items-center justify-center ${
                     isSelected
-                      ? 'bg-accent text-accent-contrast shadow-sm'
-                      : 'text-text hover:bg-surface-2'
+                      ? 'bg-primary-bg text-primary-text shadow-sm'
+                      : 'text-text hover:bg-surface'
                   }`}
                 >
                   {val}
@@ -81,7 +91,7 @@ export const PreRatingView: React.FC<PreRatingViewProps> = ({ onRatingsComplete,
           <div
             role="radiogroup"
             aria-labelledby="mind-wandering-label"
-            className="grid grid-cols-5 p-1 rounded-md bg-surface border border-border"
+            className="grid grid-cols-5 p-1 rounded-md bg-surface-2 border border-border"
           >
             {RATING_VALUES.map((val) => {
               const isSelected = mindWandering === val;
@@ -91,11 +101,21 @@ export const PreRatingView: React.FC<PreRatingViewProps> = ({ onRatingsComplete,
                   key={val}
                   role="radio"
                   aria-checked={isSelected}
+                  tabIndex={isSelected || (mindWandering === null && val === 1) ? 0 : -1}
                   onClick={() => setMindWandering(val)}
-                  className={`min-h-[44px] min-w-[44px] rounded-xs text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-accent tabular-nums flex items-center justify-center ${
+                  onKeyDown={(e) => {
+                    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                      e.preventDefault();
+                      setMindWandering((prev) => (prev ? (Math.min(5, prev + 1) as Rating1To5) : 2));
+                    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                      e.preventDefault();
+                      setMindWandering((prev) => (prev ? (Math.max(1, prev - 1) as Rating1To5) : 1));
+                    }
+                  }}
+                  className={`min-h-[44px] min-w-[44px] rounded-xs text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-ring tabular-nums flex items-center justify-center ${
                     isSelected
-                      ? 'bg-accent text-accent-contrast shadow-sm'
-                      : 'text-text hover:bg-surface-2'
+                      ? 'bg-primary-bg text-primary-text shadow-sm'
+                      : 'text-text hover:bg-surface'
                   }`}
                 >
                   {val}

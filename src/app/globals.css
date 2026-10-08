@@ -290,4 +290,25 @@ html[data-low-end='true'] .hero-focus-line-1, html[data-low-end='true'] .hero-fo
   }
 }
 
+/* S5 Seamless Marquee */
+@keyframes marquee-loop {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee-loop {
+  animation: marquee-loop 38s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee-loop {
+    animation: none !important;
+  }
+}
+
+
 

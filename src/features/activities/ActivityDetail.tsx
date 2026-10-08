@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -19,6 +19,15 @@ export const ActivityDetail: React.FC<ActivityDetailProps> = ({ activity }) => {
   );
   const [isPlaying, setIsPlaying] = useState(false);
   const [showRefs, setShowRefs] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('play') === '1') {
+        setIsPlaying(true);
+      }
+    }
+  }, []);
 
   const claim = getClaimById(activity.evidenceId);
   const references = claim

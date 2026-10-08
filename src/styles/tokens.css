@@ -56,6 +56,16 @@
   --coating-3: rgba(255, 184, 74, 0.22);
   --coating-sheen: linear-gradient(135deg, rgba(192, 60, 255, 0.30), rgba(53, 255, 165, 0.24), rgba(255, 184, 74, 0.22));
 
+  /* Bokeh imagery tokens */
+  --bokeh-1: #CDBBFF;
+  --bokeh-2: #FFC9A9;
+  --bokeh-3: #B4F0D8;
+  --bokeh-4: #B4D8FF;
+  --bokeh-5: #FFD9EC;
+  --bokeh-opacity: 0.85;
+  --bokeh-small-fill: rgba(255, 255, 255, 0.45);
+  --bokeh-small-edge: rgba(255, 255, 255, 0.85);
+
   /* Default Profile: Studio */
   --bg: #F1F3F5;
   --bg-deep: #E6E9ED;
@@ -156,6 +166,15 @@
   --glass: color-mix(in srgb, var(--surface) 62%, transparent);
   --glass-border: var(--border);
 
+  --bokeh-1: rgba(91, 61, 255, 0.35);
+  --bokeh-2: rgba(0, 191, 166, 0.28);
+  --bokeh-3: rgba(255, 159, 67, 0.25);
+  --bokeh-4: rgba(255, 92, 147, 0.22);
+  --bokeh-5: rgba(91, 61, 255, 0.30);
+  --bokeh-opacity: 1;
+  --bokeh-small-fill: rgba(255, 255, 255, 0.12);
+  --bokeh-small-edge: rgba(255, 255, 255, 0.35);
+
   --link: var(--text);
   --signal: var(--text);
   --border-subtle: var(--border);
@@ -191,6 +210,15 @@
   --shadow-elevation: none;
   --glass: var(--surface);
   --glass-border: var(--border);
+
+  --bokeh-1: transparent;
+  --bokeh-2: transparent;
+  --bokeh-3: transparent;
+  --bokeh-4: transparent;
+  --bokeh-5: transparent;
+  --bokeh-opacity: 0;
+  --bokeh-small-fill: transparent;
+  --bokeh-small-edge: transparent;
 
   --link: var(--text);
   --signal: var(--text);
@@ -228,6 +256,15 @@
     --shadow-elevation: 0 1px 2px rgba(0, 0, 0, 0.2), 0 8px 24px -8px rgba(0, 0, 0, 0.4);
     --glass: color-mix(in srgb, var(--surface) 62%, transparent);
     --glass-border: var(--border);
+
+    --bokeh-1: rgba(91, 61, 255, 0.35);
+    --bokeh-2: rgba(0, 191, 166, 0.28);
+    --bokeh-3: rgba(255, 159, 67, 0.25);
+    --bokeh-4: rgba(255, 92, 147, 0.22);
+    --bokeh-5: rgba(91, 61, 255, 0.30);
+    --bokeh-opacity: 1;
+    --bokeh-small-fill: rgba(255, 255, 255, 0.12);
+    --bokeh-small-edge: rgba(255, 255, 255, 0.35);
 
     --link: var(--text);
     --signal: var(--text);

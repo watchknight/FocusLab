@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { PlayerShell } from './PlayerShell';
-import { Button } from '@/components/ui/Button';
 import { Activity } from '@/content/types';
 
 interface BreathCounterProps {
@@ -51,64 +50,70 @@ export const BreathCounter: React.FC<BreathCounterProps> = ({
   return (
     <PlayerShell activity={activity} durationSec={durationSec} onClose={onClose}>
       {() => (
-        <div className="flex flex-col items-center justify-center space-y-4 max-w-sm w-full text-center">
-          {/* Count Display */}
+        <div className="flex flex-col items-center justify-center space-y-3 sm:space-y-4 landscape:space-y-2 max-w-sm w-full text-center select-none">
+          {/* Centred Count Display */}
           <div className="space-y-1">
-            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-2 border-accent bg-surface-2 flex items-center justify-center mx-auto shadow-sm">
-              <span className="text-4xl sm:text-5xl font-display font-bold text-text tabular-nums">
+            <div className="w-20 h-20 sm:w-28 sm:h-28 landscape:w-16 landscape:h-16 rounded-full border-2 border-[#2A2F3B] bg-[#14171E] flex items-center justify-center mx-auto shadow-sm">
+              <span className="text-4xl sm:text-5xl landscape:text-3xl font-mono font-bold text-[#F2F3F5] tabular-nums">
                 {currentCount}
               </span>
             </div>
-            <p className="text-xs text-muted pt-1">
-              Count each exhale from 1 to 9.
+            <p className="text-xs text-[#9AA1AE] pt-0.5 font-mono">
+              Count each exhale from 1 to 9
             </p>
           </div>
 
-          {/* Two large tap targets that fill the thumb zone on mobile */}
+          {/* Two large tap targets filling the thumb zone on mobile */}
           <div className="grid grid-cols-2 gap-3 w-full pt-1">
             <button
               type="button"
               onClick={handleExhale}
-              className="min-h-[56px] sm:min-h-[64px] px-3 py-2 rounded-md border border-border bg-surface text-text hover:bg-surface-2 active:bg-surface-2 text-sm sm:text-base font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-ring flex flex-col items-center justify-center shadow-sm"
+              className="min-h-[56px] sm:min-h-[64px] landscape:min-h-[48px] px-3 py-2 rounded-[16px] border border-[#2A2F3B] bg-[#14171E] text-[#F2F3F5] hover:bg-[#1B1F28] active:scale-95 transition-transform focus-visible:outline-2 focus-visible:outline-[#F2F3F5] flex flex-col items-center justify-center shadow-sm"
               aria-label={`Exhale breath, current count ${currentCount}`}
             >
-              <span>Exhale</span>
-              <span className="text-xs font-normal text-muted tabular-nums">1 to 8</span>
+              <span className="text-sm sm:text-base font-semibold">Exhale</span>
+              <span className="text-xs font-mono text-[#9AA1AE] tabular-nums">1 to 8</span>
             </button>
 
             <button
               type="button"
               onClick={handleNinthExhale}
-              className={`min-h-[56px] sm:min-h-[64px] px-3 py-2 rounded-md border text-sm sm:text-base font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-ring flex flex-col items-center justify-center shadow-sm ${
+              className={`min-h-[56px] sm:min-h-[64px] landscape:min-h-[48px] px-3 py-2 rounded-[16px] border text-sm sm:text-base font-semibold active:scale-95 transition-all focus-visible:outline-2 focus-visible:outline-[#F2F3F5] flex flex-col items-center justify-center shadow-sm ${
                 currentCount === 9
-                  ? 'border-accent-edge bg-accent text-on-accent animate-pulse motion-reduce:animate-none'
-                  : 'border-border bg-surface-2 text-text hover:bg-surface'
+                  ? 'border-white bg-[#F2F3F5] text-[#07080B]'
+                  : 'border-[#2A2F3B] bg-[#14171E] text-[#F2F3F5] hover:bg-[#1B1F28]'
               }`}
               aria-label="Ninth exhale, complete cycle and restart"
             >
-              <span>9th Exhale</span>
-              <span className="text-xs font-normal opacity-80">Cycle finish</span>
+              <span className="text-sm sm:text-base font-semibold">9th Exhale</span>
+              <span className="text-xs font-mono opacity-80">Cycle finish</span>
             </button>
           </div>
 
           {/* Reset / lost count option */}
-          <div className="pt-1">
+          <div className="pt-0.5">
             <button
               type="button"
               onClick={handleLostCount}
-              className="text-xs text-muted hover:text-text underline min-h-[44px] px-2 inline-flex items-center"
+              className="text-xs text-[#9AA1AE] hover:text-[#F2F3F5] underline min-h-[44px] px-2 inline-flex items-center"
             >
               Lost count / Mind wandered (Restart at 1)
             </button>
           </div>
 
           {/* Stats Counters */}
-          <div className="flex justify-center gap-4 text-xs text-muted tabular-nums pt-1 border-t border-border w-full">
-            <span>Completed cycles: <strong className="text-text font-bold">{completedCycles}</strong></span>
-            <span>Lost count: <strong className="text-text font-bold">{lostCountEvents}</strong></span>
+          <div className="flex justify-center gap-4 text-xs font-mono text-[#9AA1AE] tabular-nums pt-1 border-t border-[#2A2F3B] w-full">
+            <span>
+              Cycles: <strong className="text-[#F2F3F5]">{completedCycles}</strong>
+            </span>
+            <span>
+              Lost count: <strong className="text-[#F2F3F5]">{lostCountEvents}</strong>
+            </span>
           </div>
         </div>
       )}
     </PlayerShell>
   );
 };
+
+export default BreathCounter;

@@ -4,6 +4,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
+import { gsap, ScrollTrigger } from '@/lib/gsap';
 
 /** Native hook: returns whether prefers-reduced-motion matches. */
 export function useReducedMotion(): boolean {
@@ -128,9 +129,21 @@ export function setCalmMode(enabled: boolean): void {
     if (enabled) {
       root.setAttribute('data-calm', 'on');
       chromeElements.forEach((el) => { el.setAttribute('inert', ''); });
+      try {
+        ScrollTrigger.getAll().forEach((t) => t.disable(false));
+      } catch (e) {}
+      gsap.globalTimeline.clear();
     } else {
       root.removeAttribute('data-calm');
       chromeElements.forEach((el) => { el.removeAttribute('inert'); });
+      try {
+        ScrollTrigger.getAll().forEach((t) => t.enable(false));
+        ScrollTrigger.refresh();
+      } catch (e) {}
+    }
+  } else {
+    if (enabled) {
+      gsap.globalTimeline.clear();
     }
   }
   calmListeners.forEach((listener) => listener(enabled));

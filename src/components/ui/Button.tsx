@@ -25,7 +25,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   const innerRef = useRef<HTMLButtonElement | null>(null);
 
   // Magnetic button only in fx full when requested (e.g. primary CTAs)
-  useMagnetic(magnetic ? innerRef : { current: null });
+  useMagnetic(innerRef, magnetic ? 0.3 : 0);
 
   const setRefs = (node: HTMLButtonElement | null) => {
     innerRef.current = node;
@@ -41,7 +41,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
 
   const variants: Record<string, string> = {
     primary:
-      'bg-primary-bg text-primary-text border border-transparent relative overflow-hidden group hover:opacity-95 before:content-[""] before:absolute before:inset-0 before:-translate-x-full hover:before:translate-x-full before:transition-transform before:duration-700 before:ease-in-out before:bg-[linear-gradient(135deg,rgba(192,60,255,0.30),rgba(53,255,165,0.24),rgba(255,184,74,0.22))] before:pointer-events-none',
+      'bg-primary-bg text-primary-text border border-transparent relative overflow-hidden group hover:opacity-95 before:content-[""] before:absolute before:inset-0 before:-translate-x-full hover:before:translate-x-full before:transition-transform before:duration-600 before:ease-in-out before:[background-image:var(--coating-sheen)] before:pointer-events-none',
     secondary:
       'bg-[var(--glass)] backdrop-blur-[18px] text-text border border-border hover:bg-surface',
     'secondary-glass':

@@ -1,6 +1,6 @@
 "use client";
 import type { RefObject } from "react";
-import { gsap, useGSAP, SplitText, Draggable, getFx } from "@/lib/gsap";
+import { gsap, useGSAP, ScrollTrigger, SplitText, Draggable, getFx } from "@/lib/gsap";
 import { applyAperture } from "@/lib/aperture";
 
 /** Recipe 3: hero headline, masked lines, words rise and rack-focus from blur. */
@@ -9,7 +9,7 @@ export function useHeadlineReveal(scope: RefObject<HTMLElement | null>) {
     const el = scope.current?.querySelector<HTMLElement>("[data-split='headline']");
     if (!el) return;
     const fx = getFx();
-    if (fx === "off") { gsap.set(el, { autoAlpha: 1 }); return; }
+    if (fx !== "full") { gsap.set(el, { autoAlpha: 1 }); return; }
     document.fonts.ready.then(() => {
       gsap.set(el, { autoAlpha: 1 });
       SplitText.create(el, {
@@ -17,8 +17,7 @@ export function useHeadlineReveal(scope: RefObject<HTMLElement | null>) {
         mask: "lines",
         autoSplit: true,
         onSplit(self) {
-          const vars: gsap.TweenVars = { yPercent: 115, opacity: 0, duration: 1.1, ease: "focus", stagger: 0.045 };
-          if (fx === "full") vars.filter = "blur(14px)";
+          const vars: gsap.TweenVars = { yPercent: 115, opacity: 0, duration: 1.1, ease: "focus", stagger: 0.045, filter: "blur(14px)" };
           return gsap.from(self.words, vars);
         },
       });
@@ -28,23 +27,37 @@ export function useHeadlineReveal(scope: RefObject<HTMLElement | null>) {
 
 /** Recipe 4: statement text that sharpens word by word while you scroll. */
 export function useFocusScrub(scope: RefObject<HTMLElement | null>) {
-  useGSAP(() => {
+  useGSAP((context) => {
     const el = scope.current?.querySelector<HTMLElement>("[data-split='scrub']");
     if (!el) return;
     const fx = getFx();
     if (fx === "off") return;
     document.fonts.ready.then(() => {
-      SplitText.create(el, {
-        type: "words",
-        autoSplit: true,
-        onSplit(self) {
-          return gsap.fromTo(
-            self.words,
-            fx === "full" ? { opacity: 0.18, filter: "blur(6px)" } : { opacity: 0.25 },
-            { opacity: 1, filter: "blur(0px)", ease: "none", stagger: 0.1,
-              scrollTrigger: { trigger: el, start: "top 82%", end: "bottom 45%", scrub: true } },
-          );
-        },
+      if (!scope.current || !el.isConnected || context.isReverted) return;
+      context.add(() => {
+        SplitText.create(el, {
+          type: "words",
+          autoSplit: true,
+          onSplit(self) {
+            const fromVars: gsap.TweenVars = fx === "full" ? { opacity: 0.18, filter: "blur(6px)" } : { opacity: 0.25 };
+            const toVars: gsap.TweenVars = {
+              opacity: 1,
+              ease: "none",
+              stagger: 0.1,
+              scrollTrigger: {
+                trigger: el,
+                start: "top 82%",
+                end: "bottom 45%",
+                scrub: true,
+              },
+            };
+            if (fx === "full") {
+              toVars.filter = "blur(0px)";
+            }
+            return gsap.fromTo(self.words, fromVars, toVars);
+          },
+        });
+        ScrollTrigger.refresh();
       });
     });
   }, { scope });
@@ -54,7 +67,7 @@ export function useFocusScrub(scope: RefObject<HTMLElement | null>) {
 export function useMagnetic(ref: RefObject<HTMLElement | null>, strength = 0.3) {
   useGSAP(() => {
     const el = ref.current;
-    if (!el) return;
+    if (!el || strength <= 0) return;
     const mm = gsap.matchMedia();
     mm.add("(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)", () => {
       if (getFx() !== "full") return;
@@ -97,12 +110,12 @@ export function scrambleTo(el: HTMLElement, value: string) {
 }
 
 /** Recipe 11: drive the aperture (intro, breath pacer). */
-export function tweenAperture(svg: SVGSVGElement, from: number, to: number, duration = 1.2) {
+export function tweenAperture(svg: SVGSVGElement, from: number, to: number, duration = 1.2, ease: string | gsap.EaseFunction = "focus") {
   const p = { open: from };
-  return gsap.to(p, { open: to, duration, ease: "focus", onUpdate: () => applyAperture(svg, p.open) });
+  return gsap.to(p, { open: to, duration, ease, onUpdate: () => applyAperture(svg, p.open) });
 }
 
-/** Recipe 7: pinned story scene. Panels are absolutely stacked children marked [data-panel]. */
+/** Recipe 7: pinned story scene with circle clip-path switches and progress rail. */
 export function usePinnedScene(scope: RefObject<HTMLElement | null>) {
   useGSAP(() => {
     const root = scope.current;
@@ -111,15 +124,95 @@ export function usePinnedScene(scope: RefObject<HTMLElement | null>) {
     mm.add("(min-width: 1024px) and (prefers-reduced-motion: no-preference)", () => {
       if (getFx() !== "full") return;
       const panels = gsap.utils.toArray<HTMLElement>("[data-panel]", root);
-      gsap.set(panels.slice(1), { autoAlpha: 0, yPercent: 8 });
-      const tl = gsap.timeline({
-        scrollTrigger: { trigger: root, start: "top top", end: `+=${panels.length * 90}%`, scrub: 0.6, pin: true, anticipatePin: 1 },
-      });
+      if (panels.length < 2) return;
+
+      const railFill = root.querySelector<HTMLElement>("[data-rail-fill]");
+      const ticks = gsap.utils.toArray<HTMLElement>("[data-tick]", root);
+
+      const updateActiveState = (activeIndex: number) => {
+        ticks.forEach((tick, idx) => {
+          if (idx <= activeIndex) {
+            tick.setAttribute("data-active", "true");
+          } else {
+            tick.removeAttribute("data-active");
+          }
+        });
+        panels.forEach((panel, idx) => {
+          if (idx === activeIndex) {
+            panel.removeAttribute("inert");
+            panel.removeAttribute("aria-hidden");
+          } else {
+            panel.setAttribute("inert", "");
+            panel.setAttribute("aria-hidden", "true");
+          }
+        });
+      };
+
       panels.forEach((panel, i) => {
-        if (i === 0) return;
-        tl.to(panels[i - 1], { autoAlpha: 0, yPercent: -8, duration: 0.4 }, i - 0.4)
-          .to(panel, { autoAlpha: 1, yPercent: 0, duration: 0.4 }, i - 0.4);
+        gsap.set(panel, {
+          zIndex: i + 1,
+          autoAlpha: 1,
+        });
+        if (i > 0) {
+          gsap.set(panel, {
+            clipPath: "circle(0% at 72% 50%)",
+          });
+        }
       });
+
+      // Initialize active state for panel 0
+      updateActiveState(0);
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: root,
+          start: "top top",
+          end: `+=${panels.length * 90}%`,
+          scrub: 0.6,
+          pin: true,
+          anticipatePin: 1,
+          onUpdate: (self) => {
+            const p = self.progress;
+            const activeIndex = p < 0.33 ? 0 : p < 0.75 ? 1 : 2;
+            updateActiveState(activeIndex);
+          },
+        },
+      });
+
+      if (railFill) {
+        tl.to(railFill, { scaleY: 1, ease: "none", duration: 1 }, 0);
+      }
+
+      // Panel 0 hold: 0.00-0.20 | Wipe 1: 0.20-0.45 | Panel 1 hold: 0.45-0.70 | Wipe 2: 0.70-0.95 | Panel 2 hold: 0.95-1.00
+      if (panels[1]) {
+        tl.fromTo(
+          panels[1],
+          { clipPath: "circle(0% at 72% 50%)" },
+          { clipPath: "circle(150% at 72% 50%)", ease: "power2.inOut", duration: 0.25 },
+          0.20
+        );
+      }
+      if (panels[2]) {
+        tl.fromTo(
+          panels[2],
+          { clipPath: "circle(0% at 72% 50%)" },
+          { clipPath: "circle(150% at 72% 50%)", ease: "power2.inOut", duration: 0.25 },
+          0.70
+        );
+      }
+
+      document.fonts.ready.then(() => {
+        if (!scope.current || !root.isConnected) return;
+        ScrollTrigger.refresh();
+      });
+
+      return () => {
+        ticks.forEach((tick) => tick.removeAttribute("data-active"));
+        panels.forEach((panel) => {
+          panel.removeAttribute("inert");
+          panel.removeAttribute("aria-hidden");
+        });
+      };
     });
     return () => mm.revert();
   }, { scope });

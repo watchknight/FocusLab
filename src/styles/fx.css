@@ -39,13 +39,31 @@ html[data-fx="off"] .header-glass {
 }
 
 /* Above-the-fold elements start hidden only when JS can reveal them; a safety net shows them after 2.5 s */
-html[data-fx="full"] [data-hide-until-js], html[data-fx="lite"] [data-hide-until-js] { visibility: hidden; animation: fx-safety 0s 2.5s forwards; }
-html[data-js-ready] [data-hide-until-js] { animation: none; }
+html[data-fx="full"] [data-hide-until-js] { visibility: hidden; animation: fx-safety 0s 2.5s forwards; }
+html[data-fx="lite"] [data-hide-until-js]:not([data-split="headline"]) { visibility: hidden; animation: fx-safety 0s 2.5s forwards; }
+html[data-fx="lite"] [data-split="headline"],
+html[data-fx="off"] [data-split="headline"],
+html[data-fx="off"] [data-hide-until-js] { visibility: visible !important; }
+html[data-js-ready] [data-hide-until-js] { animation: none; visibility: visible; }
+html[data-fx="lite"] [data-glint],
+html[data-fx="off"] [data-glint] { display: none !important; }
 @keyframes fx-safety { to { visibility: visible; } }
 
 /* Calm mode: the lights dim around the task */
 [data-chrome] { transition: opacity .4s ease; }
 html[data-calm="on"] [data-chrome] { opacity: 0; pointer-events: none; }
 html[data-calm="on"] body { background: var(--bg-deep); }
-html[data-calm="on"] .grain, html[data-calm="on"] .af-cursor, html[data-calm="on"] .bokeh { display: none; }
+html[data-calm="on"] .grain, html[data-calm="on"] .af-cursor, html[data-calm="on"] .bokeh,
+html[data-theme="contrast"] .bokeh { display: none !important; }
 @media (prefers-reduced-motion: reduce) { [data-chrome] { transition: none; } }
+
+/* HowItWorks pinned scene: runs only at >=1024px in fx full */
+.how-it-works-pinned { display: none; }
+@media (min-width: 1024px) {
+  html[data-fx="full"] .how-it-works-pinned { display: block; }
+}
+
+.how-it-works-stacked { display: block; }
+@media (min-width: 1024px) {
+  html[data-fx="full"] .how-it-works-stacked { display: none; }
+}

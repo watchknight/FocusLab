@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { PlayerShell } from './PlayerShell';
-import { Card } from '@/components/ui/Card';
 import { Activity } from '@/content/types';
 
 interface QuietRestProps {
@@ -24,29 +23,29 @@ export const QuietRest: React.FC<QuietRestProps> = ({
         const timeDisplay = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 
         return (
-          <div className="flex flex-col items-center justify-center space-y-6 max-w-sm w-full text-center">
+          <div className="flex flex-col items-center justify-center space-y-4 max-w-sm w-full text-center select-none">
             <div className="space-y-1">
-              <span className="text-xs font-semibold text-muted">
+              <span className="text-xs font-mono text-[#9AA1AE] uppercase tracking-wider block">
                 Unstructured baseline rest
               </span>
-              <span className="text-6xl sm:text-7xl font-mono font-bold tracking-tight text-text block tabular-nums">
+              <span className="text-5xl sm:text-6xl font-mono font-bold tracking-tight text-[#F2F3F5] block tabular-nums">
                 {timeDisplay}
               </span>
-              <span className="text-xs text-muted block">
+              <span className="text-xs text-[#9AA1AE] block">
                 Sit comfortably and let your mind idle
               </span>
             </div>
 
-            <Card className="p-4 space-y-2 bg-surface-2 border-border text-center">
-              <span className="text-sm font-bold text-warn block">
+            <div className="p-4 space-y-2 rounded-[16px] bg-[#14171E] border border-[#2A2F3B] text-center">
+              <span className="text-sm font-bold text-[#FF8A8A] block">
                 No phone, no screen.
               </span>
-              <p className="text-xs text-muted">
+              <p className="text-xs text-[#9AA1AE]">
                 Close your eyes or hold an unfocused gaze. Avoid reading, browsing, or intentional cognitive tasks.
               </p>
-            </Card>
+            </div>
 
-            <p className="text-xs text-muted max-w-xs">
+            <p className="text-[11px] text-[#9AA1AE]/80 max-w-xs">
               This condition serves as an active control for comparing structured interventions against unstructured recovery.
             </p>
           </div>
@@ -55,3 +54,5 @@ export const QuietRest: React.FC<QuietRestProps> = ({
     </PlayerShell>
   );
 };
+
+export default QuietRest;

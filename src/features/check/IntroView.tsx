@@ -20,7 +20,7 @@ export const IntroView: React.FC<IntroViewProps> = ({ onStartRatings }) => {
         <div className="space-y-2">
           <div className="flex flex-wrap items-center gap-2.5">
             <h1 className="text-2xl font-bold tracking-tight text-text">{t('check.title')}</h1>
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border border-border bg-surface text-muted">
+            <span className="inline-flex items-center px-2.5 py-1 rounded-sm text-xs font-medium border border-border bg-surface text-muted leading-snug">
               <strong className="text-text mr-1">Measurement:</strong> Lab version validated; this browser version is informal.
             </span>
           </div>
