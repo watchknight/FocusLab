@@ -128,15 +128,46 @@ export const ThemeToggle: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === THEME_STORAGE_KEY) {
+        const next = migrateSavedTheme(e.newValue);
+        setTheme(next);
+        applyTheme(next);
+      }
+    };
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, []);
+
+  useEffect(() => {
     if (theme !== 'system') return;
     const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const forcedQuery = window.matchMedia('(forced-colors: active)');
     const onChange = () => applyTheme('system');
-    darkQuery.addEventListener('change', onChange);
-    forcedQuery.addEventListener('change', onChange);
+
+    if (darkQuery.addEventListener) {
+      darkQuery.addEventListener('change', onChange);
+    } else if ('addListener' in darkQuery) {
+      (darkQuery as unknown as { addListener: (cb: () => void) => void }).addListener(onChange);
+    }
+
+    if (forcedQuery.addEventListener) {
+      forcedQuery.addEventListener('change', onChange);
+    } else if ('addListener' in forcedQuery) {
+      (forcedQuery as unknown as { addListener: (cb: () => void) => void }).addListener(onChange);
+    }
+
     return () => {
-      darkQuery.removeEventListener('change', onChange);
-      forcedQuery.removeEventListener('change', onChange);
+      if (darkQuery.removeEventListener) {
+        darkQuery.removeEventListener('change', onChange);
+      } else if ('removeListener' in darkQuery) {
+        (darkQuery as unknown as { removeListener: (cb: () => void) => void }).removeListener(onChange);
+      }
+      if (forcedQuery.removeEventListener) {
+        forcedQuery.removeEventListener('change', onChange);
+      } else if ('removeListener' in forcedQuery) {
+        (forcedQuery as unknown as { removeListener: (cb: () => void) => void }).removeListener(onChange);
+      }
     };
   }, [theme]);
 

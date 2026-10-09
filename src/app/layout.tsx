@@ -106,7 +106,8 @@ const HEAD_INIT_SCRIPT = `
     // Run FX_SCRIPT logic before paint
     var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
     var nav = navigator;
-    var low = (nav.hardwareConcurrency || 8) <= 4 || (nav.deviceMemory || 8) <= 4 || !!(nav.connection && nav.connection.saveData);
+    var isSlowConn = !!(nav.connection && (nav.connection.saveData || nav.connection.effectiveType === 'slow-2g' || nav.connection.effectiveType === '2g' || nav.connection.effectiveType === '3g'));
+    var low = (nav.hardwareConcurrency || 8) <= 4 || (nav.deviceMemory || 8) <= 4 || isSlowConn;
     root.dataset.fx = reduced ? 'off' : (low ? 'lite' : 'full');
 
     var sp = new URLSearchParams(window.location.search);

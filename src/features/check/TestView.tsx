@@ -185,17 +185,17 @@ export const TestView: React.FC<TestViewProps> = ({
       <span aria-hidden="true" className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 w-7 h-7 border-b-2 border-l-2 border-[#9AA1AE]/55 pointer-events-none" />
       <span aria-hidden="true" className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 w-7 h-7 border-b-2 border-r-2 border-[#9AA1AE]/55 pointer-events-none" />
 
-      {/* Accessible exit control for assistive technology / tab navigation without visual distraction */}
+      {/* Visible End control for all users (touch and desktop), positioned clear of the corner bracket */}
       <button
         type="button"
         onClick={(e) => {
           e.stopPropagation();
           handleAbort();
         }}
-        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:right-4 focus:z-50 focus:px-3 focus:py-1.5 focus:rounded-sm focus:border focus:border-[#F2F3F5] focus:bg-[#07080B] focus:text-[#F2F3F5] focus:text-xs focus:font-mono focus:outline-none"
-        aria-label="Exit test (or press Escape)"
+        className="absolute top-3.5 right-12 sm:top-5 sm:right-16 z-50 min-h-[44px] px-3 py-1 text-xs font-mono rounded-sm border border-[#9AA1AE]/30 bg-transparent text-[#9AA1AE] hover:text-[#F2F3F5] hover:border-[#9AA1AE]/60 focus-visible:outline-2 focus-visible:outline-[#F2F3F5] inline-flex items-center justify-center cursor-pointer select-none"
+        aria-label="End test (or press Escape)"
       >
-        Exit test (Esc)
+        End (Esc)
       </button>
 
       {/* Centred 80px AF square, stimulus disc, and Martian Mono counter below */}

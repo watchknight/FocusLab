@@ -16,7 +16,7 @@
   --font-text: var(--font-text, 'Bricolage Grotesque', system-ui, -apple-system, sans-serif);
   --font-display: var(--font-display, 'Bricolage Grotesque', sans-serif);
   --font-mono: var(--font-mono, 'Martian Mono', monospace);
-  --font-bn: var(--font-bn, 'Anek Bangla', sans-serif);
+  --font-bn: var(--font-bn, 'Anek Bangla', 'Hind Siliguri', sans-serif);
 
   --font-size-h1: clamp(3rem, 1.2rem + 8vw, 8.5rem);
   --font-size-h2: clamp(2.25rem, 1rem + 4.4vw, 5rem);

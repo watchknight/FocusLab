@@ -91,10 +91,19 @@ export const TransitionLink = React.forwardRef<HTMLAnchorElement, TransitionLink
   function TransitionLink({ href, onClick, target, children, ...rest }, ref) {
     const navigate = useIrisNavigate();
     const pathname = usePathname();
+    const lastClickRef = useRef<number>(0);
 
     const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
       if (onClick) onClick(e);
       if (e.defaultPrevented) return;
+
+      // Prevent rapid double-clicks on links
+      const now = typeof performance !== 'undefined' ? performance.now() : Date.now();
+      if (now - lastClickRef.current < 400) {
+        e.preventDefault();
+        return;
+      }
+      lastClickRef.current = now;
 
       // Skip for modifier-clicks, non-primary clicks, or new tabs
       if (
@@ -118,8 +127,15 @@ export const TransitionLink = React.forwardRef<HTMLAnchorElement, TransitionLink
         return;
       }
 
-      // Skip when current or destination route is calm, or fx is not full
-      if (isCalmRoute(pathname) || isCalmRoute(hrefStr) || getFx() !== "full") {
+      // Skip when navigating to the current path, current or destination route is calm, or fx is not full
+      const currentClean = (pathname || "").split("?")[0].split("#")[0].replace(/\/+$/, "") || "/";
+      const targetClean = hrefStr.split("?")[0].split("#")[0].replace(/\/+$/, "") || "/";
+      if (
+        currentClean === targetClean ||
+        isCalmRoute(pathname) ||
+        isCalmRoute(hrefStr) ||
+        getFx() !== "full"
+      ) {
         return;
       }
 

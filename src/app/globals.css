@@ -27,6 +27,8 @@
 html {
   scroll-padding-top: var(--header-height);
   -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body {
@@ -38,6 +40,9 @@ body {
   margin: 0;
   padding: 0;
   min-height: 100dvh;
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-x: clip;
   overflow-wrap: break-word;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -91,7 +96,7 @@ small {
   font-size: var(--font-size-small, 0.875rem);
 }
 
-/* Bengali font priority */
+/* Bengali font priority and typography adjustments */
 html[lang='bn'] {
   font-family: var(--font-bn), var(--font-text), sans-serif;
 }
@@ -102,6 +107,13 @@ html[lang='bn'] h4,
 html[lang='bn'] h5,
 html[lang='bn'] h6 {
   font-family: var(--font-bn), var(--font-display), sans-serif;
+  letter-spacing: 0;
+  font-stretch: 100%;
+  line-height: 1.15;
+}
+html[lang='bn'] .font-display,
+html[lang='bn'] [class*='tracking-'] {
+  letter-spacing: 0;
 }
 
 /* Prose measure: maximum 70ch */

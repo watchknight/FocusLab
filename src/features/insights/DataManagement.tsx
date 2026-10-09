@@ -1,16 +1,39 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Panel } from '@/components/ui/Panel';
 import { Card } from '@/components/ui/Card';
 import { useFocusLabStore } from '@/store';
 import { FeatureErrorBoundary } from '@/components/ui/FeatureErrorBoundary';
+import { handleFocusTrapKeyDown } from '@/lib/focus-trap';
 
 const DataManagementContent: React.FC = () => {
   const [importStatus, setImportStatus] = useState<{ success: boolean; msg: string } | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const deleteTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const dialogRef = useRef<HTMLDivElement | null>(null);
+
+  const closeDeleteDialog = useCallback(() => {
+    setShowDeleteConfirm(false);
+    deleteTriggerRef.current?.focus();
+  }, []);
+
+  useEffect(() => {
+    if (!showDeleteConfirm) return;
+    const initialBtn = dialogRef.current?.querySelector<HTMLButtonElement>('button');
+    initialBtn?.focus();
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closeDeleteDialog();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showDeleteConfirm, closeDeleteDialog]);
 
   const exportData = useFocusLabStore((state) => state.exportData);
   const importData = useFocusLabStore((state) => state.importData);
@@ -104,6 +127,7 @@ const DataManagementContent: React.FC = () => {
         />
 
         <Button
+          ref={deleteTriggerRef}
           variant="danger"
           onClick={() => setShowDeleteConfirm(true)}
           className="text-xs min-h-[44px]"
@@ -115,10 +139,16 @@ const DataManagementContent: React.FC = () => {
       {/* Delete Confirmation Dialog */}
       {showDeleteConfirm && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-bg/80 backdrop-blur-xs p-4"
+          ref={dialogRef}
+          tabIndex={-1}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-bg/80 backdrop-blur-xs p-4 focus:outline-none"
           role="dialog"
           aria-modal="true"
           aria-labelledby="delete-dialog-title"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) closeDeleteDialog();
+          }}
+          onKeyDown={(e) => handleFocusTrapKeyDown(e, dialogRef.current, closeDeleteDialog)}
         >
           <div className="w-full max-w-sm">
             <Card className="w-full p-5 space-y-4 bg-surface border-border shadow-elevation">
@@ -131,7 +161,7 @@ const DataManagementContent: React.FC = () => {
               <div className="flex gap-2 justify-end pt-2">
                 <Button
                   variant="secondary"
-                  onClick={() => setShowDeleteConfirm(false)}
+                  onClick={closeDeleteDialog}
                   className="text-xs min-h-[44px]"
                 >
                   Cancel
