@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <div className="space-y-6 py-2 max-w-[720px] mx-auto">
+    <div className="space-y-6 py-2 max-w-[720px] mx-auto px-6">
       <div className="space-y-1">
         <h1 className="text-2xl font-bold tracking-tight text-text">About FocusLab</h1>
         <p className="text-base text-muted">

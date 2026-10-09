@@ -32,6 +32,15 @@ function contrastRatio(hex1: string, hex2: string): number {
   return (lighter + 0.05) / (darker + 0.05);
 }
 
+function mixRgbToHex(hex1: string, hex2: string, weight1: number): string {
+  const [r1, g1, b1] = hexToRgb(hex1);
+  const [r2, g2, b2] = hexToRgb(hex2);
+  const r = Math.round(r1 * weight1 + r2 * (1 - weight1));
+  const g = Math.round(g1 * weight1 + g2 * (1 - weight1));
+  const b = Math.round(b1 * weight1 + b2 * (1 - weight1));
+  return '#' + [r, g, b].map((x) => x.toString(16).padStart(2, '0')).join('');
+}
+
 function parseTokensCss(): Record<string, Record<string, string>> {
   const cssPath = path.resolve(__dirname, 'tokens.css');
   const content = fs.readFileSync(cssPath, 'utf8');
@@ -118,6 +127,19 @@ describe('Design Tokens Contrast Verification (v3 Rack Focus)', () => {
       it('asserts muted / surface-2 has contrast >= 4.5', () => {
         const ratio = contrastRatio(tokens.muted, tokens['surface-2']);
         expect(ratio).toBeGreaterThanOrEqual(4.5);
+      });
+
+      it('asserts muted / surface has contrast >= 4.5 (surface layer for glass card)', () => {
+        const ratio = contrastRatio(tokens.muted, tokens.surface);
+        expect(ratio).toBeGreaterThanOrEqual(4.5);
+      });
+
+      it('asserts text and muted against composite glass have contrast >= 4.5', () => {
+        const compositeGlassHex = mixRgbToHex(tokens.surface, tokens.bg, 0.62);
+        const textRatio = contrastRatio(tokens.text, compositeGlassHex);
+        const mutedRatio = contrastRatio(tokens.muted, compositeGlassHex);
+        expect(textRatio).toBeGreaterThanOrEqual(4.5);
+        expect(mutedRatio).toBeGreaterThanOrEqual(4.5);
       });
 
       it('asserts primary-text / primary-bg has contrast >= 4.5', () => {

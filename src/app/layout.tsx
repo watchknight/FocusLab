@@ -12,8 +12,14 @@ import { IrisProvider } from '@/components/IrisTransition';
 import { FxFullDecorations } from '@/components/fx/FxFullDecorations';
 import { GlobalEffects } from '@/components/GlobalEffects';
 
+const appUrl =
+  process.env.NEXT_PUBLIC_APP_URL ||
+  (process.env.RENDER_EXTERNAL_URL
+    ? `https://${process.env.RENDER_EXTERNAL_URL}`
+    : 'https://focuslab.app');
+
 export const metadata: Metadata = {
-  metadataBase: new URL('https://focuslab.app'),
+  metadataBase: new URL(appUrl),
   title: {
     default: 'FocusLab — Build focus you can measure',
     template: '%s | FocusLab',
@@ -29,11 +35,11 @@ export const metadata: Metadata = {
     title: 'FocusLab — Build focus you can measure',
     description:
       'A free, local-first web app to measure attentional states and test evidence-labelled focus protocols.',
-    url: 'https://focuslab.app',
+    url: appUrl,
     siteName: 'FocusLab',
     locale: 'en_US',
     type: 'website',
-    images: [{ url: '/og.jpg', width: 1200, height: 630 }],
+    images: [{ url: '/og.jpg', width: 1200, height: 630, alt: 'FocusLab — Build focus you can measure' }],
   },
   twitter: {
     card: 'summary_large_image',
@@ -47,6 +53,11 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
+  themeColor: [
+    { media: '(forced-colors: active)', color: '#000000' },
+    { media: '(prefers-color-scheme: dark)', color: '#0C0E13' },
+    { media: '(prefers-color-scheme: light)', color: '#F1F3F5' },
+  ],
 };
 
 const HEAD_INIT_SCRIPT = `
@@ -174,7 +185,7 @@ export default function RootLayout({
               <main
                 id="main-content"
                 tabIndex={-1}
-                className="flex-1 w-full focus:outline-none min-w-0 pb-[calc(56px+env(safe-area-inset-bottom,0px)+1.5rem)] lg:pb-8"
+                className="flex-1 w-full focus:outline-none min-w-0 pt-[var(--header-height)] pb-[calc(56px+env(safe-area-inset-bottom,0px)+1.5rem)] lg:pb-8"
               >
                 {children}
               </main>

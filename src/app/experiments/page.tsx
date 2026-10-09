@@ -1,37 +1,17 @@
-'use client';
+import React, { Suspense } from 'react';
+import type { Metadata } from 'next';
+import { ExperimentsClient } from './ExperimentsClient';
 
-import React, { useState, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
-import { ExperimentCreate, ExperimentDetail } from '@/features/experiments';
-import { useFocusLabStore } from '@/store';
-
-function ExperimentsContent() {
-  const searchParams = useSearchParams();
-  const prefillActivity = searchParams.get('activity') || undefined;
-
-  const experiments = useFocusLabStore((state) => state.experiments);
-  const [activeExperimentId, setActiveExperimentId] = useState<string | null>(null);
-
-  const selectedExperiment = activeExperimentId
-    ? experiments.find((e) => e.id === activeExperimentId)
-    : null;
-
-  return (
-    <div className="py-2">
-      {selectedExperiment ? (
-        <ExperimentDetail
-          experiment={selectedExperiment}
-          onBack={() => setActiveExperimentId(null)}
-        />
-      ) : (
-        <ExperimentCreate
-          initialActivityId={prefillActivity}
-          onSelectExperiment={(id) => setActiveExperimentId(id)}
-        />
-      )}
-    </div>
-  );
-}
+export const metadata: Metadata = {
+  title: 'Self-Experiments — Measure What Beats Plain Rest',
+  description:
+    'Run alternating trials comparing evidence-based practices against plain rest to see what actually works for you.',
+  openGraph: {
+    title: 'Self-Experiments — Measure What Beats Plain Rest',
+    description:
+      'Run alternating trials comparing evidence-based practices against plain rest to see what actually works for you.',
+  },
+};
 
 export default function ExperimentsPage() {
   return (
@@ -42,7 +22,7 @@ export default function ExperimentsPage() {
         </div>
       }
     >
-      <ExperimentsContent />
+      <ExperimentsClient />
     </Suspense>
   );
 }

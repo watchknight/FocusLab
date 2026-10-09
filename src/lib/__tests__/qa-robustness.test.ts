@@ -154,32 +154,17 @@ describe('QA Robustness & Accessibility Verification', () => {
 
   describe('4. Theme & Forced Colors Invariants', () => {
     it('resolves contrast theme when forced-colors is active', () => {
-      vi.stubGlobal('window', {
-        matchMedia: vi.fn((query: string) => ({
-          matches: query === '(forced-colors: active)',
-        })),
-      });
-
+      vi.stubGlobal('window', { matchMedia: vi.fn((q: string) => ({ matches: q === '(forced-colors: active)' })) });
       expect(resolveSystemTheme()).toBe('contrast');
     });
 
     it('resolves darkroom theme when prefers-color-scheme is dark', () => {
-      vi.stubGlobal('window', {
-        matchMedia: vi.fn((query: string) => ({
-          matches: query === '(prefers-color-scheme: dark)',
-        })),
-      });
-
+      vi.stubGlobal('window', { matchMedia: vi.fn((q: string) => ({ matches: q === '(prefers-color-scheme: dark)' })) });
       expect(resolveSystemTheme()).toBe('darkroom');
     });
 
     it('resolves studio theme when prefers-color-scheme is light', () => {
-      vi.stubGlobal('window', {
-        matchMedia: vi.fn(() => ({
-          matches: false,
-        })),
-      });
-
+      vi.stubGlobal('window', { matchMedia: vi.fn(() => ({ matches: false })) });
       expect(resolveSystemTheme()).toBe('studio');
     });
 
@@ -259,3 +244,4 @@ describe('QA Robustness & Accessibility Verification', () => {
     });
   });
 });
+

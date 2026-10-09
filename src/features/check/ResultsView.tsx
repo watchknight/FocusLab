@@ -10,6 +10,7 @@ import { useFocusLabStore } from '@/store';
 import { useT } from '@/i18n';
 import { scrambleTo } from '@/lib/motion/scramble-to';
 import HistoryChart from './HistoryChart';
+import { shareOrDownloadCard } from './generateShareCard';
 
 interface ResultsViewProps {
   result: CheckResult;
@@ -21,6 +22,18 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ result, onReset }) => 
   const allChecks = useFocusLabStore((state) => state.checks);
   const { medianRt, lapses, falseStarts } = result.metrics;
   const medianRtRef = useRef<HTMLSpanElement>(null);
+  const [isSharing, setIsSharing] = useState(false);
+
+  const handleShare = async () => {
+    try {
+      setIsSharing(true);
+      await shareOrDownloadCard(result);
+    } catch {
+      // Ignored
+    } finally {
+      setIsSharing(false);
+    }
+  };
 
   useEffect(() => {
     if (medianRtRef.current) {
@@ -104,9 +117,17 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ result, onReset }) => 
           <HistoryChart data={baselineHistory} />
         </Card>
 
-        <div className="pt-2">
+        <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
           <Button variant="primary" onClick={onReset} className="w-full sm:w-auto min-h-[44px]">
             {t('check.btnRetake')}
+          </Button>
+          <Button
+            variant="secondary"
+            onClick={handleShare}
+            disabled={isSharing}
+            className="w-full sm:w-auto min-h-[44px]"
+          >
+            {isSharing ? 'Generating card...' : 'Share Card (1080×1350)'}
           </Button>
         </div>
       </Panel>

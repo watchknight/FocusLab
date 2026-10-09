@@ -75,7 +75,7 @@ export const SessionSetupView: React.FC<SessionSetupViewProps> = ({
 
       {/* Two columns on desktop, stacked on mobile */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* Left Column on Desktop / Step 1 on Mobile: Focus Dial */}
+        {/* Left Column: Session Configuration (Time Dial + Intention + If-Then) */}
         <div className="lg:col-span-6 space-y-4">
           <Card className="p-5 space-y-4">
             <div className="flex items-center justify-between gap-2">
@@ -89,13 +89,6 @@ export const SessionSetupView: React.FC<SessionSetupViewProps> = ({
             />
           </Card>
 
-          <div className="hidden lg:block">
-            <EnvironmentChecklist embedded />
-          </div>
-        </div>
-
-        {/* Right Column: Intention, If-Then Plan, and CTA */}
-        <div className="lg:col-span-6 space-y-4">
           <Card className="p-5 space-y-3">
             <label htmlFor="task-input" className="block text-sm font-semibold text-text">
               What is the single task you will work on?
@@ -122,10 +115,11 @@ export const SessionSetupView: React.FC<SessionSetupViewProps> = ({
             thenAction={thenAction}
             onThenChange={setThenAction}
           />
+        </div>
 
-          <div className="lg:hidden">
-            <EnvironmentChecklist embedded />
-          </div>
+        {/* Right Column: Environment Checklist + CTA grouped together */}
+        <div className="lg:col-span-6 space-y-4">
+          <EnvironmentChecklist embedded />
 
           <div className="pt-2">
             <Button

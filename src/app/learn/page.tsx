@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 
 export default function LearnPage() {
   return (
-    <div className="space-y-6 py-2">
+    <div className="space-y-6 py-2 max-w-[840px] mx-auto">
       <div className="space-y-1">
         <h1 className="text-2xl font-bold tracking-tight text-text font-display">
           Evidence Bank

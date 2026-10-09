@@ -9,15 +9,24 @@ export interface HeroGlassChipProps {
   readoutRef: React.Ref<HTMLDivElement>;
   caption: string;
   demoState: DemoState;
+  onCardClick?: () => void;
 }
 
 export const HeroGlassChip: React.FC<HeroGlassChipProps> = ({
   readoutRef,
   caption,
   demoState,
+  onCardClick,
 }) => {
+  const isClickable = demoState !== 'result' && Boolean(onCardClick);
+
   return (
-    <div className="absolute bottom-28 left-1/2 -translate-x-1/2 sm:bottom-32 sm:left-1/2 sm:-translate-x-1/2 lg:translate-x-0 lg:bottom-[30%] lg:left-[-2%] xl:bottom-[32%] xl:left-[0%] 2xl:bottom-[34%] 2xl:left-[2%] z-20 pointer-events-auto rounded-[28px] border border-border bg-[var(--glass)] backdrop-blur-[18px] p-5 sm:p-6 shadow-elevation min-w-[210px] sm:min-w-[250px] max-w-[90vw] text-left select-none">
+    <div
+      onClick={isClickable ? onCardClick : undefined}
+      className={`glass-card absolute bottom-4 left-1/2 -translate-x-1/2 sm:bottom-6 sm:left-1/2 sm:-translate-x-1/2 lg:translate-x-0 lg:bottom-[12%] lg:left-[4%] xl:bottom-[12%] xl:left-[4%] 2xl:bottom-[12%] 2xl:left-[4%] z-20 pointer-events-auto rounded-[28px] border border-border bg-[var(--glass)] backdrop-blur-[18px] p-5 sm:p-6 shadow-elevation min-w-[210px] sm:min-w-[250px] max-w-[90vw] text-left select-none ${
+        isClickable ? 'cursor-pointer hover:border-border-strong transition-colors' : ''
+      }`}
+    >
       <div className="text-xs sm:text-sm font-medium text-muted">
         Your reaction
       </div>

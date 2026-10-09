@@ -149,7 +149,7 @@ export const Navbar: React.FC = () => {
     <header
       ref={headerRef}
       data-chrome="header"
-      className="w-full sticky top-0 z-30 h-14 md:h-16 pt-[env(safe-area-inset-top,0px)] bg-transparent border-b border-transparent transition-[background-color,border-color,box-shadow,backdrop-filter] duration-300"
+      className="w-full sticky top-0 z-40 h-14 md:h-16 pt-[env(safe-area-inset-top,0px)] bg-bg/85 backdrop-blur-md border-b border-border transition-[background-color,border-color,box-shadow,backdrop-filter] duration-300"
     >
       <Container className="h-full flex items-center justify-between gap-2 sm:gap-3 min-w-0 !max-w-none px-3 sm:px-6 md:px-[clamp(20px,5vw,72px)]">
         <TransitionLink

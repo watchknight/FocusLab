@@ -139,7 +139,7 @@ export const Hero: React.FC = () => {
   return (
     <section
       ref={heroRef}
-      className="relative w-full min-h-[100svh] overflow-hidden flex flex-col justify-between pt-[clamp(20px,3.5vw,48px)] pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] sm:pb-20 lg:pb-0 select-none"
+      className="relative w-full min-h-[100dvh] overflow-hidden flex flex-col justify-between pt-[clamp(20px,3.5vw,48px)] pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] sm:pb-20 lg:pb-0 select-none"
     >
       <HeroBokeh ref={bokehParallaxRef} />
 
@@ -200,16 +200,13 @@ export const Hero: React.FC = () => {
           <div
             ref={lensWrapperRef}
             data-hide-until-js
-            className="relative lg:absolute lg:right-[-12%] lg:bottom-[-16%] xl:right-[-10%] xl:bottom-[-18%] 2xl:right-[-8%] 2xl:bottom-[-20%] w-[min(340px,88vw)] sm:w-[460px] md:w-[520px] lg:w-[760px] xl:w-[880px] 2xl:w-[1000px] aspect-square translate-y-0 lg:translate-y-0"
+            className="relative lg:absolute lg:right-[-12%] lg:bottom-[-16%] xl:right-[-10%] xl:bottom-[-18%] 2xl:right-[-8%] 2xl:bottom-[-20%] w-[min(340px,88vw)] max-h-[38vh] sm:max-h-none sm:w-[460px] md:w-[520px] lg:w-[760px] xl:w-[880px] 2xl:w-[1000px] aspect-square translate-y-0 lg:translate-y-0"
           >
             <button
               type="button"
               onClick={handleLensAction}
               onKeyDown={(e) => {
-                if (e.key === ' ' || e.key === 'Enter') {
-                  e.preventDefault();
-                  handleLensAction();
-                }
+                if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); handleLensAction(); }
               }}
               aria-label="Try one reflex"
               className="relative group w-full h-full cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring rounded-full select-none"
@@ -227,8 +224,7 @@ export const Hero: React.FC = () => {
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0 rounded-full"
                 style={{
-                  background:
-                    'conic-gradient(from 0deg, transparent 0deg, transparent 25deg, rgba(255, 255, 255, 0.25) 45deg, transparent 65deg, transparent 360deg)',
+                  background: 'conic-gradient(from 0deg, transparent 0deg, transparent 25deg, rgba(255, 255, 255, 0.25) 45deg, transparent 65deg, transparent 360deg)',
                   mixBlendMode: 'screen',
                 }}
               />
@@ -238,6 +234,7 @@ export const Hero: React.FC = () => {
               readoutRef={readoutRef}
               caption={caption}
               demoState={demoState}
+              onCardClick={demoState !== 'result' ? handleLensAction : undefined}
             />
           </div>
         </div>

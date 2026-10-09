@@ -1,289 +1,286 @@
 # FocusLab
 
-FocusLab is a free, open-source, local-first web application that helps people build sustained focus through evidence-labelled cognitive practices and test what works for them using reaction-time benchmarks (**Check → Practice → Compare**).
+FocusLab is a free, local-first web application that helps people build sustained focus through evidence-labelled cognitive practices and test what works for them (**Check → Practice → Compare**).
 
-There are no user accounts, no analytics, no external tracking, and no servers. All personal data stays directly in your browser.
+There are no user accounts, no analytics, no external tracking, and no backend servers. All personal data stays directly in your browser. Mobile-first.
 
 ---
 
-## What FocusLab Is
+## 1. What FocusLab Is
 
 Most productivity tools rely on subjective impression or pseudoscientific "brain-training" games. FocusLab takes an empirical approach:
 
-1. **Check (Reaction-Time Baseline)**: Measure sustained vigilance, reaction speed, and attention lapses via an informal 3-minute Psychomotor Vigilance Task (PVT-B) benchmark in your browser.
+1. **Check (Reaction-Time Baseline)**: Measure sustained vigilance, reaction speed, and attention lapses via an informal 3-minute Psychomotor Vigilance Task (PVT-B) benchmark directly in your browser.
 2. **Practice (Evidence-Labelled Tools)**: Engage in structured focus sessions with implementation intentions (If-Then planning), guided breath pacing, movement bouts, and synthetically generated soundscapes—each explicitly labelled with its empirical evidence tier.
-3. **Compare (A/B Self-Experiments)**: Run controlled alternating A/B self-experiments comparing active interventions against quiet rest or ambient noise against silence to discover what measurably moves your personal needle.
+3. **Compare (A/B Self-Experiments)**: Run controlled alternating A/B self-experiments comparing active interventions against quiet rest to discover what actually moves your personal needle.
 
 > **Medical Disclaimer**: FocusLab is an educational self-experimentation tool, not a diagnostic or therapeutic medical device. It does not provide medical advice or screen for ADHD or neurological conditions.
 
 ---
 
-## What Changed in Redesign v2
+## 2. What Changed in Design v3 ("Rack Focus")
 
-The v2 redesign introduces a unified design language, robust offline-first infrastructure, and strict verification:
+FocusLab v3 replaces the legacy aesthetic with the **"Rack Focus"** photographic visual language (aperture, viewfinder HUD, bokeh, lens coatings) documented in `docs/DESIGN-V3.md`:
 
-- **"Cyanotype & Lamp" Direction**: Visual metaphor where attention acts as a lens—the object of focus is sharp and illuminated while peripheral chrome softens.
-- **Strict Design Tokens**: All colours derive exclusively from CSS custom properties in `src/styles/tokens.css` with zero raw hex or hardcoded Tailwind palette colours.
-- **Accessible Typography**: Self-hosted `Atkinson Hyperlegible Next` (body), `Archivo` (variable-width display), and `Hind Siliguri` (Bengali) through `next/font`. Body font size is strictly $\ge 16\text{ px}$, line length capped at $70\text{ ch}$, and tabular numbers applied to all timers and metrics.
-- **Refined Motion System**: Centralized motion engine in `src/lib/motion.ts` with spring/duration tokens, automatic Calm Mode (`data-calm="on"`) during tests and breathwork, Low-End hardware detection, and instantaneous `prefers-reduced-motion` fallbacks.
-- **Bilingual Internationalization**: Complete English and Bengali support with hydration-safe store initialization and typed translation hooks (`useT`).
-- **Resilient Data Guard**: Storage integrity checks that catch corruption at launch without mistaking simple UI rendering errors for data loss, reinforced by feature-level error boundaries.
-- **Review & Audit Findings Resolved**:
-  - **Check Test Silenced**: Eliminated the live 60–120fps requestAnimationFrame millisecond ticker during stimulus presentation. The stimulus circle is completely motionless and quiet; reaction time is presented only upon response in the feedback phase.
-  - **Calm Sentence Case**: Converted all-caps prompt (`"RESPOND NOW"`) to calm sentence case (`"Respond now"`).
-  - **Single Lamp Focal Hierarchy**: Removed ambient background radial gradients from `HeroPointerLamp`, toned down the header CTA button, and gave the resting `ReflexLamp` an amber pilot ring with high-contrast edge boundaries.
-  - **Honest Audio Indicators**: Replaced the decorative 12-bar bouncing CSS visualizer in `NoisePlayer` with a quiet, honest output state indicator.
-  - **Editorial Layout Rhythm**: Removed repetitive card containers from "How it works" and the Evidence rubric, adopting open typography with 1px divider lines.
-  - **Accessible Typography**: Raised body and description copy across plates, claim cards, and panels to $\ge 16\text{ px}$ (`text-base`) or $14\text{ px}$ minimum for metadata.
-  - **Strict Contrast Framing**: Ensured all amber accents are framed by `--accent-edge: #0A1D36` in daylight mode to guarantee contrast compliance against paper backgrounds.
-
----
-
-## How Evidence Is Rated
-
-Every health or cognition claim shown to users comes strictly from [`docs/EVIDENCE.md`](./docs/EVIDENCE.md) and [`src/content/evidence.ts`](./src/content/evidence.ts). FocusLab never claims an intervention "boosts IQ" or "enhances focus" generally; every claim explicitly names the exact outcome for which evidence exists (e.g., *vigor and fatigue*, *sustained attention*, *physiological arousal*).
-
-Claims are classified into five transparent tiers, displayed with both an icon and text:
-
-| Tier | Label | Criteria |
-| :--- | :--- | :--- |
-| **Strong** | High-Replication | Multiple independent, pre-registered randomized controlled trials or high-quality meta-analyses with consistent positive effects on the named outcome. |
-| **Moderate** | Supported | Multi-trial controlled studies or replicated findings with small-to-medium effect sizes on the named outcome. |
-| **Mixed** | Conflicting / Context-Dependent | Replicated studies showing differing or contradictory results depending on user baseline, cognitive style, or task demands. |
-| **Emerging** | Preliminary | Single peer-reviewed pilot trials or laboratory investigations with small cohorts requiring further replication. |
-| **Not Supported** | Debunked / Ineffective | Rigorous trials or systematic reviews demonstrating no meaningful effect beyond expectancy or placebo. |
+- **The Lens as Hero Object**: The central `<Lens>` SVG component powers the marketing hero, interactive reflex preview, breath pacer, and 404 screen with realistic iris blades driven by GSAP aperture tweens.
+- **Neutral Interface**: The interface is strictly neutral with zero accent colours. Colour comes only from optical imagery (bokeh discs, iridescent lens coatings), evidence tiers, and data plots.
+- **Three Profiles + System**:
+  - **Studio** (Daylight neutral, `--bg: #F1F3F5`)
+  - **Darkroom** (Darkroom neutral, `--bg: #0C0E13`)
+  - **Contrast** (Monochromatic high-contrast, `--bg: #000000`, WCAG AAA compliant)
+- **Fixed Viewfinder Stage Tokens**: Test stages (Check test, Focus run, Breathing players) use fixed stage tokens (`#07080B` canvas, `#FFFFFF` stimulus, `#F2F3F5` counter) that never theme, ensuring reaction test benchmarks remain visually identical and comparable across profiles.
+- **GSAP & @gsap/react Motion Engine**: Replaced legacy animation libraries with standard GSAP, registered centrally in `src/lib/gsap.ts` with scoped `useGSAP` hooks and automatic cleanup.
+- **Layout & Mobile Polish**:
+  - Anchored Desktop Hero reaction HUD chip cleanly relative to the lens container box (bottom: 12%, left: 4%), eliminating collisions with the headline and subhead.
+  - Sticky top header upgraded with `bg-bg/85 backdrop-blur-md border-b border-border z-40`, preventing content from scrolling under transparent chrome.
+  - Set `scroll-padding-top: var(--header-height, 64px)` on `<html>` and added matching `pt-[var(--header-height)]` to main containers.
+  - Eliminated mobile hero vertical dead space using `min-h-[100dvh]` and viewport-proportional lens sizing (`max-h-[38vh]`).
+  - Restructured Environment Checklist into a balanced 2-column layout grouping duration/intention configuration on the left and checklist + CTA on the right.
+  - Centered Evidence Bank and reading layouts at standard widths (`max-w-[840px]` and `max-w-[720px]`).
+- **Complete Social Metadata**: Full OpenGraph and Twitter card (`summary_large_image`) integration with `metadataBase`, 1200×630 `public/og.jpg`, `public/icon.svg`, theme-color per profile, and distinct per-page titles and descriptions.
 
 ---
 
-## Getting Started
+## 3. How to Run
 
 ### Prerequisites
 - Node.js 18.17.0 or higher (Node 20+ recommended)
 - npm 9.0.0 or higher
 
-### Installation & Local Development
+### Local Development
 
-1. Clone the repository:
+1. Clone repository and install dependencies:
    ```bash
    git clone https://github.com/watchknight/FocusLab.git
    cd FocusLab
-   ```
-
-2. Install dependencies:
-   ```bash
    npm install
    ```
 
-3. Run the development server:
+2. Start the development server:
    ```bash
    npm run dev
    ```
    Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-### Quality Verification Commands
+### Quality Verification Suite
 
-Before committing changes or deploying, ensure all quality gates pass:
+Before committing or deploying, run all verification steps:
 
 ```bash
-# Run ESLint checks
+# Run ESLint rules
 npm run lint
 
 # Run strict TypeScript compilation check
 npm run typecheck
 
-# Run unit tests via Vitest
+# Run unit and contract tests via Vitest
 npm test
 
-# Build production Next.js static export bundle
+# Build production static export bundle
 npm run build
 ```
 
 ---
 
-## Design Tokens
+## 4. Design Tokens
 
-FocusLab's design system lives in `src/styles/tokens.css`. It supports three dedicated colour profiles plus a System mode:
+All colors, dimensions, and curves live in `src/styles/tokens.css`. Components consume semantic tokens only; raw hex codes and arbitrary Tailwind palette classes are prohibited.
 
-1. **Daylight**: Crisp cyanotype ink and blue-tinted paper tones for bright daytime environments.
-2. **Night**: Deep indigo, midnight navy, and warm lamp accents for evening focus and dark-mode displays.
-3. **Contrast**: High-contrast monochromatic palette exceeding WCAG AAA standards ($\ge 7:1$) and respecting `forced-colors: active`.
+### Token Values Across Profiles
 
-### Core Token Variables
-
-| Token | Daylight | Night | Contrast | Purpose |
+| Token | Studio | Darkroom | Contrast | Description |
 | :--- | :--- | :--- | :--- | :--- |
-| `--bg` | `#EDF3FA` | `#070D18` | `#000000` | Application canvas background |
-| `--surface` | `#FCFDFE` | `#0E1726` | `#121212` | Elevated cards and containers |
-| `--surface-2` | `#E3ECF6` | `#162236` | `#1C1C1C` | Secondary plates and inputs |
-| `--text` | `#0A192F` | `#E6EDF5` | `#FFFFFF` | Primary readable typography |
-| `--muted` | `#3F5878` | `#8BA2C1` | `#E0E0E0` | Secondary metadata and labels |
-| `--accent` | `#0B5CAB` | `#4BA2F2` | `#FFFFFF` | Interactive action states and lamp glow |
-| `--border` | `#B8CDE3` | `#22344F` | `#888888` | Plate borders and dividers |
-| `--ring` | `#0B5CAB` | `#70B8F8` | `#FFFFFF` | Visible `:focus-visible` keyboard rings |
+| `--bg` | `#F1F3F5` | `#0C0E13` | `#000000` | Application canvas |
+| `--bg-deep` | `#E6E9ED` | `#07080B` | `#000000` | Dimmed backdrop / calm background |
+| `--surface` | `#FFFFFF` | `#14171E` | `#000000` | Primary cards, plates, and panels |
+| `--surface-2` | `#F7F8FA` | `#1B1F28` | `#101010` | Nested containers and secondary chips |
+| `--border` | `#DDE1E6` | `#2A2F3B` | `#FFFFFF` | Hairline dividers and boundaries (1px) |
+| `--border-strong` | `#7D8491` | `#6B7383` | `#FFFFFF` | Form control edges and prominent borders |
+| `--text` | `#0E0F12` | `#F2F3F5` | `#FFFFFF` | Primary readable typography |
+| `--muted` | `#555B66` | `#A3A9B5` | `#E6E6E6` | Secondary labels, captions, metadata |
+| `--primary-bg` | `#0E0F12` | `#F2F3F5` | `#FFFFFF` | Primary button fill |
+| `--primary-text` | `#FFFFFF` | `#0C0E13` | `#000000` | Primary button text |
+| `--ring` | `#0E0F12` | `#FFFFFF` | `#FFD60A` | Keyboard focus ring |
+| `--tier-strong` | `#0A7A47` | `#5FE3A1` | `#6DFFB0` | High-replication evidence grade |
+| `--tier-moderate` | `#1F4FD8` | `#7FA8FF` | `#8CD3FF` | Supported evidence grade |
+| `--tier-mixed` | `#7A3FD1` | `#C3A6FF` | `#E0C2FF` | Context-dependent evidence grade |
+| `--tier-emerging` | `#0A7A7D` | `#4FD6D6` | `#5FFFF0` | Preliminary evidence grade |
+| `--tier-not-supported`| `#B42318` | `#FF8A8A` | `#FF9C9C` | Debunked / unsupported evidence grade |
 
-> **Contrast Rule**: All text tokens against their respective backgrounds are tested in `src/styles/contrast.test.ts` to ensure strict compliance with WCAG AA ($\ge 4.5:1$) and AAA ($\ge 7:1$).
+### Specialized Tokens
 
----
-
-## Motion Rules
-
-FocusLab treats motion as functional feedback, not gratuitous decoration:
-
-- **Permitted Properties**: Only `transform`, `opacity`, and localized `filter` (blur) may be animated. Animating layout properties (`width`, `height`, `top`, `left`) is strictly prohibited.
-- **Timing Tokens**: All animation timings are defined in `src/lib/motion.ts`:
-  - `durations.instant` ($0\text{ s}$)
-  - `durations.quick` ($0.2\text{ s}$)
-  - `durations.base` ($0.3\text{ s}$)
-  - `durations.slow` ($0.5\text{ s}$)
-  - `durations.hero` ($1.2\text{ s}$)
-- **Reduced Motion**: Under `prefers-reduced-motion: reduce`, animations collapse to opacity fades of $\le 150\text{ ms}$; all positional transforms, lamp pointers, and blurs are disabled.
-- **Calm Mode**: When the user enters the reaction test (`/check`), a breathing player, or an active focus session, the application sets `data-calm="on"` on `<html>`. This disables all ambient animations and prevents thread interference during millisecond-critical timings.
-- **Low-End Mode**: Hardware is detected dynamically via `hardwareConcurrency <= 4`, `deviceMemory <= 4`, or `saveData`. On constrained hardware, backdrop filters and heavy pointer lamps are bypassed.
-
----
-
-## How to Add a Theme
-
-To add a new colour profile (e.g., `sepia`):
-
-1. **Define CSS Variables in `src/styles/tokens.css`**:
-   ```css
-   [data-theme='sepia'],
-   .sepia {
-     --bg: #F4ECD8;
-     --surface: #FCF8EE;
-     --surface-2: #E8DCBE;
-     --text: #2C2216;
-     --muted: #6B5B45;
-     --border: #D5C4A1;
-     --accent: #8C481A;
-     --ring: #8C481A;
-     /* Define remaining tokens adhering to contrast guidelines */
-   }
-   ```
-
-2. **Register the Profile**:
-   Add the new identifier to `ThemeProfile` in `src/components/ui/ThemeToggle.tsx` and provide its display label and icon in `THEME_OPTIONS`.
-
-3. **Add Contrast Tests**:
-   Add the token pairings to `src/styles/contrast.test.ts` to ensure automated verification against WCAG AA requirements:
-   ```bash
-   npm test
-   ```
+- **Glass**: `--glass: color-mix(in srgb, var(--surface) 62%, transparent)` with `backdrop-filter: blur(18px) saturate(1.4)`. In `lite` and `off` fx modes, automatically degrades to solid `var(--surface)`.
+- **Fixed Viewfinder Stage Tokens**:
+  - `--stage-bg`: `#07080B`
+  - `--stage-stimulus`: `#FFFFFF`
+  - `--stage-counter`: `#F2F3F5`
+  - `--stage-hud`: `#9AA1AE`
+- **Shape Tokens**: `--radius-xs: 6px`, `--radius-sm: 10px` (inputs/chips), `--radius-md: 16px` (panels/plates), `--radius-lg: 28px` (glass cards), `--radius-full: 999px` (buttons/pills).
 
 ---
 
-## How to Add a Screen (Route)
+## 5. Motion Rules & FX Tiers
 
-1. **Create the Route File**:
-   Create `src/app/your-route/page.tsx`. Use Next.js App Router conventions:
+### FX Tiers (`html[data-fx]`)
+
+The application evaluates hardware constraints and user preferences before first paint via `HEAD_INIT_SCRIPT`:
+
+| Tier | Condition | Capabilities |
+| :--- | :--- | :--- |
+| **`full`** | > 4 CPU cores, > 4 GB RAM, no save-data, motion allowed | Complete photographic motion: iris reveals, smooth scroll, bokeh drift, pointer parallax, glint reflection, pinned how-it-works scene, subtle grain. |
+| **`lite`** | $\le 4$ cores, $\le 4$ GB RAM, or `save-data` active | Opacity and transform reveals only. No blur filters, no custom cursor, no smooth scroll, no pinned scene, no bokeh drift, no grain, solid glass fallbacks. |
+| **`off`** | `prefers-reduced-motion: reduce` | Motion disabled. Instant state updates, opacity fades $\le 150\text{ ms}$, content immediately visible. |
+
+### Calm Routes (`html[data-calm="on"]`)
+
+When entering high-vigilance stages (Check reaction test, Focus timer run, Breathing pacer):
+1. `html[data-calm="on"]` is activated.
+2. Peripheral chrome (`[data-chrome]`) fades out and becomes inert.
+3. All decorative tweens and ScrollTriggers are stopped.
+4. `gsap.globalTimeline.getChildren().length` must strictly equal `0`.
+
+### Animation Constraints
+
+- **Allowed Properties**: `transform`, `opacity`, and small-area blur filter. Never animate layout properties (`width`, `height`, `top`, `left`).
+- **Standard Easing**:
+  - Reveals and locks: `focus` (`cubic-bezier(0.16, 1, 0.3, 1)`)
+  - Screen wipes: `power3.inOut`
+  - Scroll scrub: `none`
+- **Standard Durations**: Micro `0.2s`, UI `0.4s`, Reveal `0.9–1.1s`, Scene scrub `0.6s`.
+
+---
+
+## 6. How to Add a Screen (Route)
+
+Follow these steps to add a new route to FocusLab:
+
+1. **Create the Server Component Page**:
+   Create `src/app/my-feature/page.tsx` as a Server Component:
    ```tsx
    import React from 'react';
    import type { Metadata } from 'next';
-   import { Container } from '@/components/ui/Container';
-   import { FeatureErrorBoundary } from '@/components/ui/FeatureErrorBoundary';
+   import { MyFeatureView } from '@/features/my-feature';
 
    export const metadata: Metadata = {
-     title: 'Your Screen Title',
-     description: 'Accessible description of this screen.',
+     title: 'Feature Title — FocusLab',
+     description: 'Specific description of this feature without marketing hyperbole.',
+     openGraph: {
+       title: 'Feature Title | FocusLab',
+       description: 'Specific description of this feature without marketing hyperbole.',
+     },
    };
 
-   export default function YourScreenPage() {
-     return (
-       <FeatureErrorBoundary featureName="Your Screen">
-         <Container className="py-6 space-y-6">
-           <h1 className="text-2xl font-bold tracking-tight text-text">Your Screen Title</h1>
-           <p className="text-base text-muted">Page body copy adhering to >= 16px font standard.</p>
-         </Container>
-       </FeatureErrorBoundary>
-     );
+   export default function MyFeaturePage() {
+     return <MyFeatureView />;
    }
    ```
 
-2. **Follow UI Rules**:
-   - Container max width: `max-w-[1200px]` (or `max-w-[720px]` for long-form reading).
-   - Touch targets: interactive controls must have `min-h-[44px]` and `min-w-[44px]`.
-   - Never use raw hex codes; use semantic Tailwind token classes (`bg-surface`, `text-text`, `border-border`).
-   - Add localized text entries in `src/i18n/en.json` and `src/i18n/bn.json`.
+2. **Create the Client View Component**:
+   Create `src/features/my-feature/MyFeatureView.tsx` with `'use client'`:
+   ```tsx
+   'use client';
 
-3. **Link in Navigation**:
-   If the screen belongs in main navigation, add its key and route to `PRIMARY_NAV` or `EXTRA_NAV` in `src/components/ui/Navbar.tsx` and `SHEET_NAV` in `src/components/ui/BottomNav.tsx`.
+   import React from 'react';
+   import { FeatureErrorBoundary } from '@/components/ui/FeatureErrorBoundary';
+
+   export const MyFeatureView: React.FC = () => {
+     return (
+       <FeatureErrorBoundary featureName="My Feature">
+         <div className="space-y-6 py-2 max-w-[840px] mx-auto">
+           <h1 className="text-2xl font-bold tracking-tight text-text font-display">
+             Feature Title
+           </h1>
+           {/* Feature content */}
+         </div>
+       </FeatureErrorBoundary>
+     );
+   };
+   ```
+
+3. **Follow Layout and Responsive Rules**:
+   - Container widths: use `max-w-[720px] mx-auto px-6` for reading content, `max-w-[840px] mx-auto` for cards/grids, or `max-w-[1320px]` for full layouts.
+   - Interactive touch targets must be at least $44\text{ px} \times 44\text{ px}$ (`min-h-[44px]`).
+   - Use token colors only (`bg-surface`, `text-text`, `border-border`, etc.).
+   - If adding claims or evidence, import from `src/content/evidence.ts` and display the `<EvidenceMeter tier={claim.tier} />`.
+
+4. **Register in Navigation**:
+   If the screen belongs in global navigation, add its route to `PRIMARY_FIVE` or `EXTRA_TWO` in `src/components/ui/Navbar.tsx` and `SHEET_NAV` in `src/components/ui/BottomNav.tsx`.
 
 ---
 
-## Deploying to Render (Static Site)
+## 7. Deploying to Render (Static Site)
 
-FocusLab is a fully client-side application configured for static export (`output: 'export'` in `next.config.mjs`).
+FocusLab is configured for static export (`output: 'export'` in `next.config.mjs`).
 
-### Option A: Using the `render.yaml` Blueprint
-
-1. Push your repository to GitHub.
-2. In the Render Dashboard, click **New +** → **Blueprint**.
-3. Connect your repository. Render will automatically parse `render.yaml` and configure the static site, build commands, and HTTP cache headers.
-
-### Option B: Creating a Static Site Manually
+### Render Configuration
 
 1. In the Render Dashboard, click **New +** → **Static Site**.
-2. Connect your GitHub repository (`FocusLab`).
-3. Set the following configuration:
+2. Connect your GitHub repository.
+3. Configure the build parameters:
    - **Name**: `focuslab`
-   - **Branch**: `main` (or your active release branch)
+   - **Branch**: `main`
    - **Build Command**: `npm ci && npm run build`
    - **Publish Directory**: `out`
 4. **Environment Variables**:
-   - If Render defaults to an older Node.js version and fails, add an environment variable:
-     - **Key**: `NODE_VERSION`
-     - **Value**: `20.18.0`
+   - **Key**: `NODE_VERSION`
+   - **Value**: `20.18.0`
+   - **Key**: `NEXT_PUBLIC_APP_URL`
+   - **Value**: `https://<your-subdomain>.onrender.com` (or your custom domain)
 5. Click **Create Static Site**.
 
 ---
 
-## Post-Deploy Checks
+## 8. Post-Deploy Checks
 
-After deployment completes on Render, run these verification checks against your production URL (replace `https://your-app.onrender.com` with your domain):
+After deploying on Render, perform these verification checks against your deployed URL:
 
 ### 1. HTTP Cache Headers Check
 
 Run `curl -I` from your terminal to verify that HTML and service worker files are never cached, while static Next.js assets are cached immutably for 1 year:
 
 ```bash
-# Root document must have no-cache headers:
+# 1. Root document must have no-cache headers:
 curl -I https://your-app.onrender.com/
-# Expected header: Cache-Control: public, max-age=0, must-revalidate
+# Expected: Cache-Control: public, max-age=0, must-revalidate
 
-# Service Worker must NOT be cached:
+# 2. Service Worker must NOT be cached:
 curl -I https://your-app.onrender.com/sw.js
-# Expected header: Cache-Control: no-cache, no-store, must-revalidate
+# Expected: Cache-Control: no-cache, no-store, must-revalidate
 
-# Hashed Next.js static asset must be cached immutably for 1 year:
-curl -I https://your-app.onrender.com/_next/static/chunks/117-*.js
-# Expected header: Cache-Control: public, max-age=31536000, immutable
+# 3. Next.js static asset must be cached immutably:
+curl -I https://your-app.onrender.com/_next/static/chunks/main.js
+# Expected: Cache-Control: public, max-age=31536000, immutable
 ```
 
 ### 2. Lighthouse Mobile Audit
 
-1. Open Chrome DevTools in an incognito window and navigate to `https://your-app.onrender.com/`.
-2. Open the **Lighthouse** tab.
-3. Select **Mode: Navigation**, **Device: Mobile**, and categories **Performance**, **Accessibility**, **Best Practices**, and **SEO**.
-4. Click **Analyze page load** for:
-   - `/` (Landing page)
+1. Open Chrome DevTools in an incognito window at your deployed URL.
+2. Select **Lighthouse** tab → **Device: Mobile**, categories **Performance**, **Accessibility**, **Best Practices**, **SEO**.
+3. Run audits on:
+   - `/` (Home landing)
    - `/check` (Reaction test view)
-5. Verify:
+4. Confirm:
    - Performance $\ge 90$
    - Accessibility score is $100$
-   - Zero horizontal overflow warnings at mobile viewports ($320\text{ px} - 430\text{ px}$).
+   - No horizontal overflow at 320px–430px widths.
 
-### 3. PWA Installation & Service Worker Update Check
+### 3. PWA Installation & Service Worker Update Toast
 
-1. **Install PWA**:
-   - Open `https://your-app.onrender.com/` in Chrome or mobile Safari.
-   - Click the browser install icon or "Add to Home Screen".
-   - Confirm the app opens in standalone mode with full offline functionality.
-2. **Update Toast Verification**:
-   - Trigger a second deployment on Render (e.g., a documentation tweak or empty commit).
-   - While keeping the installed PWA open, wait for the background service worker lifecycle to detect the new cache name (`focuslab-cache-<commit>`).
-   - Confirm the update toast appears: *"An update is available. Reload to get the latest version."*
-   - Click **Reload** and confirm the application updates smoothly without loss of local data.
+1. Open the deployed site in Chrome or Safari on mobile/desktop.
+2. Install the PWA via the browser address bar or "Add to Home Screen".
+3. Trigger a second deployment on Render.
+4. Keep the PWA open; confirm the update notification appears:
+   *"An update is available. Reload to get the latest version."*
+5. Click **Reload** and confirm the application refreshes smoothly without loss of local data.
+
+### 4. Social Preview Debugger
+
+1. Navigate to [opengraph.xyz](https://www.opengraph.xyz/) or the Twitter Card Validator.
+2. Enter your deployed URL.
+3. Confirm that:
+   - OpenGraph image resolves cleanly to the 1200×630 `og.jpg` asset.
+   - Title matches *"FocusLab — Build focus you can measure"*.
+   - Twitter card type shows `summary_large_image`.
 
 ---
 
