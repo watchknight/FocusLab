@@ -101,19 +101,19 @@ export const ActivityList: React.FC = () => {
   return (
     <div ref={containerRef} className="space-y-8">
       <div className="space-y-2">
-        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-text font-display">
+        <h1 className="font-display font-[780] text-3xl sm:text-4xl md:text-5xl tracking-[-0.02em] leading-[1.05] text-text text-balance">
           Evidence-Labelled Activities
         </h1>
-        <p className="text-base text-muted max-w-prose">
+        <p className="text-base sm:text-lg text-muted max-w-[54ch] leading-relaxed">
           Paced breathing, attention anchoring, and movement micro-breaks labelled with scientific replication tiers.
         </p>
       </div>
 
       {/* Filter Chips */}
-      <div className="p-4 sm:p-5 rounded-[16px] border border-border bg-surface-2 space-y-4">
+      <div className="p-4 sm:p-5 rounded-[16px] border border-border bg-surface-2 space-y-4 shadow-xs">
         {/* Category Filter Chips */}
         <div className="space-y-2">
-          <span className="text-xs font-semibold text-muted block uppercase tracking-wider">
+          <span className="text-xs font-semibold text-muted block">
             Category
           </span>
           <div className="flex flex-wrap gap-2" role="group" aria-label="Category filters">
@@ -132,8 +132,8 @@ export const ActivityList: React.FC = () => {
 
         {/* Max Duration Filter Chips */}
         <div className="space-y-2 pt-2 border-t border-border">
-          <span className="text-xs font-semibold text-muted block uppercase tracking-wider">
-            Maximum Duration
+          <span className="text-xs font-semibold text-muted block">
+            Maximum duration
           </span>
           <div className="flex flex-wrap gap-2" role="group" aria-label="Duration filters">
             {DURATION_FILTERS.map((opt) => (

@@ -23,12 +23,12 @@ export const HeroGlassChip: React.FC<HeroGlassChipProps> = ({
   return (
     <div
       onClick={isClickable ? onCardClick : undefined}
-      className={`glass-card absolute bottom-4 left-1/2 -translate-x-1/2 sm:bottom-6 sm:left-1/2 sm:-translate-x-1/2 lg:translate-x-0 lg:bottom-[12%] lg:left-[4%] xl:bottom-[12%] xl:left-[4%] 2xl:bottom-[12%] 2xl:left-[4%] z-20 pointer-events-auto rounded-[28px] border border-border bg-[var(--glass)] backdrop-blur-[18px] p-5 sm:p-6 shadow-elevation min-w-[210px] sm:min-w-[250px] max-w-[90vw] text-left select-none ${
+      className={`glass-card absolute bottom-4 left-1/2 -translate-x-1/2 sm:bottom-6 sm:left-1/2 sm:-translate-x-1/2 lg:translate-x-0 lg:bottom-[12%] lg:left-[4%] xl:bottom-[12%] xl:left-[4%] 2xl:bottom-[12%] 2xl:left-[4%] z-20 pointer-events-auto rounded-[28px] bg-[var(--glass)] backdrop-blur-[18px] p-5 sm:p-6 min-w-[220px] sm:min-w-[260px] max-w-[90vw] text-left select-none ${
         isClickable ? 'cursor-pointer hover:border-border-strong transition-colors' : ''
       }`}
     >
       <div className="text-xs sm:text-sm font-medium text-muted">
-        Your reaction
+        {demoState === 'idle' ? 'Median reaction (sample)' : 'Your reaction'}
       </div>
       <div
         ref={readoutRef}

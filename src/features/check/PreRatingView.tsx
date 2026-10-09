@@ -28,11 +28,13 @@ export const PreRatingView: React.FC<PreRatingViewProps> = ({ onRatingsComplete,
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full flex justify-center py-2 sm:py-4">
+    <form onSubmit={handleSubmit} className="w-full flex justify-center py-4 sm:py-8">
       <Panel className="w-full max-w-[720px] space-y-6">
-        <div className="space-y-1">
-          <h2 className="text-xl font-bold tracking-tight text-text">{t('check.ratingsTitle')}</h2>
-          <p className="text-sm sm:text-base text-muted">
+        <div className="space-y-2">
+          <h2 className="font-display font-[780] text-2xl sm:text-3xl md:text-4xl tracking-[-0.02em] leading-[1.05] text-text text-balance">
+            {t('check.ratingsTitle')}
+          </h2>
+          <p className="text-base sm:text-lg text-muted leading-relaxed">
             {t('check.ratingsSub')}
           </p>
         </div>
@@ -45,7 +47,7 @@ export const PreRatingView: React.FC<PreRatingViewProps> = ({ onRatingsComplete,
           <div
             role="radiogroup"
             aria-labelledby="alertness-label"
-            className="grid grid-cols-5 p-1 rounded-md bg-surface-2 border border-border"
+            className="grid grid-cols-5 p-1.5 rounded-full bg-surface-2 border border-border shadow-xs"
           >
             {RATING_VALUES.map((val) => {
               const isSelected = alertness === val;
@@ -66,7 +68,7 @@ export const PreRatingView: React.FC<PreRatingViewProps> = ({ onRatingsComplete,
                       setAlertness((prev) => (prev ? (Math.max(1, prev - 1) as Rating1To5) : 1));
                     }
                   }}
-                  className={`min-h-[44px] min-w-[44px] rounded-xs text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-ring tabular-nums flex items-center justify-center ${
+                  className={`min-h-[44px] min-w-[44px] rounded-full text-sm font-semibold transition-all focus-visible:outline-2 focus-visible:outline-ring tabular-nums flex items-center justify-center ${
                     isSelected
                       ? 'bg-primary-bg text-primary-text shadow-sm'
                       : 'text-text hover:bg-surface'
@@ -77,7 +79,7 @@ export const PreRatingView: React.FC<PreRatingViewProps> = ({ onRatingsComplete,
               );
             })}
           </div>
-          <div className="flex justify-between items-center text-xs text-muted px-1">
+          <div className="flex justify-between items-center text-xs text-muted px-2">
             <span>1 — Exhausted</span>
             <span>5 — Fully alert</span>
           </div>
@@ -91,7 +93,7 @@ export const PreRatingView: React.FC<PreRatingViewProps> = ({ onRatingsComplete,
           <div
             role="radiogroup"
             aria-labelledby="mind-wandering-label"
-            className="grid grid-cols-5 p-1 rounded-md bg-surface-2 border border-border"
+            className="grid grid-cols-5 p-1.5 rounded-full bg-surface-2 border border-border shadow-xs"
           >
             {RATING_VALUES.map((val) => {
               const isSelected = mindWandering === val;
@@ -112,7 +114,7 @@ export const PreRatingView: React.FC<PreRatingViewProps> = ({ onRatingsComplete,
                       setMindWandering((prev) => (prev ? (Math.max(1, prev - 1) as Rating1To5) : 1));
                     }
                   }}
-                  className={`min-h-[44px] min-w-[44px] rounded-xs text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-ring tabular-nums flex items-center justify-center ${
+                  className={`min-h-[44px] min-w-[44px] rounded-full text-sm font-semibold transition-all focus-visible:outline-2 focus-visible:outline-ring tabular-nums flex items-center justify-center ${
                     isSelected
                       ? 'bg-primary-bg text-primary-text shadow-sm'
                       : 'text-text hover:bg-surface'
@@ -123,7 +125,7 @@ export const PreRatingView: React.FC<PreRatingViewProps> = ({ onRatingsComplete,
               );
             })}
           </div>
-          <div className="flex justify-between items-center text-xs text-muted px-1">
+          <div className="flex justify-between items-center text-xs text-muted px-2">
             <span>1 — Grounded</span>
             <span>5 — Highly distracted</span>
           </div>
@@ -134,7 +136,7 @@ export const PreRatingView: React.FC<PreRatingViewProps> = ({ onRatingsComplete,
             type="submit"
             variant="primary"
             disabled={!canProceed}
-            className="w-full sm:w-auto min-h-[44px]"
+            className="w-full sm:w-auto min-h-[52px] h-[52px] px-8 rounded-full text-sm font-semibold"
           >
             {t('check.btnStartTest')}
           </Button>
@@ -142,7 +144,7 @@ export const PreRatingView: React.FC<PreRatingViewProps> = ({ onRatingsComplete,
             type="button"
             variant="subtle"
             onClick={onBack}
-            className="w-full sm:w-auto min-h-[44px]"
+            className="w-full sm:w-auto min-h-[52px] h-[52px] px-6 rounded-full text-sm font-semibold"
           >
             {t('common.back')}
           </Button>

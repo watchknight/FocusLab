@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 
 export default function FocusPage() {
   return (
-    <div className="py-2">
+    <div className="py-6 sm:py-8 lg:py-10">
       <FeatureErrorBoundary featureName="Focus Session">
         <SessionFlow />
       </FeatureErrorBoundary>

@@ -46,10 +46,10 @@ export const ExperimentCreate: React.FC<ExperimentCreateProps> = ({
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-text font-display">
+        <h1 className="font-display font-[780] text-3xl sm:text-4xl md:text-5xl tracking-[-0.02em] leading-[1.05] text-text text-balance">
           Self-Experiments
         </h1>
-        <p className="text-base text-muted max-w-prose">
+        <p className="text-base sm:text-lg text-muted max-w-[54ch] leading-relaxed">
           Test whether a specific practice reliably helps your reaction time and lapses compared to baseline quiet rest.
         </p>
       </div>
@@ -60,7 +60,11 @@ export const ExperimentCreate: React.FC<ExperimentCreateProps> = ({
           <p className="text-sm text-text font-medium leading-relaxed">
             Start your first self-experiment to compare an active practice against quiet rest across 10 paired runs.
           </p>
-          <Button variant="primary" onClick={handleCreate} className="w-full sm:w-auto">
+          <Button
+            variant="primary"
+            onClick={handleCreate}
+            className="w-full sm:w-auto min-h-[52px] h-[52px] px-8 rounded-full text-sm font-semibold"
+          >
             Start 10-Run Experiment
           </Button>
         </Panel>
@@ -69,7 +73,7 @@ export const ExperimentCreate: React.FC<ExperimentCreateProps> = ({
       {/* Ongoing Experiments List */}
       {experiments.length > 0 && (
         <Card className="p-4 sm:p-5 space-y-3 bg-surface-2 border-border">
-          <span className="text-xs font-semibold text-muted block uppercase tracking-wider">
+          <span className="text-xs font-semibold text-muted block">
             Your ongoing experiments
           </span>
           <div className="divide-y divide-border">
@@ -137,7 +141,11 @@ export const ExperimentCreate: React.FC<ExperimentCreateProps> = ({
           <p>• Complete runs on different days or spaced out at the same time of day.</p>
         </div>
 
-        <Button variant="primary" onClick={handleCreate} className="w-full sm:w-auto">
+        <Button
+          variant="primary"
+          onClick={handleCreate}
+          className="w-full sm:w-auto min-h-[52px] h-[52px] px-8 rounded-full text-sm font-semibold"
+        >
           Create 10-Run Experiment
         </Button>
       </Card>

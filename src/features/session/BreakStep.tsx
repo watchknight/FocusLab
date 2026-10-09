@@ -62,12 +62,14 @@ export const BreakStep: React.FC<BreakStepProps> = ({
 
   return (
     <div className="space-y-6">
-      <div className="space-y-1">
-        <span className="text-xs font-semibold text-muted">
+      <div className="space-y-2">
+        <span className="text-xs font-mono text-muted block">
           Block #{blockNumber} complete
         </span>
-        <h2 className="text-xl font-bold tracking-tight text-text">Rest & Restore</h2>
-        <p className="text-sm text-muted">
+        <h2 className="font-display font-[780] text-3xl sm:text-4xl md:text-5xl tracking-[-0.02em] leading-[1.05] text-text text-balance">
+          Rest &amp; Restore
+        </h2>
+        <p className="text-base sm:text-lg text-muted max-w-[54ch] leading-relaxed">
           Step away from screens. Breaks help with vigor and fatigue, even if brief.
         </p>
       </div>
@@ -101,7 +103,7 @@ export const BreakStep: React.FC<BreakStepProps> = ({
                 href={`/activities/${activity.id}?play=1`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center min-h-[44px] px-4 rounded-xs bg-accent text-on-accent font-semibold text-xs sm:text-sm hover:brightness-105 focus-visible:outline-2 focus-visible:outline-ring"
+                className="inline-flex items-center justify-center min-h-[44px] px-5 py-2 rounded-full bg-primary-bg text-primary-text font-semibold text-xs sm:text-sm hover:opacity-90 focus-visible:outline-2 focus-visible:outline-ring"
               >
                 Start activity
               </Link>
@@ -118,10 +120,18 @@ export const BreakStep: React.FC<BreakStepProps> = ({
       )}
 
       <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-        <Button variant="primary" onClick={onNextBlock} className="w-full sm:w-auto min-h-[44px]">
+        <Button
+          variant="primary"
+          onClick={onNextBlock}
+          className="w-full sm:w-auto min-h-[52px] h-[52px] px-8 rounded-full text-sm font-semibold"
+        >
           Start Next Block (#{blockNumber + 1})
         </Button>
-        <Button variant="secondary" onClick={onFinishSession} className="w-full sm:w-auto min-h-[44px]">
+        <Button
+          variant="secondary"
+          onClick={onFinishSession}
+          className="w-full sm:w-auto min-h-[52px] h-[52px] px-8 rounded-full text-sm font-semibold"
+        >
           Finish Session & Reflect
         </Button>
       </div>

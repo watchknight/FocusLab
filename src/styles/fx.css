@@ -26,11 +26,12 @@ html[data-hero-seen] #intro-overlay {
 }
 
 /* Glass header after scroll */
-.header-glass {
-  background-color: var(--glass);
-  backdrop-filter: blur(18px) saturate(1.4);
-  -webkit-backdrop-filter: blur(18px) saturate(1.4);
-  border-bottom: 1px solid var(--border);
+.header-glass,
+header[data-chrome="header"].header-glass {
+  background-color: var(--glass) !important;
+  backdrop-filter: blur(18px) saturate(1.4) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(1.4) !important;
+  border-bottom: 1px solid var(--border) !important;
 }
 html[data-fx="lite"] .header-glass,
 html[data-fx="off"] .header-glass,

@@ -59,28 +59,28 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ result, onReset }) => 
   );
 
   return (
-    <div className="w-full flex justify-center py-2 sm:py-4">
+    <div className="w-full flex justify-center py-4 sm:py-8">
       <Panel className="w-full max-w-[720px] space-y-6">
-        <div className="space-y-2">
-          <div className="flex flex-wrap items-center gap-2.5">
-            <h1 className="text-2xl font-bold tracking-tight text-text">{t('check.resultsTitle')}</h1>
-            <span className="inline-flex items-center px-2.5 py-1 rounded-sm text-xs font-medium border border-border bg-surface text-muted leading-snug">
-              <strong className="text-text mr-1">Measurement:</strong> Lab version validated; this browser version is informal.
-            </span>
-          </div>
-          <p className="text-xs sm:text-sm text-muted">
+        <div className="space-y-3">
+          <h1 className="font-display font-[780] text-3xl sm:text-4xl md:text-5xl tracking-[-0.02em] leading-[1.05] text-text text-balance">
+            {t('check.resultsTitle')}
+          </h1>
+          <p className="text-xs font-mono text-muted">
+            Lab version validated; this browser version is informal.
+          </p>
+          <p className="text-base sm:text-lg text-muted leading-relaxed">
             {t('check.resultsSub')}
           </p>
         </div>
 
         {/* Plain labelled numbers */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-1">
-          <div className="p-3 rounded-md bg-surface border border-border">
-            <span className="text-xs text-muted block">{t('check.medianRt')}</span>
+          <div className="p-4 sm:p-5 rounded-[16px] bg-surface-2 border border-border shadow-xs space-y-1">
+            <span className="text-xs font-medium text-muted block">{t('check.medianRt')}</span>
             <div className="flex items-baseline gap-1 mt-1">
               <span
                 ref={medianRtRef}
-                className="text-3xl sm:text-4xl font-bold font-display tabular-nums text-text block"
+                className="text-3xl sm:text-4xl font-bold font-mono tracking-tight tabular-nums text-text block"
               >
                 {medianRt}
               </span>
@@ -88,16 +88,16 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ result, onReset }) => 
             </div>
           </div>
 
-          <div className="p-3 rounded-md bg-surface border border-border">
-            <span className="text-xs text-muted block">{t('check.lapses')} (≥ 355 ms)</span>
-            <span className="text-3xl sm:text-4xl font-bold font-display tabular-nums text-text block mt-1">
+          <div className="p-4 sm:p-5 rounded-[16px] bg-surface-2 border border-border shadow-xs space-y-1">
+            <span className="text-xs font-medium text-muted block">{t('check.lapses')} (≥ 355 ms)</span>
+            <span className="text-3xl sm:text-4xl font-bold font-mono tracking-tight tabular-nums text-text block mt-1">
               {lapses}
             </span>
           </div>
 
-          <div className="p-3 rounded-md bg-surface border border-border">
-            <span className="text-xs text-muted block">{t('check.falseStarts')} (&lt; 100 ms)</span>
-            <span className="text-3xl sm:text-4xl font-bold font-display tabular-nums text-text block mt-1">
+          <div className="p-4 sm:p-5 rounded-[16px] bg-surface-2 border border-border shadow-xs space-y-1">
+            <span className="text-xs font-medium text-muted block">{t('check.falseStarts')} (&lt; 100 ms)</span>
+            <span className="text-3xl sm:text-4xl font-bold font-mono tracking-tight tabular-nums text-text block mt-1">
               {falseStarts}
             </span>
           </div>
@@ -118,14 +118,18 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ result, onReset }) => 
         </Card>
 
         <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          <Button variant="primary" onClick={onReset} className="w-full sm:w-auto min-h-[44px]">
+          <Button
+            variant="primary"
+            onClick={onReset}
+            className="w-full sm:w-auto min-h-[52px] h-[52px] px-8 rounded-full text-sm font-semibold"
+          >
             {t('check.btnRetake')}
           </Button>
           <Button
             variant="secondary"
             onClick={handleShare}
             disabled={isSharing}
-            className="w-full sm:w-auto min-h-[44px]"
+            className="w-full sm:w-auto min-h-[52px] h-[52px] px-6 rounded-full text-sm font-semibold"
           >
             {isSharing ? 'Generating card...' : 'Share Card (1080×1350)'}
           </Button>

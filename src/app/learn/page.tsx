@@ -16,12 +16,12 @@ export const metadata: Metadata = {
 
 export default function LearnPage() {
   return (
-    <div className="space-y-6 py-2 max-w-[840px] mx-auto">
-      <div className="space-y-1">
-        <h1 className="text-2xl font-bold tracking-tight text-text font-display">
+    <div className="space-y-8 py-4 sm:py-8 max-w-[840px] mx-auto">
+      <div className="space-y-2">
+        <h1 className="font-display font-[780] text-3xl sm:text-4xl md:text-5xl tracking-[-0.02em] leading-[1.05] text-text text-balance">
           Evidence Bank
         </h1>
-        <p className="text-sm text-muted">
+        <p className="text-base sm:text-lg text-muted max-w-[54ch] leading-relaxed">
           Every practice in FocusLab is evaluated against empirical literature for the specific outcome it affects.
         </p>
       </div>

@@ -149,7 +149,12 @@ export const Navbar: React.FC = () => {
     <header
       ref={headerRef}
       data-chrome="header"
-      className="w-full sticky top-0 z-40 h-14 md:h-16 pt-[env(safe-area-inset-top,0px)] bg-bg/85 backdrop-blur-md border-b border-border transition-[background-color,border-color,box-shadow,backdrop-filter] duration-300"
+      className={clsx(
+        'w-full sticky top-0 z-40 h-14 md:h-16 pt-[env(safe-area-inset-top,0px)] transition-[background-color,border-color,box-shadow,backdrop-filter] duration-300',
+        pathname === '/'
+          ? 'bg-transparent border-b border-transparent'
+          : 'bg-bg/85 backdrop-blur-md border-b border-border'
+      )}
     >
       <Container className="h-full flex items-center justify-between gap-2 sm:gap-3 min-w-0 !max-w-none px-3 sm:px-6 md:px-[clamp(20px,5vw,72px)]">
         <TransitionLink
@@ -223,7 +228,7 @@ export const Navbar: React.FC = () => {
           <ThemeToggle />
           <TransitionLink
             href="/check"
-            className="hidden xl:inline-flex min-h-[44px] px-5 py-2 text-sm font-semibold rounded-full bg-primary-bg text-primary-text items-center justify-center hover:opacity-90 transition select-none active:scale-[0.98] motion-reduce:active:scale-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring whitespace-nowrap"
+            className="hidden lg:inline-flex min-h-[44px] px-5 py-2 text-sm font-semibold rounded-full bg-primary-bg text-primary-text items-center justify-center hover:opacity-90 transition select-none active:scale-[0.98] motion-reduce:active:scale-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring whitespace-nowrap"
           >
             {t('nav.startCheck')}
           </TransitionLink>

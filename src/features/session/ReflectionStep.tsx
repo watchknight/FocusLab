@@ -86,7 +86,11 @@ export const ReflectionStep: React.FC<ReflectionStepProps> = ({
           Completed {blocksCount} block{blocksCount !== 1 ? 's' : ''} ({focusMinutes} minute{focusMinutes !== 1 ? 's' : ''} total focus).
         </p>
         <div className="pt-2">
-          <Button variant="primary" onClick={onComplete} className="w-full sm:w-auto">
+          <Button
+            variant="primary"
+            onClick={onComplete}
+            className="w-full sm:w-auto min-h-[52px] h-[52px] px-8 rounded-full text-sm font-semibold"
+          >
             Done
           </Button>
         </div>
@@ -96,18 +100,24 @@ export const ReflectionStep: React.FC<ReflectionStepProps> = ({
 
   return (
     <form onSubmit={handleSave} className="space-y-6">
-      <div className="space-y-1">
-        <h2 className="text-xl font-bold tracking-tight text-text">Session Reflection</h2>
-        <p className="text-sm text-muted">
+      <div className="space-y-2">
+        <h2 className="font-display font-[780] text-3xl sm:text-4xl md:text-5xl tracking-[-0.02em] leading-[1.05] text-text text-balance">
+          Session Reflection
+        </h2>
+        <p className="text-base sm:text-lg text-muted max-w-[54ch] leading-relaxed">
           Record your subjective focus quality and review distractions.
         </p>
       </div>
 
-      <Card className="space-y-3">
+      <div className="space-y-2">
         <label className="block text-sm font-semibold text-text" id="quality-label">
-          Focus Quality (1 = scattered, 5 = deeply absorbed)
+          Focus Quality
         </label>
-        <div role="radiogroup" aria-labelledby="quality-label" className="grid grid-cols-5 gap-2">
+        <div
+          role="radiogroup"
+          aria-labelledby="quality-label"
+          className="grid grid-cols-5 p-1.5 rounded-full bg-surface-2 border border-border shadow-xs"
+        >
           {QUALITY_OPTIONS.map((val) => {
             const isSelected = quality === val;
             return (
@@ -116,11 +126,21 @@ export const ReflectionStep: React.FC<ReflectionStepProps> = ({
                 key={val}
                 role="radio"
                 aria-checked={isSelected}
+                tabIndex={isSelected || (quality === null && val === 1) ? 0 : -1}
                 onClick={() => setQuality(val)}
-                className={`min-h-[44px] min-w-[44px] rounded-md border text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-accent ${
+                onKeyDown={(e) => {
+                  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    setQuality((prev) => (prev ? (Math.min(5, prev + 1) as Rating1To5) : 2));
+                  } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    setQuality((prev) => (prev ? (Math.max(1, prev - 1) as Rating1To5) : 1));
+                  }
+                }}
+                className={`min-h-[44px] min-w-[44px] rounded-full text-sm font-semibold transition-all focus-visible:outline-2 focus-visible:outline-ring tabular-nums flex items-center justify-center ${
                   isSelected
-                    ? 'border-accent bg-accent text-accent-contrast'
-                    : 'border-border bg-surface-2 text-text hover:bg-surface'
+                    ? 'bg-primary-bg text-primary-text shadow-sm'
+                    : 'text-text hover:bg-surface'
                 }`}
               >
                 {val}
@@ -128,7 +148,11 @@ export const ReflectionStep: React.FC<ReflectionStepProps> = ({
             );
           })}
         </div>
-      </Card>
+        <div className="flex justify-between items-center text-xs text-muted px-2">
+          <span>1 — Scattered</span>
+          <span>5 — Deeply absorbed</span>
+        </div>
+      </div>
 
       <Card className="space-y-3">
         <div className="flex items-center justify-between">
@@ -186,7 +210,11 @@ export const ReflectionStep: React.FC<ReflectionStepProps> = ({
         />
       </Card>
 
-      <Button type="submit" variant="primary" className="w-full sm:w-auto">
+      <Button
+        type="submit"
+        variant="primary"
+        className="w-full sm:w-auto min-h-[52px] h-[52px] px-8 rounded-full text-sm font-semibold"
+      >
         Save Session
       </Button>
     </form>

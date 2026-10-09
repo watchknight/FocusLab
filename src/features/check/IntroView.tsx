@@ -15,16 +15,16 @@ export const IntroView: React.FC<IntroViewProps> = ({ onStartRatings }) => {
   const claim = getClaimById('pvt-check');
 
   return (
-    <div className="w-full flex justify-center py-2 sm:py-4">
+    <div className="w-full flex justify-center py-4 sm:py-8">
       <Panel className="w-full max-w-[720px] space-y-6">
-        <div className="space-y-2">
-          <div className="flex flex-wrap items-center gap-2.5">
-            <h1 className="text-2xl font-bold tracking-tight text-text">{t('check.title')}</h1>
-            <span className="inline-flex items-center px-2.5 py-1 rounded-sm text-xs font-medium border border-border bg-surface text-muted leading-snug">
-              <strong className="text-text mr-1">Measurement:</strong> Lab version validated; this browser version is informal.
-            </span>
-          </div>
-          <p className="text-sm sm:text-base text-muted">
+        <div className="space-y-3">
+          <h1 className="font-display font-[780] text-3xl sm:text-4xl md:text-5xl tracking-[-0.02em] leading-[1.05] text-text text-balance">
+            {t('check.title')}
+          </h1>
+          <p className="text-xs font-mono text-muted">
+            Lab version validated; this browser version is informal.
+          </p>
+          <p className="text-base sm:text-lg text-muted leading-relaxed">
             {t('check.introSub')}
           </p>
           <p className="text-sm sm:text-base text-text leading-relaxed">
@@ -33,7 +33,7 @@ export const IntroView: React.FC<IntroViewProps> = ({ onStartRatings }) => {
         </div>
 
         {claim && (
-          <div className="p-3.5 rounded-xs border border-border bg-surface text-xs sm:text-sm space-y-1.5">
+          <div className="p-4 rounded-[16px] border border-border bg-surface-2 text-xs sm:text-sm space-y-1.5 shadow-xs">
             <span className="font-semibold text-text block">{claim.title}</span>
             <p className="text-text leading-relaxed">{claim.summary}</p>
             {claim.caveat && <p className="text-muted italic">{claim.caveat}</p>}
@@ -41,7 +41,11 @@ export const IntroView: React.FC<IntroViewProps> = ({ onStartRatings }) => {
         )}
 
         <div className="pt-2">
-          <Button variant="primary" onClick={onStartRatings} className="w-full sm:w-auto min-h-[44px]">
+          <Button
+            variant="primary"
+            onClick={onStartRatings}
+            className="w-full sm:w-auto min-h-[52px] h-[52px] px-8 rounded-full text-sm font-semibold"
+          >
             {t('check.btnBegin')}
           </Button>
         </div>

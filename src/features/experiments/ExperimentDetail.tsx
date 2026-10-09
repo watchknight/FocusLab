@@ -126,7 +126,7 @@ export const ExperimentDetail: React.FC<ExperimentDetailProps> = ({
       {/* 3. Current run panel */}
       <Panel variant="surface-2" className="space-y-4">
         <div className="space-y-1">
-          <span className="text-xs font-semibold text-muted block uppercase tracking-wider">
+          <span className="text-xs font-semibold text-muted block">
             {isFinished ? 'Protocol Completed' : 'Current Run'}
           </span>
           <h2 className="text-xl font-bold text-text font-display">
@@ -146,7 +146,7 @@ export const ExperimentDetail: React.FC<ExperimentDetailProps> = ({
             <Button
               variant="primary"
               onClick={() => setIsRunning(true)}
-              className="w-full sm:w-auto"
+              className="w-full sm:w-auto min-h-[52px] h-[52px] px-8 rounded-full text-sm font-semibold"
             >
               Start Run {completedCount + 1}
             </Button>
@@ -155,7 +155,7 @@ export const ExperimentDetail: React.FC<ExperimentDetailProps> = ({
               <Button
                 variant="primary"
                 onClick={onBack}
-                className="w-full sm:w-auto"
+                className="w-full sm:w-auto min-h-[52px] h-[52px] px-8 rounded-full text-sm font-semibold"
               >
                 Back to all experiments
               </Button>
@@ -167,7 +167,7 @@ export const ExperimentDetail: React.FC<ExperimentDetailProps> = ({
       {/* 4. Results as a Plate with verdict in display type and caution line directly beneath */}
       <Plate as="section" className="space-y-6">
         <div className="space-y-2">
-          <span className="text-xs font-semibold text-muted block uppercase tracking-wider">
+          <span className="text-xs font-semibold text-muted block">
             Experiment verdict
           </span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold font-display tracking-tight text-text leading-tight">
@@ -180,7 +180,7 @@ export const ExperimentDetail: React.FC<ExperimentDetailProps> = ({
 
         {/* Per-condition mean change in plain words */}
         <div className="p-4 rounded-sm bg-surface-2 border border-border space-y-2 text-xs">
-          <span className="font-bold text-text block uppercase tracking-wider text-[11px]">
+          <span className="font-semibold text-text block text-xs">
             Per-condition mean change
           </span>
           <p className="text-text leading-relaxed">

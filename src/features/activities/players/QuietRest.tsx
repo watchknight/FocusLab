@@ -25,7 +25,7 @@ export const QuietRest: React.FC<QuietRestProps> = ({
         return (
           <div className="flex flex-col items-center justify-center space-y-4 max-w-sm w-full text-center select-none">
             <div className="space-y-1">
-              <span className="text-xs font-mono text-[#9AA1AE] uppercase tracking-wider block">
+              <span className="text-xs font-mono text-[#9AA1AE] block">
                 Unstructured baseline rest
               </span>
               <span className="text-5xl sm:text-6xl font-mono font-bold tracking-tight text-[#F2F3F5] block tabular-nums">

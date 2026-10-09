@@ -72,7 +72,7 @@ export const VolumeKnob: React.FC<VolumeKnobProps> = ({
   return (
     <div className="flex flex-col items-center gap-3">
       <div className="flex items-center justify-between w-full text-xs">
-        <label htmlFor="volume-range-input" className="font-semibold text-text uppercase tracking-wider">
+        <label htmlFor="volume-range-input" className="font-semibold text-text">
           Volume (Draggable dial)
         </label>
         <span className="font-mono tabular-nums text-text font-bold">

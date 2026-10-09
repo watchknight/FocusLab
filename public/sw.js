@@ -1,6 +1,6 @@
 /* FocusLab Service Worker — Offline-First PWA */
 // Cache version: commit hash (RENDER_GIT_COMMIT) when present, else build timestamp
-const CACHE_NAME = 'focuslab-cache-b6e999fa62247b4c203dac44bae8ff7975a1ad74';
+const CACHE_NAME = 'focuslab-cache-8d43d789b9801c053392ce25e67e58d47641fb0e';
 
 const PRECACHE_ASSETS = [
   '/',

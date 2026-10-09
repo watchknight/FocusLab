@@ -99,8 +99,8 @@ export const ClaimList: React.FC<ClaimListProps> = ({ claims }) => {
 
       {/* Tier Filter Chips with Flip reflow */}
       <div className="space-y-2">
-        <label className="text-xs font-semibold text-muted block uppercase tracking-wider">
-          Filter by Evidence Strength
+        <label className="text-xs font-semibold text-muted block">
+          Filter by evidence strength
         </label>
         <div className="flex flex-wrap gap-2" role="group" aria-label="Evidence tier filter chips">
           {TIERS.map((tier) => {

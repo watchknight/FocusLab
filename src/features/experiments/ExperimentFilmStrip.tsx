@@ -24,8 +24,8 @@ export const ExperimentFilmStrip: React.FC<ExperimentFilmStripProps> = ({
 
   return (
     <div className="space-y-2">
-      <span className="text-xs font-semibold text-muted block uppercase tracking-wider">
-        Run Film-strip (10 frames)
+      <span className="text-xs font-semibold text-muted block">
+        Run film-strip (10 frames)
       </span>
       <div className="overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
         <div className="inline-flex gap-2 min-w-max">

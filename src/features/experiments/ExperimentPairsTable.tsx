@@ -25,7 +25,7 @@ export const ExperimentPairsTable: React.FC<ExperimentPairsTableProps> = ({
     <div className="space-y-2 pt-2">
       {/* Stacked cards for mobile under 640px */}
       <div className="block sm:hidden space-y-2">
-        <span className="text-xs font-semibold text-muted block uppercase tracking-wider">
+        <span className="text-xs font-semibold text-muted block">
           Run pairs list
         </span>
         {pairs.map((p) => (

@@ -139,13 +139,13 @@ export const Hero: React.FC = () => {
   return (
     <section
       ref={heroRef}
-      className="relative w-full min-h-[100dvh] overflow-hidden flex flex-col justify-between pt-[clamp(20px,3.5vw,48px)] pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] sm:pb-20 lg:pb-0 select-none"
+      className="relative w-full min-h-[100dvh] -mt-[var(--header-height)] pt-[calc(var(--header-height)+clamp(16px,2.5vw,36px))] pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] sm:pb-20 lg:pb-0 overflow-hidden flex flex-col justify-between select-none"
     >
       <HeroBokeh ref={bokehParallaxRef} />
 
       {/* Viewfinder corner HUD marks: 28px, 2px stroke, 55% opacity */}
-      <div aria-hidden="true" className="pointer-events-none absolute top-4 left-4 sm:top-6 sm:left-6 lg:top-8 lg:left-8 w-7 h-7 border-t-2 border-l-2 border-border-strong opacity-55" />
-      <div aria-hidden="true" className="pointer-events-none absolute top-4 right-4 sm:top-6 sm:right-6 lg:top-8 lg:right-8 w-7 h-7 border-t-2 border-r-2 border-border-strong opacity-55" />
+      <div aria-hidden="true" className="pointer-events-none absolute top-[calc(var(--header-height)+12px)] left-4 sm:top-[calc(var(--header-height)+16px)] sm:left-6 lg:top-[calc(var(--header-height)+20px)] lg:left-8 w-7 h-7 border-t-2 border-l-2 border-border-strong opacity-55" />
+      <div aria-hidden="true" className="pointer-events-none absolute top-[calc(var(--header-height)+12px)] right-4 sm:top-[calc(var(--header-height)+16px)] sm:right-6 lg:top-[calc(var(--header-height)+20px)] lg:right-8 w-7 h-7 border-t-2 border-r-2 border-border-strong opacity-55" />
       <div aria-hidden="true" className="pointer-events-none absolute bottom-18 left-4 sm:bottom-20 sm:left-6 lg:bottom-8 lg:left-8 w-7 h-7 border-b-2 border-l-2 border-border-strong opacity-55" />
       <div aria-hidden="true" className="pointer-events-none absolute bottom-18 right-4 sm:bottom-20 sm:right-6 lg:bottom-8 lg:right-8 w-7 h-7 border-b-2 border-r-2 border-border-strong opacity-55" />
 

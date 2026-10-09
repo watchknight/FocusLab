@@ -104,10 +104,10 @@ export const InsightsOverview: React.FC = () => {
   return (
     <div className="space-y-8">
       <div className="space-y-2">
-        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-text font-display">
+        <h1 className="font-display font-[780] text-3xl sm:text-4xl md:text-5xl tracking-[-0.02em] leading-[1.05] text-text text-balance">
           Insights & Trends
         </h1>
-        <p className="text-base text-muted max-w-prose">
+        <p className="text-base sm:text-lg text-muted max-w-[54ch] leading-relaxed">
           Reaction-time baselines, session volume, and self-experiment outcomes.
         </p>
       </div>
@@ -117,7 +117,11 @@ export const InsightsOverview: React.FC = () => {
           <p className="text-sm text-text font-medium leading-relaxed">
             Complete your first Focus Check to start generating personal focus insights.
           </p>
-          <Button variant="primary" onClick={() => router.push('/check')} className="w-full sm:w-auto">
+          <Button
+            variant="primary"
+            onClick={() => router.push('/check')}
+            className="w-full sm:w-auto min-h-[52px] h-[52px] px-8 rounded-full text-sm font-semibold"
+          >
             Take a Focus Check
           </Button>
         </Panel>
@@ -125,7 +129,7 @@ export const InsightsOverview: React.FC = () => {
 
       {/* 1. Stat tiles that scramble when value changes */}
       <Panel variant="surface-2" className="space-y-4">
-        <h2 className="text-sm font-semibold text-text uppercase tracking-wider">This week</h2>
+        <h2 className="text-xs font-semibold text-muted block">This week</h2>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <ScrambleStatTile
             label="Practice Days"
@@ -152,7 +156,7 @@ export const InsightsOverview: React.FC = () => {
 
       {/* 2. Histogram-style time-of-day bars (only with 5 or more sessions) */}
       <Card className="p-5 sm:p-6 space-y-4 bg-surface border-border">
-        <h2 className="text-sm font-semibold text-text uppercase tracking-wider">Time of Day Distribution</h2>
+        <h2 className="text-xs font-semibold text-muted block">Time of day distribution</h2>
         {timeBucketsData ? (
           <TimeOfDayChart data={timeBucketsData} />
         ) : (
@@ -160,7 +164,11 @@ export const InsightsOverview: React.FC = () => {
             <p className="text-sm text-muted">
               Complete at least 5 focus sessions to reveal your time-of-day focus distribution ({totalSessions}/5 completed).
             </p>
-            <Button variant="primary" onClick={() => router.push('/focus')} className="w-full sm:w-auto">
+            <Button
+              variant="primary"
+              onClick={() => router.push('/focus')}
+              className="w-full sm:w-auto min-h-[52px] h-[52px] px-8 rounded-full text-sm font-semibold"
+            >
               Start a Focus Session
             </Button>
           </div>
@@ -170,8 +178,8 @@ export const InsightsOverview: React.FC = () => {
       {/* 3. Baseline trend */}
       <Card className="p-5 sm:p-6 space-y-4 bg-surface border-border">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-text uppercase tracking-wider">
-            Baseline Alertness Trend (Last 10 Checks)
+          <h2 className="text-xs font-semibold text-muted block">
+            Baseline alertness trend (last 10 checks)
           </h2>
           <span className="text-xs text-muted font-mono tabular-nums">{baselineHistory.length} recorded</span>
         </div>
@@ -182,7 +190,11 @@ export const InsightsOverview: React.FC = () => {
             <p className="text-sm text-muted">
               Complete your first Focus Check to view your baseline reaction time trend.
             </p>
-            <Button variant="primary" onClick={() => router.push('/check')} className="w-full sm:w-auto">
+            <Button
+              variant="primary"
+              onClick={() => router.push('/check')}
+              className="w-full sm:w-auto min-h-[52px] h-[52px] px-8 rounded-full text-sm font-semibold"
+            >
               Take a Focus Check
             </Button>
           </div>
@@ -192,8 +204,8 @@ export const InsightsOverview: React.FC = () => {
       {/* 4. Experiment list */}
       <Card className="p-5 sm:p-6 space-y-4 bg-surface border-border">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-text uppercase tracking-wider">
-            Self-Experiment Results
+          <h2 className="text-xs font-semibold text-muted block">
+            Self-experiment results
           </h2>
           <Link
             href="/experiments"

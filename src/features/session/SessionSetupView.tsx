@@ -66,9 +66,11 @@ export const SessionSetupView: React.FC<SessionSetupViewProps> = ({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 max-w-4xl mx-auto">
-      <div className="space-y-1">
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-text">Focus Session Setup</h1>
-        <p className="text-xs sm:text-sm text-muted">
+      <div className="space-y-2">
+        <h1 className="font-display font-[780] text-3xl sm:text-4xl md:text-5xl tracking-[-0.02em] leading-[1.05] text-text text-balance">
+          Focus Session Setup
+        </h1>
+        <p className="text-base sm:text-lg text-muted max-w-[54ch] leading-relaxed">
           Dial your duration, define your intention, and set up your space.
         </p>
       </div>
@@ -126,7 +128,7 @@ export const SessionSetupView: React.FC<SessionSetupViewProps> = ({
               type="submit"
               variant="primary"
               disabled={!intention.trim()}
-              className="w-full min-h-[48px] px-6 text-base font-semibold"
+              className="w-full min-h-[52px] h-[52px] px-8 rounded-full text-sm font-semibold"
             >
               Start Focus Session ({focusMin}m)
             </Button>

@@ -15,12 +15,12 @@ export const metadata: Metadata = {
 
 export default function SoundsPage() {
   return (
-    <div className="space-y-6 py-2">
-      <div className="space-y-1">
-        <h1 className="text-2xl font-bold tracking-tight text-text font-display">
+    <div className="space-y-8 py-4 sm:py-8 max-w-5xl mx-auto">
+      <div className="space-y-2">
+        <h1 className="font-display font-[780] text-3xl sm:text-4xl md:text-5xl tracking-[-0.02em] leading-[1.05] text-text text-balance">
           Ambient Soundscapes
         </h1>
-        <p className="text-sm text-muted">
+        <p className="text-base sm:text-lg text-muted max-w-[54ch] leading-relaxed">
           Continuous runtime noise generation to mask distracting auditory environments.
         </p>
       </div>

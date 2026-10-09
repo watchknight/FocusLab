@@ -52,7 +52,7 @@ export default async function ClaimDetailPage({ params }: Props) {
   const linkedActivities = ACTIVITIES.filter((a) => a.evidenceId === claim.id);
 
   return (
-    <div className="py-2 xl:grid xl:grid-cols-[minmax(0,720px)_280px] xl:gap-12 xl:justify-center">
+    <div className="py-6 sm:py-8 lg:py-10 xl:grid xl:grid-cols-[minmax(0,720px)_280px] xl:gap-12 xl:justify-center">
       {/* Main article content at reading width (720px) */}
       <article className="space-y-8 min-w-0 max-w-[720px] mx-auto xl:mx-0">
         <div>
@@ -73,7 +73,7 @@ export default async function ClaimDetailPage({ params }: Props) {
             </span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-text font-display leading-[0.95]">
+          <h1 className="font-display font-[780] text-3xl sm:text-4xl md:text-5xl tracking-[-0.02em] leading-[1.05] text-text text-balance">
             {claim.title}
           </h1>
         </div>
@@ -96,7 +96,7 @@ export default async function ClaimDetailPage({ params }: Props) {
           </div>
 
           <div className="p-4 rounded-sm bg-surface-2 border border-border text-xs text-muted space-y-1">
-            <strong className="text-text block font-semibold uppercase tracking-wider text-[11px]">
+            <strong className="text-text block font-semibold text-xs">
               Caveats & study limitations:
             </strong>
             <p className="italic leading-relaxed">{claim.caveat}</p>
@@ -174,8 +174,8 @@ export default async function ClaimDetailPage({ params }: Props) {
       {/* Side notes rail at 1280px and up (xl:) */}
       <aside className="hidden xl:block space-y-6 pt-12 sticky top-20 self-start text-xs border-l border-border pl-6">
         <div className="space-y-1.5">
-          <span className="font-bold text-text uppercase tracking-wider block text-[10px]">
-            Replication Tier
+          <span className="font-semibold text-text block text-xs">
+            Replication tier
           </span>
           <EvidenceMeter tier={claim.tier} />
           <p className="text-muted leading-relaxed pt-1">
@@ -184,8 +184,8 @@ export default async function ClaimDetailPage({ params }: Props) {
         </div>
 
         <div className="space-y-1.5 pt-4 border-t border-border">
-          <span className="font-bold text-text uppercase tracking-wider block text-[10px]">
-            Target Outcome
+          <span className="font-semibold text-text block text-xs">
+            Target outcome
           </span>
           <p className="text-text font-medium leading-relaxed">
             {claim.outcome}
@@ -196,8 +196,8 @@ export default async function ClaimDetailPage({ params }: Props) {
         </div>
 
         <div className="space-y-1.5 pt-4 border-t border-border">
-          <span className="font-bold text-text uppercase tracking-wider block text-[10px]">
-            Citation Count
+          <span className="font-semibold text-text block text-xs">
+            Citation count
           </span>
           <p className="font-mono tabular-nums text-text font-bold text-sm">
             {references.length} peer-reviewed source{references.length === 1 ? '' : 's'}
@@ -209,8 +209,8 @@ export default async function ClaimDetailPage({ params }: Props) {
 
         {linkedActivities.length > 0 && (
           <div className="space-y-2 pt-4 border-t border-border">
-            <span className="font-bold text-text uppercase tracking-wider block text-[10px]">
-              Self-Experiment
+            <span className="font-semibold text-text block text-xs">
+              Self-experiment
             </span>
             <p className="text-muted leading-relaxed">
               Test whether this effect holds for your own cognitive baseline.

@@ -62,7 +62,7 @@ export const ActivityDetail: React.FC<ActivityDetailProps> = ({ activity }) => {
 
       {/* 1. Display-size title */}
       <div className="space-y-3">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-text font-display leading-[0.95]">
+        <h1 className="font-display font-[780] text-3xl sm:text-4xl md:text-5xl tracking-[-0.02em] leading-[1.05] text-text text-balance">
           {activity.name}
         </h1>
 
@@ -153,7 +153,7 @@ export const ActivityDetail: React.FC<ActivityDetailProps> = ({ activity }) => {
       {/* 5. Cautions */}
       {activity.cautions && activity.cautions.length > 0 && (
         <Card className="p-4 sm:p-5 space-y-2 border-tier-not-supported/40 bg-surface-2">
-          <h2 className="text-sm font-bold text-tier-not-supported uppercase tracking-wider">
+          <h2 className="text-sm font-bold text-tier-not-supported">
             Cautions
           </h2>
           <ul className="space-y-1.5 text-xs text-muted list-disc list-inside">
@@ -167,7 +167,7 @@ export const ActivityDetail: React.FC<ActivityDetailProps> = ({ activity }) => {
       {/* 6. Start & 7. "Test this activity" */}
       <Card className="p-5 sm:p-6 space-y-5 bg-surface border-border">
         <div className="space-y-2">
-          <span className="text-xs font-semibold text-muted block uppercase tracking-wider">
+          <span className="text-xs font-semibold text-muted block">
             Select duration
           </span>
           <div className="flex flex-wrap gap-2" role="group" aria-label="Duration selection">

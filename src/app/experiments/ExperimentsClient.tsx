@@ -17,7 +17,7 @@ export function ExperimentsClient() {
     : null;
 
   return (
-    <div className="py-2">
+    <div className="py-6 sm:py-8 lg:py-10">
       {selectedExperiment ? (
         <ExperimentDetail
           experiment={selectedExperiment}

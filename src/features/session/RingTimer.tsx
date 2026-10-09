@@ -60,7 +60,7 @@ export const RingTimer: React.FC<RingTimerProps> = ({
         >
           {displayTime}
         </span>
-        <span className="text-xs landscape:text-[10px] text-[#9AA1AE] mt-1 font-mono uppercase tracking-wider">
+        <span className="text-xs landscape:text-[10px] text-[#9AA1AE] mt-1 font-mono">
           {isPaused ? 'Paused' : isFlexible ? 'Focusing' : 'Remaining'}
         </span>
       </div>

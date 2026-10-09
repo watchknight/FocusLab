@@ -19,7 +19,7 @@ export const MythCard: React.FC<MythCardProps> = ({ myth, defaultOpen = false })
     >
       <summary className="flex items-center justify-between gap-3 cursor-pointer select-none list-none font-semibold min-h-[44px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring">
         <div className="space-y-1 pr-2">
-          <span className="text-xs text-muted block font-normal uppercase tracking-wider">Common belief</span>
+          <span className="text-xs text-muted block font-normal">Common belief</span>
           <h2 className="text-sm sm:text-base font-bold text-text leading-snug font-display">
             &ldquo;{myth.myth}&rdquo;
           </h2>
@@ -45,7 +45,7 @@ export const MythCard: React.FC<MythCardProps> = ({ myth, defaultOpen = false })
 
       <div className="pt-3 mt-3 border-t border-border space-y-3 text-sm">
         <div className="space-y-1">
-          <span className="font-semibold text-muted block text-xs uppercase tracking-wider">What research shows</span>
+          <span className="font-semibold text-muted block text-xs">What research shows</span>
           <p className="text-text leading-relaxed text-base">{myth.explanation}</p>
         </div>
 

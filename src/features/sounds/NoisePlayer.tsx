@@ -116,8 +116,8 @@ export const NoisePlayer: React.FC = () => {
     <Panel variant="surface-2" className="space-y-6">
       {/* 1. Noise type as segmented control */}
       <div className="space-y-2">
-        <label className="text-xs font-semibold text-muted block uppercase tracking-wider">
-          Noise Profile
+        <label className="text-xs font-semibold text-muted block">
+          Noise profile
         </label>
         <SegmentedControl<NoiseColor | 'off'>
           name="Noise Profile Selection"
@@ -191,8 +191,8 @@ export const NoisePlayer: React.FC = () => {
 
         <div className="p-4 rounded-sm bg-surface border border-border space-y-4">
           <div className="flex justify-between text-xs">
-            <label htmlFor="softness-slider" className="font-semibold text-text uppercase tracking-wider">
-              Tone Softness (Low-pass)
+            <label htmlFor="softness-slider" className="font-semibold text-text">
+              Tone softness (Low-pass)
             </label>
             <span className="font-mono tabular-nums text-text font-bold">
               {Math.round((1 - settings.softness) * 100)}% soft

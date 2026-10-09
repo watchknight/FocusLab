@@ -17,7 +17,7 @@ export const SleepTimerControl: React.FC<SleepTimerControlProps> = ({
   return (
     <div className="space-y-3 pt-2 border-t border-border">
       <div className="flex items-center justify-between text-xs">
-        <span className="font-semibold text-text uppercase tracking-wider">Sleep Timer</span>
+        <span className="font-semibold text-text">Sleep timer</span>
         {sleepRemainingSec > 0 && (
           <span className="font-mono text-text font-bold tabular-nums">
             {Math.floor(sleepRemainingSec / 60)}m {sleepRemainingSec % 60}s remaining

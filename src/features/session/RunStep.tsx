@@ -154,7 +154,7 @@ export const RunStep: React.FC<RunStepProps> = ({
       {/* Top HUD Bar */}
       <div className="flex items-center justify-between pb-2 border-b border-[#2A2F3B] w-full max-w-4xl mx-auto pt-[env(safe-area-inset-top,0px)]">
         <div className="min-w-0 pr-2">
-          <span className="text-[11px] font-mono text-[#9AA1AE] block uppercase tracking-wider">
+          <span className="text-[11px] font-mono text-[#9AA1AE] block">
             Intention
           </span>
           <p className="text-sm font-semibold text-[#F2F3F5] truncate max-w-sm sm:max-w-md">
