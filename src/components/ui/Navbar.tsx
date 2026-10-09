@@ -156,7 +156,7 @@ export const Navbar: React.FC = () => {
           : 'bg-bg/85 backdrop-blur-md border-b border-border'
       )}
     >
-      <Container className="h-full flex items-center justify-between gap-2 sm:gap-3 min-w-0 !max-w-none px-3 sm:px-6 md:px-[clamp(20px,5vw,72px)]">
+      <Container className="h-full flex items-center justify-between gap-3 sm:gap-4 min-w-0 max-w-[1440px] px-[clamp(20px,5vw,72px)]">
         <TransitionLink
           href="/"
           aria-label="FocusLab home"
@@ -168,70 +168,72 @@ export const Navbar: React.FC = () => {
           </span>
         </TransitionLink>
 
-        <nav aria-label="Main Navigation" className="relative hidden lg:flex items-center gap-0.5 xl:gap-1 min-w-0">
-          {PRIMARY_FIVE.map(renderNavLink)}
-          <div className="hidden xl:flex items-center gap-1">{EXTRA_TWO.map(renderNavLink)}</div>
+        <div className="flex items-center gap-4 xl:gap-6 min-w-0">
+          <nav aria-label="Main Navigation" className="relative hidden lg:flex items-center gap-1 xl:gap-2 min-w-0">
+            {PRIMARY_FIVE.map(renderNavLink)}
+            <div className="hidden xl:flex items-center gap-1">{EXTRA_TWO.map(renderNavLink)}</div>
 
-          <div ref={moreScopeRef} className="relative xl:hidden">
-            <button
-              ref={moreTriggerRef}
-              type="button"
-              onClick={() => setMoreOpen(!moreOpen)}
-              onKeyDown={(e) => {
-                if (e.key === 'Escape' && moreOpen) {
-                  e.preventDefault();
-                  closeMore();
-                }
-              }}
-              aria-haspopup="menu"
-              aria-expanded={moreOpen}
-              className={clsx(
-                'min-h-[44px] px-3 py-2 rounded-xs text-sm font-semibold inline-flex items-center transition-colors select-none focus-visible:outline-2 focus-visible:outline-ring whitespace-nowrap',
-                isPopoverActive || moreOpen ? 'text-text font-bold bg-surface-2' : 'text-muted hover:text-text hover:bg-surface-2'
-              )}
-            >
-              <span>{t('nav.more')}</span>
-            </button>
-            {isRendered && (
-              <div
-                ref={moreMenuRef}
-                role="menu"
-                aria-label="Additional navigation links"
-                onKeyDown={(e) => handleFocusTrapKeyDown(e, moreMenuRef.current, closeMore)}
-                className="absolute left-0 top-full mt-1.5 z-50 min-w-[150px] rounded-md border border-border bg-surface shadow-elevation p-1 space-y-0.5 origin-top-left"
+            <div ref={moreScopeRef} className="relative xl:hidden">
+              <button
+                ref={moreTriggerRef}
+                type="button"
+                onClick={() => setMoreOpen(!moreOpen)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Escape' && moreOpen) {
+                    e.preventDefault();
+                    closeMore();
+                  }
+                }}
+                aria-haspopup="menu"
+                aria-expanded={moreOpen}
+                className={clsx(
+                  'min-h-[44px] px-3 py-2 rounded-xs text-sm font-semibold inline-flex items-center transition-colors select-none focus-visible:outline-2 focus-visible:outline-ring whitespace-nowrap',
+                  isPopoverActive || moreOpen ? 'text-text font-bold bg-surface-2' : 'text-muted hover:text-text hover:bg-surface-2'
+                )}
               >
-                {POPOVER_ITEMS.map((item) => {
-                  const active = pathname === item.href;
-                  return (
-                    <TransitionLink
-                      key={item.href}
-                      href={item.href}
-                      role="menuitem"
-                      onClick={() => setMoreOpen(false)}
-                      aria-current={active ? 'page' : undefined}
-                      className={clsx(
-                        'min-h-[44px] w-full px-3 py-2 text-sm font-semibold rounded-sm text-left flex items-center transition-colors focus-visible:outline-2 focus-visible:outline-ring whitespace-nowrap',
-                        active ? 'bg-surface-2 text-text font-bold' : 'text-muted hover:text-text hover:bg-surface-2'
-                      )}
-                    >
-                      {t(item.key)}
-                    </TransitionLink>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        </nav>
+                <span>{t('nav.more')}</span>
+              </button>
+              {isRendered && (
+                <div
+                  ref={moreMenuRef}
+                  role="menu"
+                  aria-label="Additional navigation links"
+                  onKeyDown={(e) => handleFocusTrapKeyDown(e, moreMenuRef.current, closeMore)}
+                  className="absolute left-0 top-full mt-1.5 z-50 min-w-[150px] rounded-md border border-border bg-surface shadow-elevation p-1 space-y-0.5 origin-top-left"
+                >
+                  {POPOVER_ITEMS.map((item) => {
+                    const active = pathname === item.href;
+                    return (
+                      <TransitionLink
+                        key={item.href}
+                        href={item.href}
+                        role="menuitem"
+                        onClick={() => setMoreOpen(false)}
+                        aria-current={active ? 'page' : undefined}
+                        className={clsx(
+                          'min-h-[44px] w-full px-3 py-2 text-sm font-semibold rounded-sm text-left flex items-center transition-colors focus-visible:outline-2 focus-visible:outline-ring whitespace-nowrap',
+                          active ? 'bg-surface-2 text-text font-bold' : 'text-muted hover:text-text hover:bg-surface-2'
+                        )}
+                      >
+                        {t(item.key)}
+                      </TransitionLink>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </nav>
 
-        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
-          <LanguageToggle />
-          <ThemeToggle />
-          <TransitionLink
-            href="/check"
-            className="hidden lg:inline-flex min-h-[44px] px-5 py-2 text-sm font-semibold rounded-full bg-primary-bg text-primary-text items-center justify-center hover:opacity-90 transition select-none active:scale-[0.98] motion-reduce:active:scale-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring whitespace-nowrap"
-          >
-            {t('nav.startCheck')}
-          </TransitionLink>
+          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+            <LanguageToggle />
+            <ThemeToggle />
+            <TransitionLink
+              href="/check"
+              className="hidden lg:inline-flex min-h-[44px] px-5 py-2 text-sm font-semibold rounded-full bg-primary-bg text-primary-text items-center justify-center hover:opacity-90 transition select-none active:scale-[0.98] motion-reduce:active:scale-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring whitespace-nowrap"
+            >
+              {t('nav.startCheck')}
+            </TransitionLink>
+          </div>
         </div>
       </Container>
     </header>

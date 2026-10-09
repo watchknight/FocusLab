@@ -16,20 +16,12 @@ import { TimeOfDayData } from './TimeOfDayChart';
 
 const HistoryChart = dynamic(() => import('@/features/check/HistoryChart'), {
   ssr: false,
-  loading: () => (
-    <div className="h-48 flex items-center justify-center text-xs text-muted" aria-hidden="true">
-      Loading chart...
-    </div>
-  ),
+  loading: () => <div className="h-48 flex items-center justify-center text-xs text-muted" aria-hidden="true">Loading chart...</div>,
 });
 
 const TimeOfDayChart = dynamic(() => import('./TimeOfDayChart'), {
   ssr: false,
-  loading: () => (
-    <div className="h-48 flex items-center justify-center text-xs text-muted" aria-hidden="true">
-      Loading chart...
-    </div>
-  ),
+  loading: () => <div className="h-48 flex items-center justify-center text-xs text-muted" aria-hidden="true">Loading chart...</div>,
 });
 
 export const InsightsOverview: React.FC = () => {
@@ -54,18 +46,14 @@ export const InsightsOverview: React.FC = () => {
 
   // 2. Focused minutes, quality, distractions
   const totalSessions = sessions.length;
-  const totalFocusMin = Math.round(
-    sessions.reduce((acc, s) => acc + s.actualFocusSec, 0) / 60
-  );
+  const totalFocusMin = Math.round(sessions.reduce((acc, s) => acc + s.actualFocusSec, 0) / 60);
   const ratedSessions = sessions.filter((s) => s.quality !== undefined);
-  const avgQualityNum =
-    ratedSessions.length > 0
-      ? ratedSessions.reduce((acc, s) => acc + (s.quality || 0), 0) / ratedSessions.length
-      : null;
-  const avgDistractionsNum =
-    totalSessions > 0
-      ? sessions.reduce((acc, s) => acc + s.distractions, 0) / totalSessions
-      : 0;
+  const avgQualityNum = ratedSessions.length > 0
+    ? ratedSessions.reduce((acc, s) => acc + (s.quality || 0), 0) / ratedSessions.length
+    : null;
+  const avgDistractionsNum = totalSessions > 0
+    ? sessions.reduce((acc, s) => acc + s.distractions, 0) / totalSessions
+    : 0;
 
   // 3. Time-of-day buckets (only with 5 or more sessions)
   const timeBucketsData = useMemo<TimeOfDayData[] | null>(() => {
@@ -130,7 +118,7 @@ export const InsightsOverview: React.FC = () => {
       {/* 1. Stat tiles that scramble when value changes */}
       <Panel variant="surface-2" className="space-y-4">
         <h2 className="text-xs font-semibold text-muted block">This week</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="rounded-[16px] bg-surface border border-border grid grid-cols-2 sm:grid-cols-4 shadow-xs overflow-hidden">
           <ScrambleStatTile
             label="Practice Days"
             value={`${practiceDaysThisWeek} / 7`}
@@ -140,16 +128,19 @@ export const InsightsOverview: React.FC = () => {
             label="Focused Minutes"
             value={`${totalFocusMin} min`}
             sublabel={`${totalSessions} session${totalSessions === 1 ? '' : 's'}`}
+            className="border-l border-border"
           />
           <ScrambleStatTile
             label="Average Quality"
             value={avgQualityNum !== null ? `${avgQualityNum.toFixed(1)} / 5` : '—'}
             sublabel="Self-rated absorption"
+            className="border-t sm:border-t-0 sm:border-l border-border"
           />
           <ScrambleStatTile
             label="Distractions"
             value={`${avgDistractionsNum.toFixed(1)}`}
             sublabel="Average per session"
+            className="border-l border-t sm:border-t-0 sm:border-l border-border"
           />
         </div>
       </Panel>

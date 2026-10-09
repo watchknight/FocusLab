@@ -14,17 +14,17 @@ const STARTER_TEMPLATES = [
   {
     when: 'I reach for my phone',
     then: 'take one slow breath and return to the task',
-    label: 'Phone urge → slow breath',
+    label: 'Phone urge: slow breath',
   },
   {
     when: 'I feel the urge to open a new tab',
     then: 'write the thought in my parked list',
-    label: 'New tab impulse → park thought',
+    label: 'New tab impulse: park thought',
   },
   {
     when: 'my attention drifts',
     then: 'note it without judgment and reread my task goal',
-    label: 'Mind wandering → reread goal',
+    label: 'Mind wandering: reread goal',
   },
 ];
 

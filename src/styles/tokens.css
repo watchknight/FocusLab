@@ -324,17 +324,20 @@
 .glass-card {
   border: 1px solid rgba(255, 255, 255, 0.65);
   box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.10), 0 0 1px 1px rgba(255, 255, 255, 0.40);
+  background-color: var(--glass);
 }
 
 [data-theme='darkroom'] .glass-card,
 [data-theme='dark'] .glass-card {
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.40), 0 0 1px 1px rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.60), 0 0 1px 1px rgba(255, 255, 255, 0.12);
+  background-color: rgba(20, 23, 30, 0.85);
 }
 
 [data-theme='contrast'] .glass-card {
   border: 2px solid #FFFFFF;
   box-shadow: none;
+  background-color: var(--surface);
 }
 
 /* Lite & Off tier glass degradation: solid surface */

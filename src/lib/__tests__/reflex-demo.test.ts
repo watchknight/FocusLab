@@ -54,6 +54,59 @@ describe('reflex-demo state machine', () => {
     expect(res.nextState).toBe('idle');
     expect(res.targetAperture).toBe(DEMO_APERTURES.idle);
   });
+
+  it('supports full repeated testing loop without getting stuck', () => {
+    // 1. First test: idle -> tap -> armed (0.12)
+    let res = transitionDemoState('idle', 'tap');
+    expect(res.nextState).toBe('armed');
+    expect(res.targetAperture).toBe(0.12);
+
+    // 2. Stimulus fires: armed -> timeout -> lit (0.95)
+    res = transitionDemoState(res.nextState, 'timeout');
+    expect(res.nextState).toBe('lit');
+    expect(res.targetAperture).toBe(0.95);
+
+    // 3. User responds: lit -> tap -> result (0.50)
+    res = transitionDemoState(res.nextState, 'tap');
+    expect(res.nextState).toBe('result');
+    expect(res.targetAperture).toBe(0.5);
+
+    // 4. Second test: result -> tap -> armed (0.12) - shutter closes again
+    res = transitionDemoState(res.nextState, 'tap');
+    expect(res.nextState).toBe('armed');
+    expect(res.targetAperture).toBe(0.12);
+
+    // 5. Stimulus fires again: armed -> timeout -> lit (0.95)
+    res = transitionDemoState(res.nextState, 'timeout');
+    expect(res.nextState).toBe('lit');
+    expect(res.targetAperture).toBe(0.95);
+
+    // 6. User responds to second test: lit -> tap -> result (0.50)
+    res = transitionDemoState(res.nextState, 'tap');
+    expect(res.nextState).toBe('result');
+    expect(res.targetAperture).toBe(0.5);
+
+    // 7. Third test: result -> tap -> armed (0.12) - shutter closes once more
+    res = transitionDemoState(res.nextState, 'tap');
+    expect(res.nextState).toBe('armed');
+    expect(res.targetAperture).toBe(0.12);
+  });
+
+  it('handles early tap recovery cycle without latching', () => {
+    // idle -> tap -> armed (0.12)
+    let res = transitionDemoState('idle', 'tap');
+    expect(res.nextState).toBe('armed');
+
+    // premature tap -> early (0.45)
+    res = transitionDemoState(res.nextState, 'tap');
+    expect(res.nextState).toBe('early');
+    expect(res.targetAperture).toBe(0.45);
+
+    // retry tap -> armed (0.12)
+    res = transitionDemoState(res.nextState, 'tap');
+    expect(res.nextState).toBe('armed');
+    expect(res.targetAperture).toBe(0.12);
+  });
 });
 
 describe('reflex-demo helpers', () => {

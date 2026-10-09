@@ -53,7 +53,7 @@ export function drawShareCard(canvas: HTMLCanvasElement, result: CheckResult): v
   ctx.textAlign = 'right';
   ctx.fillStyle = '#9AA1AE';
   ctx.font = '500 20px "Martian Mono", monospace';
-  ctx.fillText('PVT-B REACTION TEST', width - margin, margin + 38);
+  ctx.fillText('Check (PVT-B)', width - margin, margin + 38);
 
   // 4. Center Graphic: The Photographic Lens
   const cx = width / 2;
@@ -124,7 +124,7 @@ export function drawShareCard(canvas: HTMLCanvasElement, result: CheckResult): v
   ctx.textAlign = 'center';
   ctx.fillStyle = '#9AA1AE';
   ctx.font = '600 22px "Martian Mono", monospace';
-  ctx.fillText('MEDIAN REACTION TIME', cx, 890);
+  ctx.fillText('Median reaction time', cx, 890);
 
   ctx.fillStyle = '#F2F3F5';
   ctx.font = 'bold 120px "Bricolage Grotesque", -apple-system, sans-serif';
@@ -139,7 +139,7 @@ export function drawShareCard(canvas: HTMLCanvasElement, result: CheckResult): v
   const falseStartsText = `${result.metrics.falseStarts} ${result.metrics.falseStarts === 1 ? 'false start' : 'false starts'} (<100ms)`;
   ctx.fillStyle = '#A3A9B5';
   ctx.font = '500 26px "Bricolage Grotesque", -apple-system, sans-serif';
-  ctx.fillText(`${lapsesText}  ·  ${falseStartsText}`, cx, 1080);
+  ctx.fillText(`${lapsesText},  ${falseStartsText}`, cx, 1080);
 
   // 6. Footer Metadata Strip
   ctx.strokeStyle = '#2A2F3B';

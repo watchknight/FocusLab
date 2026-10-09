@@ -74,8 +74,8 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ result, onReset }) => 
         </div>
 
         {/* Plain labelled numbers */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-1">
-          <div className="p-4 sm:p-5 rounded-[16px] bg-surface-2 border border-border shadow-xs space-y-1">
+        <div className="rounded-[16px] bg-surface-2 border border-border shadow-xs grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-border">
+          <div className="p-4 sm:p-5 space-y-1">
             <span className="text-xs font-medium text-muted block">{t('check.medianRt')}</span>
             <div className="flex items-baseline gap-1 mt-1">
               <span
@@ -88,14 +88,14 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ result, onReset }) => 
             </div>
           </div>
 
-          <div className="p-4 sm:p-5 rounded-[16px] bg-surface-2 border border-border shadow-xs space-y-1">
+          <div className="p-4 sm:p-5 space-y-1">
             <span className="text-xs font-medium text-muted block">{t('check.lapses')} (≥ 355 ms)</span>
             <span className="text-3xl sm:text-4xl font-bold font-mono tracking-tight tabular-nums text-text block mt-1">
               {lapses}
             </span>
           </div>
 
-          <div className="p-4 sm:p-5 rounded-[16px] bg-surface-2 border border-border shadow-xs space-y-1">
+          <div className="p-4 sm:p-5 space-y-1">
             <span className="text-xs font-medium text-muted block">{t('check.falseStarts')} (&lt; 100 ms)</span>
             <span className="text-3xl sm:text-4xl font-bold font-mono tracking-tight tabular-nums text-text block mt-1">
               {falseStarts}

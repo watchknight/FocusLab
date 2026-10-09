@@ -31,7 +31,7 @@ export default function AboutPage() {
             Most focus advice treats human cognition as uniform: one productivity influencer swears by 25-minute Pomodoro timers, another by brown noise or cold showers. In reality, cognitive responses vary considerably across individuals, task demands, and circadian rhythms.
           </p>
           <p className="text-base text-text leading-relaxed">
-            FocusLab replaces guesswork with a direct loop: <strong>Check → Practice → Compare</strong>. We combine evidence-labelled focus practices with an informal browser reaction-time test (PVT-B) so you can directly measure what enhances or degrades your alertness.
+            FocusLab replaces guesswork with a direct loop: <strong>Check, Practice, Compare</strong>. We combine evidence-labelled focus practices with an informal browser reaction-time test (PVT-B) so you can directly measure what enhances or degrades your alertness.
           </p>
         </section>
 

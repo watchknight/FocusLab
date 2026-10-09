@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import clsx from 'clsx';
 import {
   ResponsiveContainer,
   BarChart,
@@ -68,15 +69,20 @@ export const TimeOfDayChart: React.FC<TimeOfDayChartProps> = ({ data }) => {
         </ResponsiveContainer>
       </div>
 
-      {/* Accessible data summary table for screen readers and small devices */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
-        {data.map((item) => (
+      {/* Accessible data summary plate for screen readers and small devices */}
+      <div className="rounded-[16px] bg-surface border border-border grid grid-cols-2 sm:grid-cols-4 shadow-xs overflow-hidden">
+        {data.map((item, idx) => (
           <div
             key={item.period}
-            className="p-2.5 rounded-sm border border-border bg-surface text-center"
+            className={clsx(
+              'p-3 text-center min-w-0',
+              idx === 1 && 'border-l border-border',
+              idx === 2 && 'border-t sm:border-t-0 sm:border-l border-border',
+              idx === 3 && 'border-l border-t sm:border-t-0 sm:border-l border-border'
+            )}
           >
             <span className="text-[11px] text-muted block truncate">{item.label}</span>
-            <span className="text-base font-bold font-display tabular-nums text-text">
+            <span className="text-base sm:text-lg font-bold font-display tabular-nums text-text">
               {item.count}
             </span>
           </div>

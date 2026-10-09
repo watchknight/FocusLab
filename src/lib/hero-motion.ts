@@ -28,14 +28,18 @@ export function useHeroMotion({
 
       if (fx === 'full') {
         if (subheadRef.current && buttonsRef.current) {
-          gsap.from([subheadRef.current, buttonsRef.current], {
-            y: 24,
-            autoAlpha: 0,
-            duration: 0.9,
-            ease: 'focus',
-            stagger: 0.08,
-            delay: 0.1,
-          });
+          gsap.fromTo(
+            [subheadRef.current, buttonsRef.current],
+            { y: 24, autoAlpha: 0 },
+            {
+              y: 0,
+              autoAlpha: 1,
+              duration: 0.9,
+              ease: 'focus',
+              stagger: 0.08,
+              delay: 0.1,
+            }
+          );
         }
         if (lensWrapperRef.current) {
           gsap.fromTo(
@@ -63,12 +67,16 @@ export function useHeroMotion({
         }
       } else if (fx === 'lite') {
         if (subheadRef.current && buttonsRef.current) {
-          gsap.from([subheadRef.current, buttonsRef.current], {
-            autoAlpha: 0,
-            duration: 0.6,
-            ease: 'power2.out',
-            stagger: 0.08,
-          });
+          gsap.fromTo(
+            [subheadRef.current, buttonsRef.current],
+            { autoAlpha: 0 },
+            {
+              autoAlpha: 1,
+              duration: 0.6,
+              ease: 'power2.out',
+              stagger: 0.08,
+            }
+          );
         }
         if (lensWrapperRef.current) {
           gsap.fromTo(lensWrapperRef.current, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.8 });

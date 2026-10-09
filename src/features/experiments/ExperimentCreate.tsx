@@ -137,7 +137,7 @@ export const ExperimentCreate: React.FC<ExperimentCreateProps> = ({
         <div className="p-3.5 bg-surface-2 rounded-sm border border-border text-xs text-muted space-y-1">
           <p className="font-semibold text-text">Experiment Structure</p>
           <p>• 10 total runs (5 active practice, 5 quiet rest control).</p>
-          <p>• Each run takes ~7 minutes: 3m pre-check → 3m activity/rest → 3m post-check.</p>
+          <p>• Each run takes ~7 minutes: 3m pre-check, 3m activity/rest, 3m post-check.</p>
           <p>• Complete runs on different days or spaced out at the same time of day.</p>
         </div>
 

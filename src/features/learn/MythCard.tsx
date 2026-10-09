@@ -36,9 +36,9 @@ export const MythCard: React.FC<MythCardProps> = ({ myth, defaultOpen = false })
           </span>
           <span
             aria-hidden="true"
-            className="text-muted transition-transform duration-200 group-open:rotate-180 text-xs"
+            className="text-muted shrink-0 text-base font-mono transition-transform duration-200 group-open:rotate-45"
           >
-            ▼
+            +
           </span>
         </div>
       </summary>

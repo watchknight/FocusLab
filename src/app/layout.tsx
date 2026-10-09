@@ -185,7 +185,7 @@ export default function RootLayout({
               <main
                 id="main-content"
                 tabIndex={-1}
-                className="flex-1 w-full focus:outline-none min-w-0 pt-[var(--header-height)] pb-[calc(56px+env(safe-area-inset-bottom,0px)+1.5rem)] lg:pb-8"
+                className="flex-1 w-full focus:outline-none min-w-0 pb-[calc(56px+env(safe-area-inset-bottom,0px)+1.5rem)] lg:pb-8"
               >
                 {children}
               </main>

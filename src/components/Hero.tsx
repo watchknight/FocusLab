@@ -6,10 +6,9 @@ import { Lens } from '@/components/Lens';
 import { HeroBokeh } from '@/components/HeroBokeh';
 import { HeroGlassChip } from '@/components/HeroGlassChip';
 import { Button } from '@/components/ui/Button';
-import { getFx } from '@/lib/gsap';
+import { getFx, gsap } from '@/lib/gsap';
 import { applyAperture } from '@/lib/aperture';
 import { useHeadlineReveal } from '@/lib/motion/use-headline-reveal';
-import { tweenAperture } from '@/lib/motion/tween-aperture';
 import { scrambleTo } from '@/lib/motion/scramble-to';
 import { useHeroMotion } from '@/lib/hero-motion';
 import {
@@ -35,47 +34,32 @@ export const Hero: React.FC = () => {
   const currentApertureRef = useRef<number>(DEMO_APERTURES.idle);
   const activeTweenRef = useRef<gsap.core.Tween | null>(null);
   const stimulusTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const litTimerRef = useRef<NodeJS.Timeout | null>(null);
   const stimulusTsRef = useRef<number>(0);
   const lastActionTsRef = useRef<number>(0);
 
   useHeadlineReveal(heroRef);
+  useHeroMotion({ heroRef, lensWrapperRef, bokehParallaxRef, glintRef, subheadRef, buttonsRef });
 
-  useHeroMotion({
-    heroRef,
-    lensWrapperRef,
-    bokehParallaxRef,
-    glintRef,
-    subheadRef,
-    buttonsRef,
-  });
-
-  useEffect(() => {
-    return () => {
-      if (stimulusTimerRef.current) clearTimeout(stimulusTimerRef.current);
-      if (activeTweenRef.current) activeTweenRef.current.kill();
-    };
+  useEffect(() => () => {
+    if (stimulusTimerRef.current) clearTimeout(stimulusTimerRef.current);
+    if (litTimerRef.current) clearTimeout(litTimerRef.current);
+    if (activeTweenRef.current) activeTweenRef.current.kill();
   }, []);
 
   const setAperture = useCallback((target: number, duration: number) => {
     const svg = lensSvgRef.current;
     if (!svg) return;
-    const fx = getFx();
-
     if (activeTweenRef.current) {
       activeTweenRef.current.kill();
       activeTweenRef.current = null;
     }
-
-    if (fx === 'full') {
-      const from = currentApertureRef.current;
-      activeTweenRef.current = tweenAperture(svg, from, target, duration);
-      activeTweenRef.current.eventCallback('onUpdate', function (this: gsap.core.Tween) {
-        const targets = this.targets() as { open: number }[];
-        if (targets?.[0]) currentApertureRef.current = targets[0].open;
-      });
-      activeTweenRef.current.eventCallback('onComplete', () => {
-        currentApertureRef.current = target;
-        activeTweenRef.current = null;
+    if (getFx() === 'full') {
+      const p = { open: currentApertureRef.current };
+      activeTweenRef.current = gsap.to(p, {
+        open: target, duration, ease: 'focus',
+        onUpdate: () => { currentApertureRef.current = p.open; applyAperture(svg, p.open); },
+        onComplete: () => { currentApertureRef.current = target; applyAperture(svg, target); activeTweenRef.current = null; },
       });
     } else {
       applyAperture(svg, target);
@@ -87,6 +71,8 @@ export const Hero: React.FC = () => {
     const now = performance.now();
     if (now - lastActionTsRef.current < 60) return;
     lastActionTsRef.current = now;
+
+    if (litTimerRef.current) { clearTimeout(litTimerRef.current); litTimerRef.current = null; }
 
     if (demoState === 'armed') {
       if (stimulusTimerRef.current) clearTimeout(stimulusTimerRef.current);
@@ -104,14 +90,12 @@ export const Hero: React.FC = () => {
       setCaption(res.caption);
       setAnnouncement(formatResultAnnouncement(elapsed));
       setAperture(res.targetAperture, 0.6);
-
-      if (readoutRef.current) {
-        scrambleTo(readoutRef.current, `${elapsed} ms`);
-      }
+      if (readoutRef.current) scrambleTo(readoutRef.current, `${elapsed} ms`);
       return;
     }
 
     // From idle, early, or result -> arm reflex test
+    if (stimulusTimerRef.current) clearTimeout(stimulusTimerRef.current);
     const res = transitionDemoState(demoState, 'tap');
     setDemoState(res.nextState);
     setCaption(res.caption);
@@ -126,41 +110,41 @@ export const Hero: React.FC = () => {
       stimulusTsRef.current = performance.now();
 
       if (lensSvgRef.current) {
-        if (activeTweenRef.current) {
-          activeTweenRef.current.kill();
-          activeTweenRef.current = null;
-        }
+        if (activeTweenRef.current) { activeTweenRef.current.kill(); activeTweenRef.current = null; }
         applyAperture(lensSvgRef.current, snap.targetAperture);
         currentApertureRef.current = snap.targetAperture;
       }
+
+      litTimerRef.current = setTimeout(() => {
+        setDemoState('early');
+        setCaption('Lapse. Tap the lens to try again.');
+        setAperture(DEMO_APERTURES.early, 0.4);
+      }, 5000);
     }, delay);
   }, [demoState, setAperture]);
 
   return (
     <section
       ref={heroRef}
-      className="relative w-full min-h-[100dvh] -mt-[var(--header-height)] pt-[calc(var(--header-height)+clamp(16px,2.5vw,36px))] pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] sm:pb-20 lg:pb-0 overflow-hidden flex flex-col justify-between select-none"
+      className="relative w-full min-h-[100dvh] -mt-14 md:-mt-16 pt-14 md:pt-16 pb-12 sm:pb-16 lg:pb-12 overflow-hidden flex flex-col justify-between select-none"
     >
       <HeroBokeh ref={bokehParallaxRef} />
 
-      {/* Viewfinder corner HUD marks: 28px, 2px stroke, 55% opacity */}
-      <div aria-hidden="true" className="pointer-events-none absolute top-[calc(var(--header-height)+12px)] left-4 sm:top-[calc(var(--header-height)+16px)] sm:left-6 lg:top-[calc(var(--header-height)+20px)] lg:left-8 w-7 h-7 border-t-2 border-l-2 border-border-strong opacity-55" />
-      <div aria-hidden="true" className="pointer-events-none absolute top-[calc(var(--header-height)+12px)] right-4 sm:top-[calc(var(--header-height)+16px)] sm:right-6 lg:top-[calc(var(--header-height)+20px)] lg:right-8 w-7 h-7 border-t-2 border-r-2 border-border-strong opacity-55" />
-      <div aria-hidden="true" className="pointer-events-none absolute bottom-18 left-4 sm:bottom-20 sm:left-6 lg:bottom-8 lg:left-8 w-7 h-7 border-b-2 border-l-2 border-border-strong opacity-55" />
-      <div aria-hidden="true" className="pointer-events-none absolute bottom-18 right-4 sm:bottom-20 sm:right-6 lg:bottom-8 lg:right-8 w-7 h-7 border-b-2 border-r-2 border-border-strong opacity-55" />
+      {/* Viewfinder corner HUD marks */}
+      <div aria-hidden="true" className="pointer-events-none absolute top-3 sm:top-4 lg:top-5 left-4 sm:left-6 lg:left-8 w-7 h-7 border-t-2 border-l-2 border-border-strong opacity-55" />
+      <div aria-hidden="true" className="pointer-events-none absolute top-3 sm:top-4 lg:top-5 right-4 sm:right-6 lg:right-8 w-7 h-7 border-t-2 border-r-2 border-border-strong opacity-55" />
+      <div aria-hidden="true" className="pointer-events-none absolute bottom-4 sm:bottom-6 lg:bottom-6 left-4 sm:left-6 lg:left-8 w-7 h-7 border-b-2 border-l-2 border-border-strong opacity-55" />
+      <div aria-hidden="true" className="pointer-events-none absolute bottom-4 sm:bottom-6 lg:bottom-6 right-4 sm:right-6 lg:right-8 w-7 h-7 border-b-2 border-r-2 border-border-strong opacity-55" />
 
-      {/* Screen reader polite live region: announces ONLY the reflex result */}
-      <div aria-live="polite" className="sr-only">
-        {announcement}
-      </div>
+      <div aria-live="polite" className="sr-only">{announcement}</div>
 
-      <div className="w-full flex-1 flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-12 px-[clamp(20px,5vw,72px)] max-w-[1440px] mx-auto min-w-0 z-10 relative">
+      <div className="w-full flex-1 flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12 px-[clamp(20px,5vw,72px)] max-w-[1440px] mx-auto min-w-0 z-10 relative">
         {/* Left Column: Headline, subhead, actions */}
-        <div className="w-full lg:max-w-[560px] xl:max-w-[640px] flex flex-col justify-center space-y-6 sm:space-y-8 text-left py-2 sm:py-4 lg:py-12 z-20">
+        <div className="w-full lg:max-w-[480px] xl:max-w-[560px] flex flex-col justify-center space-y-6 sm:space-y-7 lg:space-y-8 text-left py-4 sm:py-6 lg:py-8 z-20">
           <h1
             data-split="headline"
             data-hide-until-js
-            className="font-display font-[780] text-text leading-[0.92] tracking-[-0.02em] text-[clamp(3rem,1.2rem+8vw,8.5rem)] text-balance"
+            className="font-display font-[780] text-text leading-[0.98] tracking-[-0.02em] text-[clamp(2.5rem,1.2rem+4vw,5rem)] text-balance"
             style={{ fontStretch: '92%' }}
           >
             <span className="block">Build focus</span>
@@ -171,15 +155,15 @@ export const Hero: React.FC = () => {
           <p
             ref={subheadRef}
             data-hide-until-js
-            className="text-base sm:text-lg lg:text-xl text-muted leading-relaxed max-w-[46ch]"
+            className="text-base sm:text-lg lg:text-xl text-muted leading-relaxed max-w-[42ch]"
           >
-            Take a 3-minute reaction test, try short practices, and see which ones beat plain rest for you. Free, private, no account.
+            A 3-minute reaction test, short practices, and a fair comparison against rest. Free, private, no account.
           </p>
 
           <div
             ref={buttonsRef}
             data-hide-until-js
-            className="flex flex-col sm:flex-row items-start sm:items-center gap-3.5 sm:gap-6 pt-2"
+            className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 pt-1 sm:pt-2"
           >
             <Link href="/check">
               <Button variant="primary" magnetic className="px-7 py-3 min-h-[52px] text-sm font-semibold">
@@ -200,7 +184,7 @@ export const Hero: React.FC = () => {
           <div
             ref={lensWrapperRef}
             data-hide-until-js
-            className="relative lg:absolute lg:right-[-12%] lg:bottom-[-16%] xl:right-[-10%] xl:bottom-[-18%] 2xl:right-[-8%] 2xl:bottom-[-20%] w-[min(340px,88vw)] max-h-[38vh] sm:max-h-none sm:w-[460px] md:w-[520px] lg:w-[760px] xl:w-[880px] 2xl:w-[1000px] aspect-square translate-y-0 lg:translate-y-0"
+            className="relative lg:absolute lg:right-[-2%] lg:bottom-[-2%] xl:right-[-1%] xl:bottom-[-2%] 2xl:right-0 2xl:bottom-[-2%] w-[min(240px,72vw)] sm:w-[300px] md:w-[360px] lg:w-[460px] xl:w-[540px] 2xl:w-[600px] aspect-square"
           >
             <button
               type="button"
@@ -217,7 +201,6 @@ export const Hero: React.FC = () => {
                 className="w-full h-full drop-shadow-2xl transition-transform duration-300 group-hover:scale-[1.01]"
               />
 
-              {/* Glint overlay: 25% white conic highlight rotating once per 24s */}
               <div
                 ref={glintRef}
                 data-glint
@@ -234,7 +217,8 @@ export const Hero: React.FC = () => {
               readoutRef={readoutRef}
               caption={caption}
               demoState={demoState}
-              onCardClick={demoState !== 'result' ? handleLensAction : undefined}
+              onCardClick={handleLensAction}
+              onReset={handleLensAction}
             />
           </div>
         </div>
