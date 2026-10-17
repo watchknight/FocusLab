@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { spawn } from 'child_process';
 
-const PORT = 3336;
+const PORT = 3337;
 const OUT_DIR = path.resolve('out');
 
 const MIME_TYPES = {
@@ -39,14 +39,14 @@ async function run() {
   await new Promise(r => server.listen(PORT, '127.0.0.1', r));
   const chrome = spawn('C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe', [
     '--headless=new',
-    '--remote-debugging-port=9227',
+    '--remote-debugging-port=9228',
     '--disable-gpu',
     '--no-sandbox'
   ]);
   await new Promise(r => setTimeout(r, 1200));
 
   try {
-    const res = await fetch('http://127.0.0.1:9227/json/new', { method: 'PUT' });
+    const res = await fetch('http://127.0.0.1:9228/json/new', { method: 'PUT' });
     const target = await res.json();
     const ws = new WebSocket(target.webSocketDebuggerUrl);
     await new Promise(r => ws.addEventListener('open', r));
@@ -69,55 +69,53 @@ async function run() {
     await send('Page.navigate', { url: `http://127.0.0.1:${PORT}/?skipIntro=1` });
     await new Promise(r => setTimeout(r, 800));
 
-    // At 100% zoom:
-    const normal = await send('Runtime.evaluate', {
-      expression: `(() => {
-        return {
-          innerW: window.innerWidth,
-          docScrollW: document.documentElement.scrollWidth,
-          bodyScrollW: document.body.scrollWidth,
-          children: Array.from(document.body.children).map(c => ({
-            tag: c.tagName,
-            id: c.id,
-            scrollW: c.scrollWidth,
-            offsetW: c.offsetWidth,
-            clientW: c.clientWidth
-          }))
-        };
-      })()`,
-      returnByValue: true
-    });
-    console.log('Normal (100%):', JSON.stringify(normal.result.result.value, null, 2));
-
-    // At 200% zoom:
+    // Increase font size to simulate 200% zoom
     await send('Runtime.evaluate', { expression: "document.documentElement.style.fontSize = '200%';" });
     await new Promise(r => setTimeout(r, 600));
 
-    const zoomed = await send('Runtime.evaluate', {
+    const check = await send('Runtime.evaluate', {
       expression: `(() => {
-        // Find which child of body has scrollWidth > 320
-        function findWidest(el, depth = 0) {
-          if (!el || depth > 8) return null;
-          const kids = Array.from(el.children).filter(c => c.scrollWidth > 320 || c.offsetWidth > 320);
-          return {
-            tag: el.tagName,
-            id: el.id,
-            className: typeof el.className === 'string' ? el.className : '',
-            scrollW: el.scrollWidth,
-            offsetW: el.offsetWidth,
-            kids: kids.map(k => findWidest(k, depth + 1))
-          };
+        const topKids = Array.from(document.body.children).map(c => ({
+          tag: c.tagName,
+          id: c.id,
+          class: (c.className && typeof c.className === 'string') ? c.className.split(' ').slice(0, 2).join(' ') : '',
+          scrollW: c.scrollWidth,
+          offsetW: c.offsetWidth,
+          clientW: c.clientWidth
+        }));
+
+        function getLeafOffenders(root) {
+          const list = [];
+          function walk(el) {
+            const hasWideChild = Array.from(el.children).some(c => c.scrollWidth > 320 || c.offsetWidth > 320 || c.getBoundingClientRect().right > 320);
+            if (!hasWideChild && (el.scrollWidth > 320 || el.offsetWidth > 320 || el.getBoundingClientRect().right > 320)) {
+              list.push({
+                tag: el.tagName,
+                class: typeof el.className === 'string' ? el.className : '',
+                scrollW: el.scrollWidth,
+                offsetW: el.offsetWidth,
+                rectRight: Math.round(el.getBoundingClientRect().right),
+                text: (el.innerText || '').slice(0, 30).replace(/\\n/g, ' ')
+              });
+            } else {
+              for (const c of el.children) walk(c);
+            }
+          }
+          walk(root);
+          return list;
         }
+
         return {
-          innerW: window.innerWidth,
           docScrollW: document.documentElement.scrollWidth,
           bodyScrollW: document.body.scrollWidth,
-          bodyTree: findWidest(document.body)
+          topKids,
+          offenders: getLeafOffenders(document.body)
         };
       })()`,
       returnByValue: true
     });
-    console.log('Zoomed (200%):', JSON.stringify(zoomed.result.result.value, null, 2));
+
+    console.log(JSON.stringify(check.result.result.value, null, 2));
 
     chrome.kill();
     server.close();
