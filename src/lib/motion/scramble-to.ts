@@ -8,6 +8,7 @@ export function scrambleTo(el: HTMLElement, value: string) {
     return;
   }
   import("@/lib/gsap-text").then(() => {
+    if (!el.isConnected) return;
     gsap.to(el, {
       duration: 0.9,
       scrambleText: { text: value, chars: "0123456789", speed: 0.6 },

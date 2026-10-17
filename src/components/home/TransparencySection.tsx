@@ -97,9 +97,18 @@ export const TransparencySection: React.FC = () => {
             Peer-reviewed literature catalog
           </div>
 
-          {/* Marquee in fx full only */}
+          {/* Marquee on >= 640px in fx full, static wrapped list on small screens and lite/off fx */}
           {MarqueeComponent ? (
-            <MarqueeComponent />
+            <>
+              <div className="hidden sm:block">
+                <MarqueeComponent />
+              </div>
+              <div className="sm:hidden flex flex-wrap gap-2.5 max-w-4xl py-2">
+                {REFERENCES.map((ref) => (
+                  <ReferenceChip key={`sm-${ref.id}`} refItem={ref} />
+                ))}
+              </div>
+            </>
           ) : (
             /* Static wrapped list in fx lite, fx off, and before hydration */
             <div className="flex flex-wrap gap-2.5 max-w-4xl py-2">

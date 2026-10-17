@@ -27,14 +27,18 @@ export const HistoryChart: React.FC<HistoryChartProps> = ({ data, animate = true
         if (pathRef.current) pathRef.current.style.strokeDashoffset = '0';
         return;
       }
+      let cancelled = false;
       import('@/lib/gsap-draw').then(() => {
-        if (!pathRef.current) return;
+        if (cancelled || !pathRef.current) return;
         gsap.fromTo(
           pathRef.current,
           { drawSVG: '0%' },
           { drawSVG: '100%', duration: 1.1, ease: 'focus' }
         );
       });
+      return () => {
+        cancelled = true;
+      };
     },
     { scope: containerRef, dependencies: [data, animate] }
   );

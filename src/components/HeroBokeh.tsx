@@ -59,7 +59,7 @@ export const HeroBokeh = forwardRef<HTMLDivElement, HeroBokehProps>(function Her
     <div
       ref={ref}
       aria-hidden="true"
-      className={`bokeh absolute -inset-8 pointer-events-none overflow-hidden select-none ${className || ''}`}
+      className={`bokeh absolute inset-0 pointer-events-none overflow-hidden select-none ${className || ''}`}
       style={{ opacity: 'var(--bokeh-opacity, 1)' }}
     >
       <div ref={driftRef} className="relative w-full h-full">
@@ -68,10 +68,10 @@ export const HeroBokeh = forwardRef<HTMLDivElement, HeroBokehProps>(function Her
             key={`l-${i}`}
             className="bokeh-large absolute rounded-full"
             style={{
-              width: d.size,
-              height: d.size,
+              width: `clamp(120px, 45vw, ${d.size}px)`,
+              height: `clamp(120px, 45vw, ${d.size}px)`,
               top: d.top,
-              left: d.left,
+              left: `clamp(calc(clamp(120px, 45vw, ${d.size}px) / 2), ${d.left}, calc(100% - clamp(120px, 45vw, ${d.size}px) / 2))`,
               transform: 'translate(-50%, -50%)',
               background: `radial-gradient(circle, ${d.colorVar} 0%, ${d.colorVar} 26%, transparent 72%)`,
               opacity: d.opacity,

@@ -62,8 +62,9 @@ export const ExperimentDotPlot: React.FC<ExperimentDotPlotProps> = ({ analysis }
         lines.forEach((line) => { line.style.strokeDashoffset = '0'; });
         return;
       }
+      let cancelled = false;
       import('@/lib/gsap-draw').then(() => {
-        if (!svgRef.current) return;
+        if (cancelled || !svgRef.current) return;
         const currentLines = svgRef.current.querySelectorAll('.chart-draw-line');
         gsap.fromTo(
           currentLines,
@@ -71,6 +72,9 @@ export const ExperimentDotPlot: React.FC<ExperimentDotPlotProps> = ({ analysis }
           { drawSVG: '100%', duration: 0.9, ease: 'focus', stagger: 0.08 }
         );
       });
+      return () => {
+        cancelled = true;
+      };
     },
     { scope: svgRef, dependencies: [analysis] }
   );

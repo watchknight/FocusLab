@@ -29,7 +29,7 @@ export function SegmentedControl<T extends string | number>({
       role="radiogroup"
       aria-label={name}
       className={clsx(
-        'inline-flex items-center gap-1 p-1 bg-surface-2 border border-border rounded-full select-none max-w-full overflow-x-auto',
+        'flex items-center gap-1 p-1 bg-surface-2 border border-border rounded-full select-none w-full max-w-full',
         className
       )}
     >
@@ -44,7 +44,7 @@ export function SegmentedControl<T extends string | number>({
             aria-label={opt.ariaLabel}
             onClick={() => onChange(opt.id)}
             className={clsx(
-              'min-h-[44px] px-5 py-2 rounded-full text-sm font-semibold transition-colors duration-150 inline-flex items-center justify-center shrink-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-[0.98] motion-reduce:active:scale-100',
+              'min-h-[44px] px-2 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-semibold transition-colors duration-150 flex-1 min-w-0 inline-flex items-center justify-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-[0.98] motion-reduce:active:scale-100',
               isSelected
                 ? 'bg-primary-bg text-primary-text shadow-sm'
                 : 'text-muted hover:text-text hover:bg-surface'

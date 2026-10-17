@@ -156,14 +156,14 @@ export const Navbar: React.FC = () => {
           : 'bg-bg/85 backdrop-blur-md border-b border-border'
       )}
     >
-      <Container className="h-full flex items-center justify-between gap-3 sm:gap-4 min-w-0 max-w-[1440px] px-[clamp(20px,5vw,72px)]">
+      <Container className="h-full flex items-center justify-between gap-2 sm:gap-4 min-w-0 max-w-[1440px] px-3 sm:px-4 md:px-[clamp(20px,5vw,72px)]">
         <TransitionLink
           href="/"
           aria-label="FocusLab home"
-          className="flex items-center gap-2 sm:gap-2.5 min-h-[44px] shrink-0 text-text group focus-visible:outline-2 focus-visible:outline-ring rounded-full px-1 py-1"
+          className="flex items-center gap-1.5 sm:gap-2.5 min-h-[44px] shrink-0 text-text group focus-visible:outline-2 focus-visible:outline-ring rounded-full px-0.5 py-1"
         >
-          <Lens open={0.42} className="w-7 h-7 sm:w-8 sm:h-8 shrink-0 transition-transform duration-300 group-hover:scale-105" />
-          <span className="font-display font-extrabold text-lg sm:text-xl tracking-[-0.02em] leading-none text-text">
+          <Lens open={0.42} className="w-6 h-6 sm:w-8 sm:h-8 shrink-0 transition-transform duration-300 group-hover:scale-105" />
+          <span className="font-display font-extrabold text-base sm:text-xl tracking-[-0.02em] leading-none text-text">
             FocusLab
           </span>
         </TransitionLink>

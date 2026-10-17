@@ -16,8 +16,9 @@ export function useDial(
     const el = ref.current;
     if (!el) return;
     let draggerInstance: { kill: () => void } | null = null;
+    let cancelled = false;
     import("@/lib/gsap-drag").then(({ Draggable }) => {
-      if (!ref.current) return;
+      if (cancelled || !ref.current) return;
       const [dragger] = Draggable.create(el, {
         type: "rotation",
         inertia: true,
@@ -29,6 +30,7 @@ export function useDial(
       draggerInstance = dragger;
     });
     return () => {
+      cancelled = true;
       if (draggerInstance) draggerInstance.kill();
     };
   }, { scope: ref });

@@ -19,7 +19,7 @@ export const LanguageToggle: React.FC = () => {
         aria-pressed={locale === 'en'}
         onClick={() => setLocale('en')}
         className={clsx(
-          'min-h-[44px] min-w-[44px] px-3 py-1.5 rounded-full transition-colors inline-flex items-center justify-center focus-visible:outline-2 focus-visible:outline-ring select-none',
+          'min-h-[44px] min-w-[36px] sm:min-w-[44px] px-2 sm:px-3 py-1.5 rounded-full transition-colors inline-flex items-center justify-center focus-visible:outline-2 focus-visible:outline-ring select-none',
           locale === 'en'
             ? 'bg-primary-bg text-primary-text font-bold shadow-xs'
             : 'text-muted hover:text-text'
@@ -34,7 +34,7 @@ export const LanguageToggle: React.FC = () => {
         aria-pressed={locale === 'bn'}
         onClick={() => setLocale('bn')}
         className={clsx(
-          'min-h-[44px] min-w-[44px] px-3 py-1.5 rounded-full transition-colors inline-flex items-center justify-center focus-visible:outline-2 focus-visible:outline-ring font-bengali select-none',
+          'min-h-[44px] min-w-[36px] sm:min-w-[44px] px-2 sm:px-3 py-1.5 rounded-full transition-colors inline-flex items-center justify-center focus-visible:outline-2 focus-visible:outline-ring font-bengali select-none',
           locale === 'bn'
             ? 'bg-primary-bg text-primary-text font-bold shadow-xs'
             : 'text-muted hover:text-text'

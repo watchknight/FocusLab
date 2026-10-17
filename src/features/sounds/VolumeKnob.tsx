@@ -29,9 +29,10 @@ export const VolumeKnob: React.FC<VolumeKnobProps> = ({
       gsap.set(knobRef.current, { rotation: currentAngle });
 
       if (getFx() === 'off') return;
+      let cancelled = false;
 
       import('@/lib/gsap-drag').then(({ Draggable }) => {
-        if (!knobRef.current) return;
+        if (cancelled || !knobRef.current) return;
         const instances = Draggable.create(knobRef.current, {
           type: 'rotation',
           bounds: { minRotation: 0, maxRotation: 270 },
@@ -47,6 +48,7 @@ export const VolumeKnob: React.FC<VolumeKnobProps> = ({
       });
 
       return () => {
+        cancelled = true;
         if (draggerRef.current) {
           draggerRef.current.forEach((d) => d.kill());
           draggerRef.current = null;

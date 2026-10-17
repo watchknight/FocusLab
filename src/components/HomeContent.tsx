@@ -25,7 +25,7 @@ export const HomeContent: React.FC = () => {
   }, []);
 
   return (
-    <div className="w-full overflow-x-hidden">
+    <div className="w-full min-w-0">
       <OnboardingModal />
 
       {/* S1: Hero & Live reflex demo */}

@@ -69,7 +69,7 @@ export const Footer: React.FC = () => {
     <footer
       ref={footerRef}
       data-chrome="footer"
-      className="w-full border-t border-border bg-surface-2 pt-12 pb-16 mb-[calc(3.5rem+env(safe-area-inset-bottom,0px))] lg:mb-0 text-center space-y-8 select-none overflow-x-hidden"
+      className="w-full border-t border-border bg-surface-2 pt-12 pb-16 mb-[calc(3.5rem+env(safe-area-inset-bottom,0px))] lg:mb-0 text-center space-y-8 select-none"
     >
       <Container className="space-y-8 max-w-[1320px]">
         {/* Giant FocusLab wordmark that sharpens on scroll entry */}
