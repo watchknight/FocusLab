@@ -48,7 +48,11 @@ export const EvidenceSharpnessSection: React.FC = () => {
         vars.filter = 'blur(10px)';
       }
 
-      gsap.from(meterIcons, vars);
+      const tween = gsap.from(meterIcons, vars);
+      return () => {
+        tween.scrollTrigger?.kill();
+        tween.kill();
+      };
     },
     { scope: sectionRef }
   );

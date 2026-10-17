@@ -57,6 +57,10 @@ export const Footer: React.FC = () => {
           );
         }
       });
+
+      return () => {
+        mm.revert();
+      };
     },
     { scope: footerRef, dependencies: [pathname, calm] }
   );

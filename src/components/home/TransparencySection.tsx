@@ -33,7 +33,7 @@ export const TransparencySection: React.FC = () => {
     () => {
       if (!sectionRef.current) return;
 
-      ScrollTrigger.create({
+      const st = ScrollTrigger.create({
         trigger: sectionRef.current,
         start: 'top 80%',
         once: true,
@@ -43,6 +43,10 @@ export const TransparencySection: React.FC = () => {
           if (mixedRef.current) scrambleTo(mixedRef.current, String(mixedOrWeakerCount));
         },
       });
+
+      return () => {
+        st.kill();
+      };
     },
     { scope: sectionRef }
   );

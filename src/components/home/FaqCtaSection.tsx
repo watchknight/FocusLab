@@ -49,7 +49,7 @@ export const FaqCtaSection: React.FC = () => {
       }
 
       const iris = { open: 0.1 };
-      gsap.to(iris, {
+      const tween = gsap.to(iris, {
         open: 0.82,
         ease: 'none',
         scrollTrigger: {
@@ -62,6 +62,11 @@ export const FaqCtaSection: React.FC = () => {
           applyAperture(svg, iris.open);
         },
       });
+
+      return () => {
+        tween.scrollTrigger?.kill();
+        tween.kill();
+      };
     },
     { scope: ctaSectionRef }
   );

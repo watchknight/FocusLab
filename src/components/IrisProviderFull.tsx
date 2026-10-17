@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { gsap, getFx } from "@/lib/gsap";
+import { gsap, getFx, ScrollTrigger } from "@/lib/gsap";
 import { isCalmRoute, type Nav } from "./IrisTransition";
 
 export interface IrisOverlayFullProps {
@@ -67,6 +67,7 @@ export function IrisOverlayFull({ onRegister }: IrisOverlayFullProps) {
       onComplete: () => {
         busy.current = false;
         if (overlay.current) gsap.set(overlay.current, { visibility: "hidden" });
+        ScrollTrigger.refresh();
       },
     });
   }, [pathname]);

@@ -74,6 +74,11 @@ describe('Task 7: Memory and Route Navigation Stability', () => {
     ScrollTrigger.getAll().forEach((t) => t.kill());
     gsap.globalTimeline.clear();
     vi.unstubAllGlobals();
+    if (typeof globalThis.requestAnimationFrame === 'undefined') {
+      (globalThis as unknown as { requestAnimationFrame: (cb: FrameRequestCallback) => number }).requestAnimationFrame = (cb: FrameRequestCallback) => {
+        return setTimeout(cb, 16) as unknown as number;
+      };
+    }
   });
 
   it('ScrollTrigger.getAll().length returns to that route own count and does not accumulate over 20 route transitions', () => {

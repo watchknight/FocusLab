@@ -4,7 +4,7 @@ import React, { useRef, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { Container } from '@/components/ui/Container';
 import { useGSAP } from '@gsap/react';
-import { gsap } from '@/lib/gsap';
+import { gsap, ScrollTrigger } from '@/lib/gsap';
 import { durations, easings, setCalm, useMotionAllowed } from '@/lib/motion';
 
 let isFirstRender = true;
@@ -37,6 +37,9 @@ export default function Template({ children }: { children: React.ReactNode }) {
             opacity: 1,
             duration: durations.quick,
             ease: easings.out,
+            onComplete: () => {
+              ScrollTrigger.refresh();
+            },
           }
         );
       });
@@ -49,9 +52,14 @@ export default function Template({ children }: { children: React.ReactNode }) {
             opacity: 1,
             duration: durations.instant,
             ease: easings.out,
+            onComplete: () => {
+              ScrollTrigger.refresh();
+            },
           }
         );
       });
+
+      return () => mm.revert();
     },
     { scope: containerRef, dependencies: [motionOk] }
   );

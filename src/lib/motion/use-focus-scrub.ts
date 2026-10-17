@@ -13,7 +13,7 @@ export function useFocusScrub(scope: RefObject<HTMLElement | null>) {
       if (!scope.current || !el.isConnected || context.isReverted) return;
       const { SplitText } = await import("@/lib/gsap-text");
       context.add(() => {
-        SplitText.create(el, {
+        const split = SplitText.create(el, {
           type: "words",
           autoSplit: true,
           onSplit(self) {
@@ -37,6 +37,9 @@ export function useFocusScrub(scope: RefObject<HTMLElement | null>) {
           },
         });
         ScrollTrigger.refresh();
+        return () => {
+          split.revert();
+        };
       });
     });
   }, { scope });
